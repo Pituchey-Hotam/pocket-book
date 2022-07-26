@@ -1,6 +1,8 @@
 # pdf-to-tiny-book
 I wrote the instructions in Hebrew. If you'r not jewish: good luck with google-translate...
+
 dvirgim@gmail.com
+
 לטובת הציבור שמתי פה את התוכנה היעילה הנ"ל. השימוש אמור להיות די אינטואיבטיבי.
 כמו כן הוספתי את הקוד (בפייתון), למי שחפץ לעשות בו שינויים ולשחק עם זה (אצלו במחשב. לא פה).
 
