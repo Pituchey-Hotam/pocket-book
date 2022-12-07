@@ -8,6 +8,9 @@ import requests
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED
 
+from PIL import Image
+from time import sleep
+
 import pdfbooklet_new
 
 currentVersion = "2.0.2"
@@ -281,6 +284,14 @@ def UPGRADE():
 
             quit()
 
+def Advertise():
+    p = "\\\\YBMSERVER\lessons_files\מחזור מה\תיקיות תלמידים\דביר ג'מדני\פרסומת.jpg"
+    if exists(p):
+        sleep(1.5)
+        im = Image.open(p)
+        im.show('image',im)
+        print(im)
+
 
 if __name__ == '__main__':
     UPGRADE()
@@ -295,6 +306,8 @@ if __name__ == '__main__':
 
     while True:
         window_load.read(timeout=10)
+
+        Advertise()
 
         inputs[0] = inputs[0].split(';')
         for inp in inputs[0]:
