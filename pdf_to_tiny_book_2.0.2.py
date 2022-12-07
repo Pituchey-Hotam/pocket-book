@@ -216,12 +216,12 @@ def pile_combine(file, path, file_name):
 def UPGRADE():
     data = currentVersion
 
-    p = "\\\\YBMSERVER\lessons_files\מחזור מו\תיקיות תלמידים\מלאכי מחפוד\לא לגעת\Version.txt"
+    p = "\\\\YBMSERVER\lessons_files\מחזור מה\תיקיות תלמידים\דביר ג'מדני\לא לגעת\Version.txt"
     if exists(p):
         a = open(p, 'r')
         data = a.readline()
         a.close()
-        location = "\"\\\\YBMSERVER\lessons_files\מחזור מו\תיקיות תלמידים\מלאכי מחפוד\לא לגעת\pdf_to_tiny_book_"
+        location = "\"\\\\YBMSERVER\lessons_files\מחזור מה\תיקיות תלמידים\דביר ג'מדני\לא לגעת\pdf_to_tiny_book_"
         # הרווחים עושים בעיות
         command = '''xcopy %2 .\ /Y'''
         print('version from file: ' + data)
@@ -238,7 +238,7 @@ def UPGRADE():
         except:
             print("cannot find connection to upgrades base")
 
-    if (data == currentVersion):
+    if (str(data).replace("\n",'') == currentVersion):
         print("App is up to date!")
         if os.path.exists("update.bat"):
             os.remove("update.bat")
