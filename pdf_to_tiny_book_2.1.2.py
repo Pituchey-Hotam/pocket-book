@@ -10,7 +10,7 @@ from math import ceil
 from threading import Thread
 
 import requests
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
 
 from PIL import Image
@@ -133,26 +133,26 @@ def UI(check_updates=True):
 
 def extract_num_of_pages(pdf_path):
     with open(pdf_path, 'rb') as f:
-        pdf = PdfFileReader(f)
-        number_of_pages = pdf.getNumPages()
+        pdf = PdfReader(f)
+        number_of_pages = len(pdf.pages)
     f.close()
     return number_of_pages
 
 
 def split(path, name_of_split, sp, length, bind_method='s'):
     # length += (4-(length%4))*(length%4 > 0)
-    pdf = PdfFileReader(path)
+    pdf = PdfReader(path)
     output = f'{name_of_split}'
-    pdf_writer = PdfFileWriter()
+    pdf_writer = PdfWriter()
 
     for page in range(sp, sp + length):
-        if page < pdf.getNumPages():
-            pdf_writer.addPage(pdf.getPage(page))
+        if page < len(pdf.pages):
+            pdf_writer.add_page(pdf.pages[page])
         else:
-            pdf_writer.addBlankPage()
+            pdf_writer.add_blank_page()
     if not bind_method == 's':
-        pdf_writer.insertBlankPage(0)
-        pdf_writer.addBlankPage()
+        pdf_writer.insert_blank_page(0)
+        pdf_writer.add_blank_page()
 
     with open(output, 'wb') as output_pdf:
         pdf_writer.write(output_pdf)
@@ -160,22 +160,22 @@ def split(path, name_of_split, sp, length, bind_method='s'):
 
 
 def split_Even_Odd(path, name_of_split):
-    pdf = PdfFileReader(path)
+    pdf = PdfReader(path)
     output_ev = f'{name_of_split}_even.pdf'
     output_odd = f'{name_of_split}_odd.pdf'
-    pdf_writer_ev = PdfFileWriter()
-    pdf_writer_odd = PdfFileWriter()
+    pdf_writer_ev = PdfWriter()
+    pdf_writer_odd = PdfWriter()
     number_of_pages = extract_num_of_pages(path)
     number_of_pages_plusblank = int((4 - (number_of_pages / 2 % 4)) * (number_of_pages / 2 % 4 > 0))
     for page in range(number_of_pages + number_of_pages_plusblank):
         if page < number_of_pages:
             if page % 2 == 0:
-                pdf_writer_odd.addPage(pdf.getPage(page))
+                pdf_writer_odd.add_page(pdf.pages[page])
             else:
-                pdf_writer_ev.addPage(pdf.getPage(page))
+                pdf_writer_ev.add_page(pdf.pages[page])
         else:
-            pdf_writer_ev.addBlankPage()
-            pdf_writer_odd.addBlankPage()
+            pdf_writer_ev.add_blank_page()
+            pdf_writer_odd.add_blank_page()
 
     with open(output_ev, 'wb') as output_pdf:
         pdf_writer_ev.write(output_pdf)
@@ -186,13 +186,13 @@ def split_Even_Odd(path, name_of_split):
 
 
 def rotate(path, name_of_rotate, num_rot=3):
-    pdf = PdfFileReader(path)
+    pdf = PdfReader(path)
     number_of_pages = extract_num_of_pages(path)
     output = f'{name_of_rotate}'
-    pdf_writer = PdfFileWriter()
+    pdf_writer = PdfWriter()
     for page in range(number_of_pages):
-        page_1 = pdf.getPage(page).rotateClockwise(90 * num_rot)
-        pdf_writer.addPage(page_1)
+        page_1 = pdf.pages[page].rotateClockwise(90 * num_rot)
+        pdf_writer.add_page(page_1)
 
     with open(output, 'wb') as output_pdf:
         pdf_writer.write(output_pdf)
@@ -200,13 +200,13 @@ def rotate(path, name_of_rotate, num_rot=3):
 
 
 def merge_pdfs(paths, output):
-    pdf_writer = PdfFileWriter()
+    pdf_writer = PdfWriter()
 
     for path in paths:
-        pdf_reader = PdfFileReader(path)
-        for page in range(pdf_reader.getNumPages()):
+        pdf_reader = PdfReader(path)
+        for page in range(len(pdf_reader.pages)):
             # Add each page to the writer object
-            pdf_writer.addPage(pdf_reader.getPage(page))
+            pdf_writer.add_page(pdf_reader.pages[page])
 
     # Write out the merged PDF
     with open(output, 'wb') as out:
@@ -215,13 +215,13 @@ def merge_pdfs(paths, output):
 
 
 def merge_sort_pdfs(path1, path2, output):
-    pdf_writer = PdfFileWriter()
-    pdf1 = PdfFileReader(path1)
-    pdf2 = PdfFileReader(path2)
+    pdf_writer = PdfWriter()
+    pdf1 = PdfReader(path1)
+    pdf2 = PdfReader(path2)
     number_of_pages = extract_num_of_pages(path1)
     for page in range(number_of_pages):
-        pdf_writer.addPage(pdf1.getPage(page))
-        pdf_writer.addPage(pdf2.getPage(page))
+        pdf_writer.add_page(pdf1.pages[page])
+        pdf_writer.add_page(pdf2.pages[page])
 
     # Write out the merged PDF
     with open(output, 'wb') as out:
