@@ -28,7 +28,7 @@ currentVersion = "2.1.2"
 
 ENGLISH_T = [
     "Choose a file: ",
-    "Enter number of pages in each booklet (In multiples of 4. the standart is 32): ",
+    "Enter number of pages in each booklet (In multiples of 4. the standard is 32): ",
     "Enter pages per sheet (2/4/8/16): ",
     "Sewing or gluing? In the gluing there is an extra blank page on each side.",
     "only one notebook?",
@@ -61,32 +61,32 @@ HEBREW_T = [
 ]
 
 
-# this function get folder and check if it including pictures file (and return the names of the pictures and how much
+# Gets a folder and check if it including pictures file (and return the names of the pictures and how much
 # picture have)
 def UI(check_updates=True):
     theme("DarkTeal2")
-    Langughe = ENGLISH_T
+    Language = ENGLISH_T
     lan = "English"
     layout = [[Button("English", key="change")],
-              [Text(Langughe[0], key="L0"), Input(), FilesBrowse(key=0)],
-              [Text(Langughe[1], key="L1"), InputText()],
-              [Text(Langughe[2], key="L2"), InputText()],
-              [Button(Langughe[6], size=(6, 1), button_color='white on green', key='-gs-'),
-               Text(Langughe[3], key="L3")],
-              [Button(Langughe[10], size=(6, 1), button_color='white on green', key='-langughe-'),
-               Text(Langughe[12], key="L5")],
-              [Button(Langughe[13], key="Submit")]]
+              [Text(Language[0], key="L0"), Input(), FilesBrowse(key=0)],
+              [Text(Language[1], key="L1"), InputText()],
+              [Text(Language[2], key="L2"), InputText()],
+              [Button(Language[6], size=(6, 1), button_color='white on green', key='-gs-'),
+               Text(Language[3], key="L3")],
+              [Button(Language[10], size=(6, 1), button_color='white on green', key='-Language-'),
+               Text(Language[12], key="L5")],
+              [Button(Language[13], key="Submit")]]
     #              [sg.Button('', image_data=toggle_btn_off, key='-TOGGLE-GRAPHIC-', button_color=(sg.theme_background_color(), sg.theme_background_color()), border_width=0)]]
 
     # Building Window
-    window = Window(Langughe[5], layout, size=(800, 250))
+    window = Window(Language[5], layout, size=(800, 250))
 
     if check_updates:
-        Thread(target=Upgr_with_event, args=[window]).start()
+        Thread(target=upgrade_with_event, args=[window]).start()
 
     oneNote_on = True
     GS_b = True
-    langughe_on = True
+    language_on = True
     # graphic_off = True
 
     while True:
@@ -95,17 +95,17 @@ def UI(check_updates=True):
             quit()
             break
         elif event == "change":
-            Langughe = HEBREW_T if lan == "English" else ENGLISH_T
+            Language = HEBREW_T if lan == "English" else ENGLISH_T
             lan = "English" if lan != "English" else "עברית"
 
-            window["L0"].update(value=Langughe[0])
-            window["L1"].update(value=Langughe[1])
-            window["L2"].update(value=Langughe[2])
-            window["L3"].update(value=Langughe[3])
-            window["L5"].update(value=Langughe[12])
-            window["Submit"].update(text=Langughe[13])
-            window['-gs-'].update(text=Langughe[6] if GS_b else Langughe[7])
-            window['-langughe-'].update(text=Langughe[10] if langughe_on else Langughe[11])
+            window["L0"].update(value=Language[0])
+            window["L1"].update(value=Language[1])
+            window["L2"].update(value=Language[2])
+            window["L3"].update(value=Language[3])
+            window["L5"].update(value=Language[12])
+            window["Submit"].update(text=Language[13])
+            window['-gs-'].update(text=Language[6] if GS_b else Language[7])
+            window['-Language-'].update(text=Language[10] if language_on else Language[11])
             window['change'].update(text=lan)
 
 
@@ -113,18 +113,18 @@ def UI(check_updates=True):
             break
         elif event == '-gs-':  # if the normal button that changes color and text
             GS_b = not GS_b
-            window['-gs-'].update(text=Langughe[6] if GS_b else Langughe[7],
+            window['-gs-'].update(text=Language[6] if GS_b else Language[7],
                                   button_color='white on green' if GS_b else 'white on red')
-        elif event == '-langughe-':  # if the normal button that changes color and text
-            langughe_on = not langughe_on
-            window['-langughe-'].update(text=Langughe[10] if langughe_on else Langughe[11],
-                                        button_color='white on green' if langughe_on else 'white on red')
+        elif event == '-language-':  # if the normal button that changes color and text
+            language_on = not language_on
+            window['-Language-'].update(text=Language[10] if language_on else Language[11],
+                                        button_color='white on green' if language_on else 'white on red')
         elif event == '-UPGRADE-':
-            parms = values['-UPGRADE-']
-            UpgradeWindow(parms[0], parms[1], parms[2])
+            params = values['-UPGRADE-']
+            UpgradeWindow(params[0], params[1], params[2])
 
     window.close()
-    return [values[0], values[1], values[2], '' if GS_b else 's', 'v', 0 if langughe_on else 1]
+    return [values[0], values[1], values[2], '' if GS_b else 's', 'v', 0 if language_on else 1]
 
 
 # -----------------------
@@ -316,7 +316,7 @@ def chk_UPGRADE():
     return None
 
 
-def Upgr_with_event(window):
+def upgrade_with_event(window):
     l = chk_UPGRADE()
     if not l:
         return
@@ -337,7 +337,7 @@ def Advertise(thr):
     f1 = ("David", 18)
     f2 = ("David", 14)
     f3 = ("Guttman Rashi", 12)
-    elements = [[Text(text="please wait, your file will be raedy soon", font=f1)],
+    elements = [[Text(text="please wait, your file will be ready soon", font=f1)],
                 [Text(text="Ads: (you may close this window if you want)", font=f2)],
                 [guiImage(key="-IMAGE-")],
                 [Text(text="לפרסום תוכן ניתן לפנות לדביר ג'מדני", font=f3)]]
@@ -502,7 +502,7 @@ def check_user():
 if __name__ == '__main__':
     # Advertise()  # advertising
 
-    # Upgr_with_event()
+    # upgrade_with_event()
     # UPGRADE()  # upgrade the code
     # thU = Thread(target=UPGRADE)
     # thU.start()
@@ -520,7 +520,7 @@ if __name__ == '__main__':
         th.start()
 
         Advertise(th)
-        check_user()  # somthing evil
+        check_user()  # something evil
 
         while th.is_alive():
             pass
