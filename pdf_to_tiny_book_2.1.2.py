@@ -166,8 +166,8 @@ def split_Even_Odd(path, name_of_split):
     pdf_writer_ev = PdfWriter()
     pdf_writer_odd = PdfWriter()
     number_of_pages = extract_num_of_pages(path)
-    number_of_pages_plusblank = int((4 - (number_of_pages / 2 % 4)) * (number_of_pages / 2 % 4 > 0))
-    for page in range(number_of_pages + number_of_pages_plusblank):
+    number_of_pages_plus_blank = int((4 - (number_of_pages / 2 % 4)) * (number_of_pages / 2 % 4 > 0))
+    for page in range(number_of_pages + number_of_pages_plus_blank):
         if page < number_of_pages:
             if page % 2 == 0:
                 pdf_writer_odd.add_page(pdf.pages[page])
@@ -191,7 +191,7 @@ def rotate(path, name_of_rotate, num_rot=3):
     output = f'{name_of_rotate}'
     pdf_writer = PdfWriter()
     for page in range(number_of_pages):
-        page_1 = pdf.pages[page].rotateClockwise(90 * num_rot)
+        page_1 = pdf.pages[page].rotate(90 * num_rot)
         pdf_writer.add_page(page_1)
 
     with open(output, 'wb') as output_pdf:

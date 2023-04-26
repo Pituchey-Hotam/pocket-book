@@ -14,7 +14,7 @@
 
 # from optparse import OptionParser
 # import re
-from PyPDF2 import PageObject, PdfWriter, PdfReader
+from PyPDF2 import PageObject, PdfWriter, PdfReader, Transformation
 
 
 def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=False):
@@ -22,7 +22,7 @@ def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=F
     pdfi = open(pdfIn, 'rb')
     pdfReader = PdfReader(pdfi)
     numPagesInFile = len(pdfReader.pages)
-    pageSize = pdfReader.pages[firstPage].mediaBox.upperRight
+    pageSize = pdfReader.pages[firstPage].mediabox.upper_right
     if debug: print("numPagesInFile: " + str(numPagesInFile))
 
     if lastPage <= 0:
@@ -126,9 +126,13 @@ def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=F
 
         if leftPage == True:
             combinedPage = PageObject.create_blank_page(width=xPrime, height=yPrime)
-            combinedPage.mergeScaledTranslatedPage(page, scale, xOffsetLeft, yOffsetLeft)
+            page_transformation = Transformation().scale(sx=scale, sy=scale).translate(tx=xOffsetLeft, ty=yOffsetLeft)
+            page.add_transformation(page_transformation)
+            combinedPage.merge_page(page)
         else:
-            combinedPage.mergeScaledTranslatedPage(page, scale, xOffset, yOffset)
+            page_transformation = Transformation().scale(sx=scale, sy=scale).translate(tx=xOffsetLeft, ty=yOffsetLeft)
+            page.add_transformation(page_transformation)
+            combinedPage.merge_page(page)
             writer.add_page(combinedPage)
 
         leftPage = not leftPage
