@@ -10,19 +10,19 @@
 # Depends on pyPDF2
 
 
-# I made some changes. dvir gimdani, 2022.
+# I made some changes. Dvir Gimdani, 2022.
 
 # from optparse import OptionParser
 # import re
-from PyPDF2 import PageObject, PdfFileWriter, PdfFileReader
+from PyPDF2 import PageObject, PdfWriter, PdfReader, Transformation
 
 
 def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=False):
     # Get numPagesInFile using PyPDF
     pdfi = open(pdfIn, 'rb')
-    pdfReader = PdfFileReader(pdfi)
-    numPagesInFile = pdfReader.getNumPages()
-    pageSize = pdfReader.getPage(firstPage).mediaBox.upperRight
+    pdfReader = PdfReader(pdfi)
+    numPagesInFile = len(pdfReader.pages)
+    pageSize = pdfReader.pages[firstPage].mediabox.upper_right
     if debug: print("numPagesInFile: " + str(numPagesInFile))
 
     if lastPage <= 0:
@@ -116,20 +116,24 @@ def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=F
     if debug: print('xOffsetLeft: ', xOffsetLeft)
     if debug: print('yOffsetLeft: ', yOffsetLeft)
 
-    writer = PdfFileWriter()
+    writer = PdfWriter()
     leftPage = True
     for pageNum in pagesInOrder:
         if pageNum > lastPage:
-            page = PageObject.createBlankPage(width=x, height=y)
+            page = PageObject.create_blank_page(width=x, height=y)
         else:
-            page = pdfReader.getPage(int(pageNum - 1))
+            page = pdfReader.pages[int(pageNum - 1)]
 
         if leftPage == True:
-            combinedPage = PageObject.createBlankPage(width=xPrime, height=yPrime)
-            combinedPage.mergeScaledTranslatedPage(page, scale, xOffsetLeft, yOffsetLeft)
+            combinedPage = PageObject.create_blank_page(width=xPrime, height=yPrime)
+            page_transformation = Transformation().scale(sx=scale, sy=scale).translate(tx=xOffsetLeft, ty=yOffsetLeft)
+            page.add_transformation(page_transformation)
+            combinedPage.merge_page(page)
         else:
-            combinedPage.mergeScaledTranslatedPage(page, scale, xOffset, yOffset)
-            writer.addPage(combinedPage)
+            page_transformation = Transformation().scale(sx=scale, sy=scale).translate(tx=xOffsetLeft, ty=yOffsetLeft)
+            page.add_transformation(page_transformation)
+            combinedPage.merge_page(page)
+            writer.add_page(combinedPage)
 
         leftPage = not leftPage
 
