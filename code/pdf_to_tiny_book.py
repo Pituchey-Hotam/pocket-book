@@ -1,3 +1,4 @@
+import io
 from os import mkdir
 from os.path import exists
 from shutil import rmtree
@@ -8,6 +9,8 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
 
 import pdfbooklet_new
+from reportlab.lib.pagesizes import *
+from reportlab.pdfgen import canvas
 from ui_settings import *
 
 # Version - important
@@ -36,7 +39,8 @@ def split(path, name_of_split, sp, length, bind_method='s'):
         if page < pdf.getNumPages():
             pdf_writer.addPage(pdf.getPage(page))
         else:
-            pdf_writer.addBlankPage()
+            # pdf_writer.addBlankPage()
+            addBP(pdf_writer, page)
     if not bind_method == 's':
         pdf_writer.insertBlankPage(0)
         pdf_writer.addBlankPage()
@@ -46,6 +50,23 @@ def split(path, name_of_split, sp, length, bind_method='s'):
     output_pdf.close()
 
 
+def addBP(pdfFileWriter, i):
+    packet = io.BytesIO()
+    can = canvas.Canvas(packet, pagesize=A4)
+    can.setFontSize(80)
+    can.drawString(270, 200, str(i))
+    can.save()
+    packet.seek(0)
+    # create a new PDF with Reportlab
+    new_pdf = PdfFileReader(packet)
+    # read your existing PDF
+    existing_pdf = PdfFileWriter()  # PdfFileReader(open("C:\\Users\\neria\\Desktop\\בדיקות\\ריק.pdf", "rb"))
+    existing_pdf.addBlankPage(A4[0], A4[1])
+    # add the "watermark" (which is the new pdf) on the existing page
+    existing_pdf.pages[0].merge_page(new_pdf.pages[0])
+    pdfFileWriter.addPage(existing_pdf.pages[0])
+
+
 def split_Even_Odd(path, name_of_split):
     pdf = PdfFileReader(path)
     output_ev = f'{name_of_split}_even.pdf'
@@ -53,7 +74,7 @@ def split_Even_Odd(path, name_of_split):
     pdf_writer_ev = PdfFileWriter()
     pdf_writer_odd = PdfFileWriter()
     number_of_pages = extract_num_of_pages(path)
-    number_of_pages_plusblank = 0 # int((4 - (number_of_pages / 2 % 4)) * (number_of_pages / 2 % 4 > 0))
+    number_of_pages_plusblank = 0  # int((4 - (number_of_pages / 2 % 4)) * (number_of_pages / 2 % 4 > 0))
     for page in range(number_of_pages + number_of_pages_plusblank):
         if page < number_of_pages:
             if page % 2 == 0:
@@ -136,7 +157,7 @@ def combineMethod(trash_file, num):
 
 def moreThan(trash_file, combine_method, eng, num=1):
     n = str(num)
-    pev = str(num-1)
+    pev = str(num - 1)
     if pev == '0':
         pev = ''
 
@@ -169,7 +190,7 @@ def making_the_pdf(inputs, eng=0):
         old_path = inp[:-len(file_name) - 1] + '/'
 
         dir_path = old_path + 'trash ' + file_name[:-4]
-        path = dir_path[:] + '\\'  # argv[2]+'\\'
+        path = dir_path[:] + '/'  # argv[2]+'\\'
         if not exists(path):
             mkdir(path)
 
@@ -201,8 +222,8 @@ def making_the_pdf(inputs, eng=0):
             split_Even_Odd(final_path, trash_file)
 
             counter = 1
-            while pages_per_sheet/(counter**2) > 1:
-                print(pages_per_sheet/(counter**2))
+            while pages_per_sheet / (counter ** 2) > 1:
+                print(pages_per_sheet / (counter ** 2))
                 print(counter)
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
                 counter += 1
@@ -217,12 +238,12 @@ def making_the_pdf(inputs, eng=0):
 #     main ♪♫♪
 # ~~~~~~~~~~~~~~~~~
 
-if __name__ == '__main__':
 
+def main(inputs):
     start = True
     while start:
-        inputs = UI()  # calling the UI
-        start=False
+        # inputs = UI()  # calling the UI
+        start = False
         th = Thread(target=making_the_pdf, args=[inputs, 1])
         th.start()
 
@@ -247,3 +268,7 @@ if __name__ == '__main__':
                 start = True
                 break
         window_end.close()
+
+
+if __name__ == '__main__':
+    main(UI())
