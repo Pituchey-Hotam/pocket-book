@@ -1,8 +1,9 @@
 import io
+import os
 from os import mkdir
 from os.path import exists
 from shutil import rmtree
-from math import ceil
+from math import ceil, log, sqrt
 from threading import Thread
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -49,7 +50,7 @@ def split(path, name_of_split, sp, length, bind_method='s'):
         pdf_writer.write(output_pdf)
     output_pdf.close()
 
-
+"""The function add blank page with number of page in notebook"""
 def addBP(pdfFileWriter, i):
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
@@ -60,7 +61,7 @@ def addBP(pdfFileWriter, i):
     # create a new PDF with Reportlab
     new_pdf = PdfFileReader(packet)
     # read your existing PDF
-    existing_pdf = PdfFileWriter()  # PdfFileReader(open("C:\\Users\\neria\\Desktop\\בדיקות\\ריק.pdf", "rb"))
+    existing_pdf = PdfFileWriter()
     existing_pdf.addBlankPage(A4[0], A4[1])
     # add the "watermark" (which is the new pdf) on the existing page
     existing_pdf.pages[0].merge_page(new_pdf.pages[0])
@@ -232,6 +233,56 @@ def making_the_pdf(inputs, eng=0):
             merge_sort_pdfs(odd_path, even_path, final_path)
 
         rmtree(dir_path, ignore_errors=False)
+    Add_dashed_cut_line(final_path, pages_per_sheet)  # todo: make optional
+
+
+def Add_dashed_cut_line(file, numP):
+    if '101' in file:
+        for i in range(100000):
+            r3=5
+    pdf = PdfFileReader(open(file, 'rb'))
+    output_pdf = PdfFileWriter()
+    for i in range(len(pdf.pages)):
+        packet = io.BytesIO()
+        if log(numP, 2) % 2 == 0:
+            can = canvas.Canvas(packet, pagesize=A4)
+            cut_line_width, cut_line_height = A4  # Full width of the page # Full height of the page
+        else:
+            can = canvas.Canvas(packet, pagesize=(A4[1], A4[0]))
+            cut_line_height, cut_line_width = A4  # Full width of the page # Full height of the page
+        cut_line_x = 0  # X position for the horizontal cut line
+        cut_line_y = 0  # Y position for the vertical cut line
+
+        can.setStrokeColorRGB(0, 0, 0)  # Black color for the cut lines
+        can.setDash(3, 3)  # Set dash pattern (3 units on, 3 units off)
+        can.setLineWidth(2)
+        if log(numP, 2) % 2 == 0:
+            for j in range(1, int(sqrt(numP))):
+                # Add horizontal cut line
+                can.line(cut_line_x, j * cut_line_height / int(sqrt(numP)), cut_line_x + cut_line_width,
+                         j * cut_line_height / int(sqrt(numP)))
+                if j % 2 == 0:
+                    # Add vertical cut line
+                    can.line(j * cut_line_width / int(sqrt(numP)), cut_line_y, j * cut_line_width / int(sqrt(numP)),
+                             cut_line_y + cut_line_height)
+        else:
+            y = int(sqrt(numP / 2))
+            x = y * 2
+            for j in range(1, y):
+                # Add horizontal cut line
+                can.line(cut_line_x, j * cut_line_height / y, cut_line_x + cut_line_width,
+                         j * cut_line_height / y)
+            for j in range(1, x):
+                if j % 2 == 0:
+                    can.line(j * cut_line_width / x, cut_line_y, j * cut_line_width / x,
+                             cut_line_y + cut_line_height)
+        can.save()
+        packet.seek(0)
+        new_pdf = PdfFileReader(packet)
+        pdf.pages[i].merge_page(new_pdf.pages[0])
+        output_pdf.addPage(pdf.pages[i])  # Add the modified page to the output
+    with open(file, "wb") as output:
+        output_pdf.write(output)
 
 
 # ~~~~~~~~~~~~~~~~~
