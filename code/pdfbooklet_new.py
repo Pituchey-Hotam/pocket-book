@@ -14,7 +14,8 @@
 
 # from optparse import OptionParser
 # import re
-from PyPDF2 import PageObject, PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileWriter, PdfFileReader
+from PyPDF2.pdf import PageObject
 
 
 def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=False):
