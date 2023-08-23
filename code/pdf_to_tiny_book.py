@@ -41,7 +41,8 @@ def split(path, name_of_split, sp, length, bind_method='s'):
             pdf_writer.addPage(pdf.getPage(page))
         else:
             # pdf_writer.addBlankPage()
-            addBP(pdf_writer, page)
+            addBP(pdf_writer,
+                  len(pdf.pages) / length if len(pdf.pages) % length == 0 else (len(pdf.pages) // length) + 1, page)
     if not bind_method == 's':
         pdf_writer.insertBlankPage(0)
         pdf_writer.addBlankPage()
@@ -50,12 +51,15 @@ def split(path, name_of_split, sp, length, bind_method='s'):
         pdf_writer.write(output_pdf)
     output_pdf.close()
 
-"""The function add blank page with number of page in notebook"""
-def addBP(pdfFileWriter, i):
+
+def addBP(pdfFileWriter, n, i):
+    """The function add blank page with number of page in notebook
+    :param i: number of page
+    """
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
-    can.setFontSize(80)
-    can.drawString(270, 200, str(i))
+    can.setFontSize(20)
+    can.drawString(A4[0] / 2, 20, str(n + i))
     can.save()
     packet.seek(0)
     # create a new PDF with Reportlab
@@ -182,7 +186,55 @@ def moreThan(trash_file, combine_method, eng, num=1):
     return odd_path, even_path
 
 
-def making_the_pdf(inputs, eng=0):
+"""
+def add_page_number(file_name):
+    tmp = open(file_name, 'rb')
+    pdfFileReader = PdfFileReader(tmp)
+    pdfFileWriter = PdfFileWriter()
+    for i in range(len(pdfFileReader.pages)):
+        packet = io.BytesIO()
+        can = canvas.Canvas(packet,
+                            pagesize=(pdfFileReader.pages[i].mediaBox.width, pdfFileReader.pages[i].mediaBox.height))
+        can.setFontSize(10)
+        can.drawString(pdfFileReader.pages[i].mediaBox.width / 2, 0, str(i + 1))
+        can.save()
+        packet.seek(0)
+        # create a new PDF with Reportlab
+        new_pdf = PdfFileReader(packet)
+        # read your existing PDF
+        existing_pdf = PdfFileWriter()
+        existing_pdf.addPage(pdfFileReader.pages[i])
+        # add the "watermark" (which is the new pdf) on the existing page
+        existing_pdf.pages[0].merge_page(new_pdf.pages[0])
+        pdfFileWriter.addPage(existing_pdf.pages[0])
+    tmp.close()
+    output = open(file_name + "2.pdf", "wb")
+    pdfFileWriter.write(output)"""
+
+
+def add_page_numbers(input_pdf, output_pdf):
+    pdf_reader = PdfFileReader(input_pdf)
+    pdf_writer = PdfFileWriter()
+
+    for page_number, page in enumerate(pdf_reader.pages, start=1):
+        packet = io.BytesIO()
+        c = canvas.Canvas(packet, pagesize=A4)
+        page_number_text = f"{page_number}"
+        c.drawString(page.mediaBox.width / 2, 5, page_number_text)
+        c.save()
+
+        packet.seek(0)
+        new_pdf = PdfFileReader(packet)
+        page.mergePage(new_pdf.pages[0])
+        pdf_writer.addPage(page)
+
+    with open(output_pdf, "wb") as output_file:
+        pdf_writer.write(output_file)
+
+
+def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
+    if pNumber:
+        add_page_numbers(inputs[0], inputs[0])
     inputs[0] = inputs[0].split(';')
     for inp in inputs[0]:
         inp = inp.replace('\\', '/')
@@ -233,14 +285,15 @@ def making_the_pdf(inputs, eng=0):
             merge_sort_pdfs(odd_path, even_path, final_path)
 
         rmtree(dir_path, ignore_errors=False)
-    Add_dashed_cut_line(final_path, pages_per_sheet)  # todo: make optional
+    if cutLines:
+        add_dashed_cut_line(final_path, pages_per_sheet)
 
 
-def Add_dashed_cut_line(file, numP):
+def add_dashed_cut_line(file, numP):
     if '101' in file:
         for i in range(100000):
-            r3=5
-    pdf = PdfFileReader(open(file, 'rb'))
+            r3 = 5
+    pdf = PdfFileReader(file)
     output_pdf = PdfFileWriter()
     for i in range(len(pdf.pages)):
         packet = io.BytesIO()
