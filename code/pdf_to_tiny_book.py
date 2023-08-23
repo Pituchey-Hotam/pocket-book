@@ -58,7 +58,7 @@ def addBP(pdfFileWriter, i):
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
     can.setFontSize(20)
-    can.drawString(A4[0] / 2, 20, str(i))
+    can.drawString(A4[0] / 2, 10, str(i))
     can.save()
     packet.seek(0)
     # create a new PDF with Reportlab
@@ -218,8 +218,9 @@ def add_page_numbers(input_pdf, output_pdf):
     for page_number, page in enumerate(pdf_reader.pages, start=1):
         packet = io.BytesIO()
         c = canvas.Canvas(packet, pagesize=A4)
+        c.setFontSize(20)
         page_number_text = f"{page_number}"
-        c.drawString(page.mediaBox.width / 2, 5, page_number_text)
+        c.drawString(page.mediaBox.width / 2, 10, page_number_text)
         c.save()
 
         packet.seek(0)
