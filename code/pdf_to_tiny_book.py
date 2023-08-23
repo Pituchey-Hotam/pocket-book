@@ -41,8 +41,7 @@ def split(path, name_of_split, sp, length, bind_method='s'):
             pdf_writer.addPage(pdf.getPage(page))
         else:
             # pdf_writer.addBlankPage()
-            addBP(pdf_writer,
-                  len(pdf.pages) / length if len(pdf.pages) % length == 0 else (len(pdf.pages) // length) + 1, page)
+            addBP(pdf_writer, page)
     if not bind_method == 's':
         pdf_writer.insertBlankPage(0)
         pdf_writer.addBlankPage()
@@ -52,14 +51,14 @@ def split(path, name_of_split, sp, length, bind_method='s'):
     output_pdf.close()
 
 
-def addBP(pdfFileWriter, n, i):
+def addBP(pdfFileWriter, i):
     """The function add blank page with number of page in notebook
     :param i: number of page
     """
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
     can.setFontSize(20)
-    can.drawString(A4[0] / 2, 20, str(n + i))
+    can.drawString(A4[0] / 2, 20, str(i))
     can.save()
     packet.seek(0)
     # create a new PDF with Reportlab
@@ -290,9 +289,6 @@ def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
 
 
 def add_dashed_cut_line(file, numP):
-    if '101' in file:
-        for i in range(100000):
-            r3 = 5
     pdf = PdfFileReader(file)
     output_pdf = PdfFileWriter()
     for i in range(len(pdf.pages)):

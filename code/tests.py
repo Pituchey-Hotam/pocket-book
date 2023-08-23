@@ -1,4 +1,5 @@
 import io
+import json
 import os
 from math import sqrt, log
 from unittest import TestCase
@@ -60,14 +61,8 @@ class Test(TestCase):
         # making_the_pdf(inputs8)
 
     def test_check(self):
-        output1 = '7\n233\n27\n11 18264\n17 12300\n2281\n29\n9\n215\n25\n13 16246\n15 14282\n19 10'
-        output2 = '0 15\n16\n334 11\n20\n2910 5\n282114 1\n32172 13\n18\n316 9\n22\n278 7\n24 2312 3\n3019'
-        output3 = '0 7\n18 2110 13\n32\n4412 11\n43386 1\n20 192 5\n24 3116 23\n394222 17\n41404 3\n30 258 15\n26 29\n6.06.014 9\n28 27'
-        output4 = '0 3\n20 2312 15\n32 3514 13\n34 332 1\n22 214 7\n24 2716 19\n36 3918 17\n38 376 5\n26 258 11\n28 31\n6.06.010 9\n30 29'
-        output5 = '0 31\n32 6330 1\n62 332 29\n34 6128 3\n60 354 27\n36 5926 5\n58 376 25\n38 5724 7\n56 398 23\n40 5522 9\n54 4110 21\n42 5320 11\n52 4312 19\n44 5118 13\n50 4514 17\n46 4916 15\n48 47'
-        output6 = '0 31\n64 9530 1\n94 652 29\n66 9328 3\n92 674 27\n68 9126 5\n90 696 25\n70 8924 7\n88 718 23\n72 8722 9\n86 7310 21\n74 8520 11\n84 7512 19\n76 8318 13\n82 7714 17\n78 8116 15\n80 7932 63\n96\n13162 33\n1309734 61\n98\n12960 35\n1289936 59\n100\n12758 37\n12610538 57\n10612556 39\n12410740 55\n10812354 41\n12210942 53\n11012152 43\n12011144 51\n11211950 45\n11811346 49\n11411748 47\n116115'
-        output7 = '13196\n63 3295 64\n31 065 94\n1 3097\n130\n33 6212998\n61 3493 66\n29 267 92\n3 2899\n128\n35 60127100\n59 3691 68\n27 469 90\n5 26101\n126\n37 58125106\n57 3889 70\n25 671 88\n7 24107124\n39 56123108\n55 4087 72\n23 873 86\n9 22109122\n41 54121110\n53 4285 74\n21 1075 84\n11 20111120\n43 52119112\n51 4483 76\n19 1277 82\n13 18113118\n45 50117114\n49 4681 78\n17 1479 80\n15 16115116\n47 48'
-        outputs = {20: output1, 25: output2, 33: output3, 40: output4, 64: output5, 101: output6, 102: output7}
+        file = open('test.json', 'r')
+        outputs = json.load(file)
         for a in os.listdir(self.dirT):
             text = ''
             if a.endswith('pages ready to print.pdf'):
@@ -75,12 +70,14 @@ class Test(TestCase):
                 for i in range(len(existing_pdf.pages)):
                     page = existing_pdf.pages[i]
                     text += page.extract_text()
-                # text = text.replace('\n', '\\n')
-                # print(text)
-                self.failUnlessEqual(outputs[int(a[:len('pages ready to print.pdf') * -1])], text,
+                self.failUnlessEqual(outputs[a[:len('pages ready to print.pdf') * -1]], text,
                                      'output ' + a[:len('pages ready to print.pdf') * -1] + ' fail')
 
+
+"""
     def testPrintOutputs(self):
+        file = open('test.json', 'w')
+        set1 = {}
         for a in os.listdir(self.dirT):
             text = ''
             if a.endswith('pages ready to print.pdf'):
@@ -88,5 +85,7 @@ class Test(TestCase):
                 for i in range(len(existing_pdf.pages)):
                     page = existing_pdf.pages[i]
                     text += page.extract_text()
-                text = text.replace('\n', '\\n')
+                #text = text.replace('\n', '\\n')
                 print(text + '\n' + a[:len('pages ready to print.pdf') * -1] + '\n')
+                set1.update({a[:len('pages ready to print.pdf') * -1]: text})
+        file.write(json.dumps(set1))"""
