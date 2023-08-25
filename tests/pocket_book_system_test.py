@@ -5,8 +5,8 @@ import pytest
 from tempfile import mkdtemp
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
-from src.pdf_to_tiny_book import making_the_pdf, PageSize
-from reportlab.lib.pagesizes import *
+from src.pocket_book import making_the_pdf, PageSize
+from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 test_dir = mkdtemp()
@@ -35,7 +35,7 @@ def create_test_pdf(pages_num):
 
     return test_file_path
 
-@pytest.mark.parametrize("pages_num, notebook_len, page_size, bind_method, combine_method, language", [   
+@pytest.mark.parametrize("pages_num, notebook_len, page_size, bind_method, combine_method, language", [
     (20, 32, PageSize.A7.value, '', 'v',0), # זוגי פחות מגודל חוברת
     (25, 16, PageSize.A7.value, 's', 'v', 0),  # אי זוגי פחות מגודל חוברת
     (33, 8, PageSize.A7.value, 's', 'v', 0),  # אי זוגי גדול מגודל חוברת
@@ -43,7 +43,6 @@ def create_test_pdf(pages_num):
     (64, 32, PageSize.A6.value, 's', 'v', 0),  # זוגי שתי חוברות בדיוק
     (101, 32, PageSize.A6.value, 's', 'v', 0),  # אי זוגי יותר משתי חוברות
     (102, 32, PageSize.A7.value, 's', 'v', 1),  # באנגלית
-    # ['C:\\Users\\neria\\Desktop\\ללמוד לחזות התנהגות עתידית באמצעות רשתות חברתיות 1.pdf', 32, 8, 's', 'v', 0],  # באנגלית
 ])
 def test_pocketing_book(pages_num, notebook_len, page_size, bind_method, combine_method, language):
     test_pdf_path = create_test_pdf(pages_num)

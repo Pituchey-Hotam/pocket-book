@@ -49,7 +49,6 @@ def split(path, name_of_split, sp, length, bind_method='s'):
         if page < pdf.getNumPages():
             pdf_writer.addPage(pdf.getPage(page))
         else:
-            # pdf_writer.addBlankPage()
             addBP(pdf_writer, page)
     if not bind_method == 's':
         pdf_writer.insertBlankPage(0)
@@ -352,7 +351,6 @@ def add_dashed_cut_line(file, numP):
 def main(inputs):
     start = True
     while start:
-        # inputs = UI()  # calling the UI
         start = False
         th = Thread(target=making_the_pdf, args=[inputs, 1])
         th.start()
