@@ -9,10 +9,10 @@ from threading import Thread
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
 
-import pdfbooklet_new
+import src.pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-from ui_settings import *
+from src.ui_settings import *
 
 # Version - important
 currentVersion = "2.1.2"
@@ -276,8 +276,8 @@ def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
 
             counter = 1
             while pages_per_sheet / (counter ** 2) > 1:
-                print(pages_per_sheet / (counter ** 2))
-                print(counter)
+                # print(pages_per_sheet / (counter ** 2))
+                # print(counter)
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
                 counter += 1
 
