@@ -5,6 +5,7 @@ from os.path import exists
 from shutil import rmtree
 from math import ceil, log, sqrt
 from threading import Thread
+from enum import Enum
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
@@ -14,9 +15,17 @@ from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
 from src.ui_settings import *
 
-# Version - important
-currentVersion = "2.1.2"
 
+class PageSize(Enum):
+    """
+    An enum class for page size representation.
+    The value of the page size is how many pages in this size
+    fit in an A4 page.
+    """
+
+    A5 = 2
+    A6 = 4
+    A7 = 8
 
 # -----------------------
 #     pdf manipulation
