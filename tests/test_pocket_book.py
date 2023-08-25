@@ -1,6 +1,7 @@
 import io
 import os
 import json
+import pytest
 from tempfile import mkdtemp
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -33,47 +34,48 @@ def test_create_preprocessed_files():
             existing_pdf.write(output_pdf)
         output_pdf.close()
 
-def test_pocketing_book():
-    r2 = 'pages.pdf'
+files_suffix = 'pages.pdf'
+
+@pytest.mark.parametrize("inputs", [   
     # משתנה שני(4, 8, 12, 16, 20, 24, 28, 32)
     # משתנה שלישי(2, 4, 8, 16)
     # משתנה רביעי('', 's')
-    inputs1 = [os.path.join(test_dir, f"20{r2}"), 32, 8, '', 'v', 0]  # זוגי פחות מגודל חוברת
-    inputs2 = [os.path.join(test_dir, f"25{r2}"), 16, 8, 's', 'v', 0]  # אי זוגי פחות מגודל חוברת
-    inputs3 = [os.path.join(test_dir, f"33{r2}"), 8, 8, 's', 'v', 0]  # אי זוגי גדול מגודל חוברת
-    inputs4 = [os.path.join(test_dir, f"40{r2}"), 4, 8, 's', 'v', 0]  # זוגי גדול מגודל חוברת
-    inputs5 = [os.path.join(test_dir, f"64{r2}"), 32, 4, 's', 'v', 0]  # זוגי שתי חוברות בדיוק
-    inputs6 = [os.path.join(test_dir, f"101{r2}"), 32, 4, 's', 'v', 0]  # אי זוגי יותר משתי חוברות
-    inputs7 = [os.path.join(test_dir, f"102{r2}"), 32, 8, 's', 'v', 1]  # באנגלית
-    # inputs8 = ['C:\\Users\\neria\\Desktop\\ללמוד לחזות התנהגות עתידית באמצעות רשתות חברתיות 1.pdf', 32, 8, 's', 'v', 0]  # באנגלית
-
-    making_the_pdf(inputs1)
-    making_the_pdf(inputs2)
-    making_the_pdf(inputs3)
-    making_the_pdf(inputs4)
-    making_the_pdf(inputs5)
-    making_the_pdf(inputs6)
-    making_the_pdf(inputs7)
-    # making_the_pdf(inputs8)
+    [os.path.join(test_dir, f"20{files_suffix}"), 32, 8, '', 'v', 0] , # זוגי פחות מגודל חוברת
+    [os.path.join(test_dir, f"25{files_suffix}"), 16, 8, 's', 'v', 0],  # אי זוגי פחות מגודל חוברת
+    [os.path.join(test_dir, f"33{files_suffix}"), 8, 8, 's', 'v', 0],  # אי זוגי גדול מגודל חוברת
+    [os.path.join(test_dir, f"40{files_suffix}"), 4, 8, 's', 'v', 0],  # זוגי גדול מגודל חוברת
+    [os.path.join(test_dir, f"64{files_suffix}"), 32, 4, 's', 'v', 0],  # זוגי שתי חוברות בדיוק
+    [os.path.join(test_dir, f"101{files_suffix}"), 32, 4, 's', 'v', 0],  # אי זוגי יותר משתי חוברות
+    [os.path.join(test_dir, f"102{files_suffix}"), 32, 8, 's', 'v', 1],  # באנגלית
+    # ['C:\\Users\\neria\\Desktop\\ללמוד לחזות התנהגות עתידית באמצעות רשתות חברתיות 1.pdf', 32, 8, 's', 'v', 0],  # באנגלית
+])
+def test_pocketing_book(inputs):
+    making_the_pdf(inputs)
 
 def test_pocketing_correctness():
-    file = open(os.path.join("tests", "test.json"), 'r')
-    outputs = json.load(file)
-    for a in os.listdir(test_dir):
+    with open(os.path.join("tests", "test.json"), 'r') as f:
+        outputs = json.load(f)
+
+    pdfs = os.listdir(test_dir)
+    assert len(pdfs) == 14, f"Got wrong number of pdfs, not testing all of them. len(pdf)={len(pdfs)}"
+
+    suffix_len = len('pages ready to print.pdf')
+
+    for pdf in pdfs:
         text = ''
-        if a.endswith('pages ready to print.pdf'):
-            existing_pdf = PdfFileReader(open(test_dir + '\\' + a, "rb"))
+        if pdf.endswith('pages ready to print.pdf'):
+            existing_pdf = PdfFileReader(open(os.path.join(test_dir, pdf), "rb"))
+
             for i in range(len(existing_pdf.pages)):
                 page = existing_pdf.pages[i]
                 text += page.extract_text()
 
-            assert outputs[a[:len('pages ready to print.pdf') * -1]] == text, 'output ' + a[:len('pages ready to print.pdf') * -1] + ' fail'
+            assert outputs[pdf[:-suffix_len]] == text, f"output {pdf[:-suffix_len]} fail"
 
 
-"""
-def test_print_outputs():
-    'prints the outputs to see by eyes' 
-    file = open('test.json', 'w')
+
+def print_outputs():
+    """prints the outputs to see by eyes"""
     set1 = {}
     for a in os.listdir(test_dir):
         text = ''
@@ -85,4 +87,6 @@ def test_print_outputs():
             #text = text.replace('\n', '\\n')
             print(text + '\n' + a[:len('pages ready to print.pdf') * -1] + '\n')
             set1.update({a[:len('pages ready to print.pdf') * -1]: text})
-    file.write(json.dumps(set1))"""
+
+    with open('test.json', 'w') as f:
+        f.write(json.dumps(set1))
