@@ -1,6 +1,6 @@
 from pdfbooklet_new import *
 from ui_settings import *
-from pdf_to_tiny_book_2_1_2 import *
+from pocket_book import *
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, send_file
 
