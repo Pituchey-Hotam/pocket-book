@@ -10,10 +10,10 @@ from enum import Enum
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
 
-import src.pdfbooklet_new as pdfbooklet_new
+import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-from src.ui_settings import *
+from ui_settings import *
 
 
 class PageSize(Enum):
