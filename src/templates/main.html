@@ -6,41 +6,45 @@
 </head>
 <body>
     <p>En|He</p>
-    <h1>booklet project!</h1>
+    <h1 style="margin-left: 5%;">{{form_text.page_header}}</h1>
 
 
     <form action = "/download" method = "post" enctype="multipart/form-data" target="_blank">
 
-        <label for="pages">Enter number of pages in each booklet (In multiples of 4. the standart is 32):</label><br>
+        <h2>{{form_text.choose_flie_header}}</h2>
+        <input type="file" name="file" />
+        <br>
+
+        <h2>{{form_text.language_header}}</h2>
+        {% for book_language in form_data.book_languages %}
+        <input type="radio" id="{{book_language}}" name="book_lang" value="{{book_language}}">
+        <label for="{{book_language}}">{{book_language}}</label><br>
+        {% endfor%}
+        <br>
+
+        <h2>booklet parameters</h2>
+        <label for="pages">{{form_text.inst_pages}}</label><br>
         <input type="text" id="pages" name="pages"><br>
 
-        <label for="pages_per_sheet">Enter pages per sheet (2/4/8/16):</label><br>
+        <label for="pages_per_sheet">{{form_text.inst_per_pages}}</label><br>
         <input type="text" id="pages_per_sheet" name="pages_per_sheet"><br>
 
-        <p>pdf_merge_type</p>
+        <h2>{{form_text.inst_merge}}</h2>
         {% for merge_type in form_data.merge_types %}
         <input type="radio" id="{{merge_type}}" name="pdf_merge_type" value="{{merge_type}}">
         <label for="{{merge_type}}">{{merge_type}}</label><br>
         {% endfor%}
 
-        <p>page type</p>
+        <h2>page type</h2>
         {% for page_type in form_data.page_types %}
         <input type="radio" id="{{page_type}}" name="page_size" value="{{page_type}}">
         <label for="{{page_type}}">{{page_type}}</label><br>
         {% endfor%}
 
-        <p>book language</p>
-        {% for book_language in form_data.book_languages %}
-        <input type="radio" id="{{book_language}}" name="book_lang" value="{{book_language}}">
-        <label for="{{book_language}}">{{book_language}}</label><br>
-        {% endfor%}
-
-        <p>upload file</p>
-        <input type="file" name="file" />
-        <br>
+        
+        <br><br>
         <input type = "submit" value="Upload">
     </form>
-    <p>create another pdf:</p>
 
 </body>
 </html>
