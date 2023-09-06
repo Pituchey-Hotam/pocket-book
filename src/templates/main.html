@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{form_text.language_format[0]}}" dir="{{form_text.language_format[1]}}">
 <head>
     <meta charset="UTF-8">
     <title>{{Title}}</title>
 </head>
 <body>
-    <p>En|He</p>
-    <h1 style="margin-left: 5%;">{{form_text.page_header}}</h1>
+    <p><a href="{{ url_for('main_site_page', language='en') }}">English</a> | <a href="{{ url_for('main_site_page', language='he') }}">עברית</a></p>
+    <h1 style="margin-left: 5%;margin-right: 5%;">{{form_text.page_header}}</h1>
 
 
     <form action = "/download" method = "post" enctype="multipart/form-data" target="_blank">
@@ -15,35 +15,43 @@
         <input type="file" name="file" />
         <br>
 
-        <h2>{{form_text.language_header}}</h2>
-        {% for book_language in form_data.book_languages %}
-        <input type="radio" id="{{book_language}}" name="book_lang" value="{{book_language}}">
-        <label for="{{book_language}}">{{book_language}}</label><br>
-        {% endfor%}
-        <br>
-
-        <h2>booklet parameters</h2>
-        <label for="pages">{{form_text.inst_pages}}</label><br>
-        <input type="text" id="pages" name="pages"><br>
-
-        <label for="pages_per_sheet">{{form_text.inst_per_pages}}</label><br>
-        <input type="text" id="pages_per_sheet" name="pages_per_sheet"><br>
-
-        <h2>{{form_text.inst_merge}}</h2>
-        {% for merge_type in form_data.merge_types %}
-        <input type="radio" id="{{merge_type}}" name="pdf_merge_type" value="{{merge_type}}">
-        <label for="{{merge_type}}">{{merge_type}}</label><br>
-        {% endfor%}
-
-        <h2>page type</h2>
-        {% for page_type in form_data.page_types %}
-        <input type="radio" id="{{page_type}}" name="page_size" value="{{page_type}}">
-        <label for="{{page_type}}">{{page_type}}</label><br>
-        {% endfor%}
-
+        <span id="lang" style="margin: 0% 2% 4% 2%; display: inline-block;">
+            <h2>{{form_text.language_header}}</h2>
+            {% for book_language in form_data.book_languages %}
+            <input type="radio" id="{{book_language}}" name="book_lang" value="{{book_language}}">
+            <label for="{{book_language}}">{{book_language}}</label><br>
+            {% endfor%}
+            <br>
+        </span>
         
-        <br><br>
-        <input type = "submit" value="Upload">
+        <span id="booklet_numbers" style="margin: 2% 2% 0% 2%; display: inline-block;">
+            <h2>{{form_text.booklet_parameters}}</h2>
+            <label for="pages">{{form_text.inst_pages}}</label><br>
+            <input type="text" id="pages" name="pages"><br>
+
+            <label for="pages_per_sheet">{{form_text.inst_per_pages}}</label><br>
+            <input type="text" id="pages_per_sheet" name="pages_per_sheet"><br>
+        </span>
+        <br>
+        <span id="merge" style="margin: 2%; display: inline-block;">
+            <h2>{{form_text.inst_merge.split('?')[0]+'?'}}</h2>
+            <h4>{{form_text.inst_merge.split('?')[1]}}</h4>
+            {% for merge_type in form_data.merge_types %}
+            <input type="radio" id="{{merge_type}}" name="pdf_merge_type" value="{{merge_type}}">
+            <label for="{{merge_type}}">{{merge_type}}</label><br>
+            {% endfor%}
+        </span>
+
+        <span id="page" style="margin: 2%; display: inline-block;">
+            <h2>{{form_text.page_type_title}}</h2>
+            {% for page_type in form_data.page_types %}
+            <input type="radio" id="{{page_type}}" name="page_size" value="{{page_type}}">
+            <label for="{{page_type}}">{{page_type}}</label><br>
+            {% endfor%}
+        </span>
+
+        <br>
+        <input type = "submit" value="{{form_text.submit_text}}" style="float: right;margin-right: 50%;">
     </form>
 
 </body>

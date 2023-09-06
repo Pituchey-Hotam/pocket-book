@@ -1,45 +1,8 @@
 from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
 
-# Version - important
-currentVersion = "2.1.2"
-
 # --------------
 #     ♥ UI ♥
 # ---------------
-
-ENGLISH_T = [
-    "Choose a file: ",
-    "Enter number of pages in each booklet (In multiples of 4. the standard is 32): ",
-    "Enter pages per sheet (2/4/8/16): ",
-    "Sewing or gluing? In the gluing there is an extra blank page on each side.",
-    "only one notebook?",
-    "DG & MM mini books maker " + currentVersion,
-    "gluing",
-    "Sewing",
-    "Yes",
-    "No",
-    "Hebrew",
-    "English",
-    "Book language?",
-    "Do it"
-]
-
-HEBREW_T = [
-    "בחר קובץ",
-    "הכנס את מספר העמודים בכל מחברת (בכפולות של 4, הסטנדרט הוא 32)",
-    "הכנס מספר עמודים לעמוד (2/4/8/16)",
-    "מודבק או תפור? בגרסא המודבקת יש תוספת של עמוד ריק בכל מחברת",
-    "האם כבודו מדפיס רק מחברת אחת?",
-    "יוצר הספרונים של דביר ומלאכי" + currentVersion,
-    "מודבק",
-    "תפור",
-    "כן",
-    "לא",
-    "עברית",
-    "אנגלית",
-    "באיזו שפה הספר?",
-    "יאללה לעבודה"
-]
 
 
 # this function get folder and check if it including pictures file (and return the names of the pictures and how much

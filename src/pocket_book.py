@@ -1,5 +1,5 @@
 import io
-import os
+# import os
 from os import mkdir
 from os.path import exists
 from shutil import rmtree
@@ -14,6 +14,7 @@ import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
 from ui_settings import *
+from webUI import *
 
 
 class PageSize(Enum):
@@ -191,32 +192,6 @@ def moreThan(trash_file, combine_method, eng, num=1):
     pdfbooklet_new.pdfbooklet(trash_file + '_even_rotated' + n + '.pdf', even_path, booklet=0, eng=eng)
 
     return odd_path, even_path
-
-
-"""
-def add_page_number(file_name):
-    tmp = open(file_name, 'rb')
-    pdfFileReader = PdfFileReader(tmp)
-    pdfFileWriter = PdfFileWriter()
-    for i in range(len(pdfFileReader.pages)):
-        packet = io.BytesIO()
-        can = canvas.Canvas(packet,
-                            pagesize=(pdfFileReader.pages[i].mediaBox.width, pdfFileReader.pages[i].mediaBox.height))
-        can.setFontSize(10)
-        can.drawString(pdfFileReader.pages[i].mediaBox.width / 2, 0, str(i + 1))
-        can.save()
-        packet.seek(0)
-        # create a new PDF with Reportlab
-        new_pdf = PdfFileReader(packet)
-        # read your existing PDF
-        existing_pdf = PdfFileWriter()
-        existing_pdf.addPage(pdfFileReader.pages[i])
-        # add the "watermark" (which is the new pdf) on the existing page
-        existing_pdf.pages[0].merge_page(new_pdf.pages[0])
-        pdfFileWriter.addPage(existing_pdf.pages[0])
-    tmp.close()
-    output = open(file_name + "2.pdf", "wb")
-    pdfFileWriter.write(output)"""
 
 
 def add_page_numbers(input_pdf, output_pdf):

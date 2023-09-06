@@ -1,6 +1,6 @@
 from pdfbooklet_new import *
-from ui_settings import *
-from pocket_book import *
+# from ui_settings import *
+# from pocket_book import *
 import os
 from io import BytesIO
 from pocket_book import making_the_pdf
@@ -13,6 +13,9 @@ class PdfFormQuestions:
         self.merge_types = merge_types
         self.book_languages = book_languages
 
+# Version - important
+currentVersion = "2.1.2"
+
 ENGLISH_TEXT =  [
     "booklet project",
     "Choose a file: ",
@@ -23,6 +26,8 @@ ENGLISH_TEXT =  [
     "DG & MM mini books maker " + currentVersion,
     "gluing",
     "Sewing",
+    "page type",
+    "create booklet",
     "Yes",
     "No",
     "Hebrew",
@@ -41,6 +46,8 @@ HEBREW_TEXT = [
     "יוצר הספרונים של דביר ומלאכי" + currentVersion,
     "מודבק",
     "תפור",
+    "סוג עמוד",
+    "צור ספר כיס",
     "כן",
     "לא",
     "עברית",
@@ -54,17 +61,22 @@ class PdfFormText:
     def __init__(self, language):
         if language == 'english':
             text = ENGLISH_TEXT
+            self.language_format = ['en', 'ltr']
+            self.booklet_parameters = 'booklet parameters'
         else:
             text = HEBREW_TEXT
+            self.language_format = ['he', 'rtl']
+            self.booklet_parameters = 'נתוני ספר כיס'
         self.page_header = text[0]
         self.choose_flie_header = text[1]
         self.language_header = text[-2]
         self.inst_pages = text[2]
         self.inst_per_pages = text[3]
         self.inst_merge = text[4]
-
-        
-       
+        self.merge_types = [text[7], text[8]]
+        self.page_type_title = text[9]
+        self.submit_text = text[10]
+    
 
 
 def find_new_pdf(original_name):
@@ -84,25 +96,29 @@ def delete_files(original_name):
 def WEB_UI():
     app = Flask(__name__)
 
-
     @app.route("/", methods=['GET', 'POST'])
-    def main_site_page():
+    def main_url():
+        return redirect("/he/")
+    
+    @app.route("/<string:language>/", methods=['GET', 'POST'])
+    def main_site_page(language):
         pages_type = ['A4', 'A5', 'A6', 'A7']
-        merge_types = ['gluing', 'sewing']
         book_languages = ['עברית', 'English']
+        if language=='he':
+            form_text = PdfFormText('hebrew')
+        else:
+            form_text = PdfFormText('english')
+        merge_types = form_text.merge_types
         form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
-        form_text = PdfFormText('hebrew')
         return render_template("main.html", Title="sifrei_kis", form_data=form_data, form_text=form_text)
 
 
-    @app.route('/download', methods=['GET', 'POST'])  # download
+    @app.route('/download', methods=['GET', 'POST'])  # download only page doesn't really open any window
     def download():
         user_files = str(os.getcwd()) + '\\src\\user_files\\'
         if request.method == 'POST':
-            # get pdf file
             pdf_file = request.files['file']
             pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
-            # get number of pages
             try:
                 number_of_pages_booklet = int(request.form['pages'])
             except:
@@ -111,11 +127,10 @@ def WEB_UI():
                 number_of_pages_sheet = int(request.form['pages_per_sheet'])
             except:
                 print('error in number of pages per sheet')
-            # get merge type
             merge_type = request.form['pdf_merge_type']
-            # get page type
             page_type = request.form['page_size']
             language = request.form['book_lang']
+
             if merge_type == 'gluing':
                 GS_b = True
             else:
@@ -127,15 +142,14 @@ def WEB_UI():
                 language_on = False
             # create the new pdf
             # inputs = [values[0], values[1], values[2], '' if GS_b else 's', 'v', 0 if language_on else 1]
-            inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet, '' if GS_b else 's', 'v', 0 if language_on else 1]
+            inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
+                       '' if GS_b else 's', 'v', 0 if language_on else 1]
             making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True)
             
             fileName = find_new_pdf(pdf_file.filename)
             with open(user_files + fileName, "rb") as fh:
                 buf = BytesIO(fh.read())
-            #delete all files...  assuming no other pdf with the same name
-            delete_files(pdf_file.filename)
-            # pdf_file.filename.split('.')[0] + ' ready to print.' +  pdf_file.filename.split('.')[1]
+            delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
         return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
 
 
