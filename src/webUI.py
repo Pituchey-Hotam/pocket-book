@@ -152,8 +152,9 @@ def WEB_UI():
             delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
         return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
 
-
-    app.run(host="127.0.0.1", port=8000, debug=True)
+    # 192.168.154.195  port=5000, debug=True
+    app.run(host="192.168.154.195", port=8000, debug=True)
+    # app.run(host="127.0.0.1", port=8000, debug=True)
 
 
 if __name__ == '__main__':
