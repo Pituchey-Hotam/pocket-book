@@ -12,8 +12,6 @@
 
 # I made some changes. dvir gimdani, 2022.
 
-# from optparse import OptionParser
-# import re
 from PyPDF2 import PageObject, PdfFileWriter, PdfFileReader
 
 

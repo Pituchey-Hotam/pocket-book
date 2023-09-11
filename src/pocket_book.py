@@ -13,7 +13,7 @@ from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Wind
 import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-# from ui_settings import *
+from webUI import *
 
 
 class PageSize(Enum):
@@ -22,7 +22,6 @@ class PageSize(Enum):
     The value of the page size is how many pages in this size
     fit in an A4 page.
     """
-
     A5 = 2
     A6 = 4
     A7 = 8
@@ -193,32 +192,6 @@ def moreThan(trash_file, combine_method, eng, num=1):
     return odd_path, even_path
 
 
-"""
-def add_page_number(file_name):
-    tmp = open(file_name, 'rb')
-    pdfFileReader = PdfFileReader(tmp)
-    pdfFileWriter = PdfFileWriter()
-    for i in range(len(pdfFileReader.pages)):
-        packet = io.BytesIO()
-        can = canvas.Canvas(packet,
-                            pagesize=(pdfFileReader.pages[i].mediaBox.width, pdfFileReader.pages[i].mediaBox.height))
-        can.setFontSize(10)
-        can.drawString(pdfFileReader.pages[i].mediaBox.width / 2, 0, str(i + 1))
-        can.save()
-        packet.seek(0)
-        # create a new PDF with Reportlab
-        new_pdf = PdfFileReader(packet)
-        # read your existing PDF
-        existing_pdf = PdfFileWriter()
-        existing_pdf.addPage(pdfFileReader.pages[i])
-        # add the "watermark" (which is the new pdf) on the existing page
-        existing_pdf.pages[0].merge_page(new_pdf.pages[0])
-        pdfFileWriter.addPage(existing_pdf.pages[0])
-    tmp.close()
-    output = open(file_name + "2.pdf", "wb")
-    pdfFileWriter.write(output)"""
-
-
 def add_page_numbers(input_pdf, output_pdf):
     pdf_reader = PdfFileReader(input_pdf)
     pdf_writer = PdfFileWriter()
@@ -348,35 +321,9 @@ def add_dashed_cut_line(file, numP):
 # ~~~~~~~~~~~~~~~~~
 
 
-def main(inputs):
-    start = True
-    while start:
-        start = False
-        th = Thread(target=making_the_pdf, args=[inputs, 1])
-        th.start()
-
-        win_wait_layout = [[Text(text="please wait, this may take a few minutes")]]
-        window_wait = Window("thank U", win_wait_layout, size=(300, 50))
-
-        while th.is_alive():
-            window_wait.read(timeout=1)
-            pass
-        window_wait.close()
-
-        win_end_layout = [[Text(text="your file is ready")],
-                          [Text(text="have a nice day")],
-                          [Button(button_text="Home page", key='-again-')]]
-        window_end = Window("thank U", win_end_layout, size=(200, 100))
-
-        while True:
-            event, values = window_end.read()
-            if event == WIN_CLOSED:
-                break
-            if event == '-again-':
-                start = True
-                break
-        window_end.close()
+def main():
+    WEB_UI()
 
 
 if __name__ == '__main__':
-    main(UI())
+    main()

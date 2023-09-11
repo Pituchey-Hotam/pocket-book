@@ -1,6 +1,4 @@
-from pdfbooklet_new import *
-# from ui_settings import *
-# from pocket_book import *
+# from pdfbooklet_new import *
 import os
 from io import BytesIO
 from pocket_book import making_the_pdf
@@ -13,8 +11,6 @@ class PdfFormQuestions:
         self.merge_types = merge_types
         self.book_languages = book_languages
 
-# Version - important
-currentVersion = "2.1.2"
 
 ENGLISH_TEXT =  [
     "booklet project",
@@ -28,7 +24,10 @@ ENGLISH_TEXT =  [
     "create booklet",
     "Hebrew",
     "English",
-    "Book language?"
+    "Book language?",
+    "booklet options",
+    "add cut lines?",
+    "add page numbering?"
 ]
 
 HEBREW_TEXT = [
@@ -43,7 +42,10 @@ HEBREW_TEXT = [
     "צור ספר כיס",
     "עברית",
     "אנגלית",
-    "באיזו שפה הספר?"
+    "באיזו שפה הספר?",
+    "אופציות הדפסה נוספות",
+    "האם להוסיף קווי חיתוך?",
+    "האם להוסיף מספרי עמודים?"
 ]
 
 
@@ -65,6 +67,10 @@ class PdfFormText:
         self.submit_text = text[8]
         self.languges = [text[9], text[10]]
         self.language_header = text[11]
+        self.booklet_options = text[12]
+        self.cut_lines = text[13]
+        self.page_numbering = text[14]
+
     
 
 
@@ -110,15 +116,28 @@ def WEB_UI():
             pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
             try:
                 number_of_pages_booklet = int(request.form['pages'])
-            except:
-                print('error in number of pages')
-            try:
                 number_of_pages_sheet = int(request.form['pages_per_sheet'])
             except:
-                print('error in number of pages per sheet')
+                print('error in number of pages or in number of pages per sheet')
+            
             merge_type = request.form['pdf_merge_type']
-            page_type = request.form['page_size']
             language = request.form['book_lang']
+            # future data for usage...
+            page_type = request.form['page_size']
+            cut_lines = request.form.get('cut_lines')
+            if cut_lines == 'cut_lines':
+                cut_lines_bool = True
+            else:
+                cut_lines_bool = False
+            
+            page_numbering = request.form.get('page_numbering')
+            if page_numbering == 'page_numbering':
+                page_numbering_bool = True
+            else:
+                page_numbering_bool = False
+
+
+            
 
             if merge_type == 'gluing':
                 GS_b = True
@@ -141,7 +160,6 @@ def WEB_UI():
             delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
         return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
 
-    # 192.168.154.195  port=5000, debug=True
     # app.run(host="192.168.154.195", port=8000, debug=True)
     app.run(host="127.0.0.1", port=8000, debug=True)
 

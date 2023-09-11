@@ -49,7 +49,15 @@
             <label for="{{page_type}}">{{page_type}}</label><br>
             {% endfor%}
         </span>
+        <span style="margin: 2%; display: inline-block;">
+            <h2>{{form_text.booklet_options}}</h2>
 
+            <input type="checkbox" id="cut_lines" name="cut_lines" value="cut_lines">
+            <label for="cut_lines">{{form_text.cut_lines}}</label><br>
+
+            <input type="checkbox" id="page_numbering" name="page_numbering" value="page_numbering">
+            <label for="page_numbering">{{form_text.page_numbering}}</label><br>
+        </span>
         <br>
         <input type = "submit" value="{{form_text.submit_text}}" style="float: right;margin-right: 50%;">
     </form>
