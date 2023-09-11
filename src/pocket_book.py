@@ -1,5 +1,4 @@
 import io
-import os
 from os import mkdir
 from os.path import exists
 from shutil import rmtree
@@ -8,7 +7,6 @@ from threading import Thread
 from enum import Enum
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
-from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
 
 import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
@@ -152,7 +150,6 @@ def pile_combine(file, path):
     tmp_num = extract_num_of_pages(file)
     split(file, path + 's1.pdf', 0, ceil(tmp_num / 2))
     split(file, path + 's2.pdf', ceil(tmp_num / 2), tmp_num)
-
     merge_sort_pdfs(path + 's1.pdf', path + 's2.pdf', file)
 
 

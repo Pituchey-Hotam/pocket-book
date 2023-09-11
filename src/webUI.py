@@ -71,8 +71,6 @@ class PdfFormText:
         self.cut_lines = text[13]
         self.page_numbering = text[14]
 
-    
-
 
 def find_new_pdf(original_name):
     original_name_part = original_name.split('.')[0]
@@ -136,9 +134,6 @@ def WEB_UI():
             else:
                 page_numbering_bool = False
 
-
-            
-
             if merge_type == 'gluing':
                 GS_b = True
             else:
@@ -152,7 +147,7 @@ def WEB_UI():
             # inputs = [values[0], values[1], values[2], '' if GS_b else 's', 'v', 0 if language_on else 1]
             inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
                        '' if GS_b else 's', 'v', 0 if language_on else 1]
-            making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True)
+            making_the_pdf(inputs, eng=0, pNumber=page_numbering_bool, cutLines=cut_lines_bool)
             
             fileName = find_new_pdf(pdf_file.filename)
             with open(user_files + fileName, "rb") as fh:

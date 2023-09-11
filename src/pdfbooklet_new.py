@@ -136,4 +136,3 @@ def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=F
 
     pdfi.close()
     pdfo.close()
-    # print("Completed!  Booklet is in " + pdfOut)
