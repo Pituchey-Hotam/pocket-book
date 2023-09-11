@@ -22,18 +22,13 @@ ENGLISH_TEXT =  [
     "Enter number of pages in each booklet (In multiples of 4. the standard is 32): ",
     "Enter pages per sheet (2/4/8/16): ",
     "Sewing or gluing? In the gluing there is an extra blank page on each side.",
-    "only one notebook?",
-    "DG & MM mini books maker " + currentVersion,
     "gluing",
     "Sewing",
     "page type",
     "create booklet",
-    "Yes",
-    "No",
     "Hebrew",
     "English",
-    "Book language?",
-    "Do it"
+    "Book language?"
 ]
 
 HEBREW_TEXT = [
@@ -42,18 +37,13 @@ HEBREW_TEXT = [
     "הכנס את מספר העמודים בכל מחברת (בכפולות של 4, הסטנדרט הוא 32)",
     "הכנס מספר עמודים לעמוד (2/4/8/16)",
     "מודבק או תפור? בגרסא המודבקת יש תוספת של עמוד ריק בכל מחברת",
-    "האם כבודו מדפיס רק מחברת אחת?",
-    "יוצר הספרונים של דביר ומלאכי" + currentVersion,
     "מודבק",
     "תפור",
     "סוג עמוד",
     "צור ספר כיס",
-    "כן",
-    "לא",
     "עברית",
     "אנגלית",
-    "באיזו שפה הספר?",
-    "יאללה לעבודה"
+    "באיזו שפה הספר?"
 ]
 
 
@@ -67,15 +57,14 @@ class PdfFormText:
             text = HEBREW_TEXT
             self.language_format = ['he', 'rtl']
             self.booklet_parameters = 'נתוני ספר כיס'
-        self.page_header = text[0]
-        self.choose_flie_header = text[1]
-        self.language_header = text[-2]
-        self.inst_pages = text[2]
-        self.inst_per_pages = text[3]
+        self.page_header, self.choose_flie_header = text[0], text[1]
+        self.inst_pages, self.inst_per_pages = text[2], text[3]
         self.inst_merge = text[4]
-        self.merge_types = [text[7], text[8]]
-        self.page_type_title = text[9]
-        self.submit_text = text[10]
+        self.merge_types = [text[5], text[6]]
+        self.page_type_title = text[7]
+        self.submit_text = text[8]
+        self.languges = [text[9], text[10]]
+        self.language_header = text[11]
     
 
 
@@ -102,13 +91,13 @@ def WEB_UI():
     
     @app.route("/<string:language>/", methods=['GET', 'POST'])
     def main_site_page(language):
-        pages_type = ['A4', 'A5', 'A6', 'A7']
-        book_languages = ['עברית', 'English']
         if language=='he':
             form_text = PdfFormText('hebrew')
         else:
             form_text = PdfFormText('english')
         merge_types = form_text.merge_types
+        book_languages = form_text.languges
+        pages_type = ['A4', 'A5', 'A6', 'A7']
         form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
         return render_template("main.html", Title="sifrei_kis", form_data=form_data, form_text=form_text)
 
@@ -153,8 +142,8 @@ def WEB_UI():
         return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
 
     # 192.168.154.195  port=5000, debug=True
-    app.run(host="192.168.154.195", port=8000, debug=True)
-    # app.run(host="127.0.0.1", port=8000, debug=True)
+    # app.run(host="192.168.154.195", port=8000, debug=True)
+    app.run(host="127.0.0.1", port=8000, debug=True)
 
 
 if __name__ == '__main__':

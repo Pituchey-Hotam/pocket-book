@@ -13,7 +13,7 @@ from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Wind
 import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-from ui_settings import *
+# from ui_settings import *
 
 
 class PageSize(Enum):
