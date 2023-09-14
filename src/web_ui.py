@@ -1,8 +1,8 @@
-# from pdfbooklet_new import *
 import os
 from io import BytesIO
 from pocket_book import making_the_pdf
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, send_file
+from flask import Flask, render_template, request, redirect, send_file
+from pathlib import Path
 
 
 class PdfFormQuestions:
@@ -50,6 +50,7 @@ HEBREW_TEXT = [
 
 
 class PdfFormText:
+    # this class is the text container for the web page after language choice
     def __init__(self, language):
         if language == 'english':
             text = ENGLISH_TEXT
@@ -73,10 +74,10 @@ class PdfFormText:
 
 
 def find_new_pdf(original_name):
-    original_name_part = original_name.split('.')[0]
-    list_dir = os.listdir(str(os.getcwd()) + '\\src\\user_files\\')  # get the original and other new file
+    original_name_part = Path(original_name).stem
+    list_dir = os.listdir('./src/user_files/')
     files = [file for file in list_dir if original_name_part in file and original_name!=file]
-    return files[0]   # should be only one element...
+    return files[0]
 
 def delete_files(original_name):
     original_name_part = original_name.split('.')[0]
@@ -103,16 +104,17 @@ def WEB_UI():
         book_languages = form_text.languges
         pages_type = ['A4', 'A5', 'A6', 'A7']
         form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
-        return render_template("main.html", Title="sifrei_kis", form_data=form_data, form_text=form_text)
+        return render_template("main.html", Title="pocket_books", form_data=form_data, form_text=form_text)
 
 
-    @app.route('/download', methods=['GET', 'POST'])  # download only page doesn't really open any window
+    @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
+    # it's opening a new tab to download the output file and then closes it.
     def download():
         user_files = str(os.getcwd()) + '\\src\\user_files\\'
         if request.method == 'POST':
             pdf_file = request.files['file']
             pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
-            try:
+            try:  # recomendeation to use type instead of try. I dont understand who to implement without crash...
                 number_of_pages_booklet = int(request.form['pages'])
                 number_of_pages_sheet = int(request.form['pages_per_sheet'])
             except:
@@ -135,18 +137,22 @@ def WEB_UI():
                 page_numbering_bool = False
 
             if merge_type == 'gluing':
-                GS_b = True
+                merge_type_text = ''
             else:
-                GS_b = False
+                merge_type_text = 's'
             
             if language=='עברית':
-                language_on = True
+                language_num = 0
             else:
-                language_on = False
+                language_num = 1
+            
+            if 1:  # not clear when to use this option... until now only used with 'v' option...
+                combine_method = 'v'
+            else:
+                combine_method = ''  # ?
             # create the new pdf
-            # inputs = [values[0], values[1], values[2], '' if GS_b else 's', 'v', 0 if language_on else 1]
             inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
-                       '' if GS_b else 's', 'v', 0 if language_on else 1]
+                       merge_type_text, combine_method, language_num]
             making_the_pdf(inputs, eng=0, pNumber=page_numbering_bool, cutLines=cut_lines_bool)
             
             fileName = find_new_pdf(pdf_file.filename)
@@ -155,6 +161,10 @@ def WEB_UI():
             delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
         return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
 
+    # "192.168.154.195" - example of current IP that might change and required for testing on
+    # other devices, "127.0.0.1" - self IP for basic coding
+    # debug=True - only before production to make working easy
+    
     # app.run(host="192.168.154.195", port=8000, debug=True)
     app.run(host="127.0.0.1", port=8000, debug=True)
 

@@ -3,7 +3,6 @@ from os import mkdir
 from os.path import exists
 from shutil import rmtree
 from math import ceil, log, sqrt
-from threading import Thread
 from enum import Enum
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -11,7 +10,7 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-from webUI import *
+from web_ui import *
 
 
 class PageSize(Enum):
