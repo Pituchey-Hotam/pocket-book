@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{{Title}}</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+    <script src="{{ url_for('static',filename='main.js') }}"> </script>
 </head>
 <body>
     <p><a href="{{ url_for('main_site_page', language='en') }}">English</a> | <a href="{{ url_for('main_site_page', language='he') }}">עברית</a></p>
@@ -15,7 +17,7 @@
         <input type="file" name="file" />
         <br>
 
-        <span id="lang" style="margin: 0% 2% 4% 2%; display: inline-block;">
+        <span id="lang">
             <h2>{{form_text.language_header}}</h2>
             {% for book_language in form_data.book_languages %}
             <input type="radio" id="{{book_language}}" name="book_lang" value="{{book_language}}">
@@ -24,7 +26,7 @@
             <br>
         </span>
         
-        <span id="booklet_numbers" style="margin: 2% 2% 0% 2%; display: inline-block;">
+        <span id="booklet_numbers">
             <h2>{{form_text.booklet_parameters}}</h2>
             <label for="pages">{{form_text.inst_pages}}</label><br>
             <input type="text" id="pages" name="pages"><br>
@@ -33,7 +35,7 @@
             <input type="text" id="pages_per_sheet" name="pages_per_sheet"><br>
         </span>
         <br>
-        <span id="merge" style="margin: 2%; display: inline-block;">
+        <span id="merge">
             <h2>{{form_text.inst_merge.split('?')[0]+'?'}}</h2>
             <h4>{{form_text.inst_merge.split('?')[1]}}</h4>
             {% for merge_type in form_data.merge_types %}
@@ -42,14 +44,14 @@
             {% endfor%}
         </span>
 
-        <span id="page" style="margin: 2%; display: inline-block;">
+        <span id="page">
             <h2>{{form_text.page_type_title}}</h2>
             {% for page_type in form_data.page_types %}
             <input type="radio" id="{{page_type}}" name="page_size" value="{{page_type}}">
             <label for="{{page_type}}">{{page_type}}</label><br>
             {% endfor%}
         </span>
-        <span style="margin: 2%; display: inline-block;">
+        <span id="check_boxes">
             <h2>{{form_text.booklet_options}}</h2>
 
             <input type="checkbox" id="cut_lines" name="cut_lines" value="cut_lines">
@@ -61,6 +63,6 @@
         <br>
         <input type = "submit" value="{{form_text.submit_text}}" style="float: right;margin-right: 50%;">
     </form>
-
+    
 </body>
 </html>
