@@ -182,7 +182,7 @@ def moreThan(trash_file, combine_method, eng, num=1):
 
     pdfbooklet_new.pdfbooklet(trash_file + '_odd_rotated' + n + '.pdf', odd_path, booklet=0, eng=eng)
     if num % 2 == 0:
-        eng = (eng == 0)
+        eng = (eng == 0)  # assign True/False value
     pdfbooklet_new.pdfbooklet(trash_file + '_even_rotated' + n + '.pdf', even_path, booklet=0, eng=eng)
 
     return odd_path, even_path
@@ -209,15 +209,15 @@ def add_page_numbers(input_pdf, output_pdf):
         pdf_writer.write(output_file)
 
 
-def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
-    if pNumber:
+def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
+    if page_Numbers:
         add_page_numbers(inputs[0], inputs[0])
     inputs[0] = inputs[0].split(';')
-    for inp in inputs[0]:
-        inp = inp.replace('\\', '/')
+    for input in inputs[0]:
+        input = input.replace('\\', '/')
 
-        file_name = inp.split('/')[-1]
-        old_path = inp[:-len(file_name) - 1] + '/'
+        file_name = input.split('/')[-1]
+        old_path = input[:-len(file_name) - 1] + '/'
 
         dir_path = old_path + 'trash ' + file_name[:-4]
         path = dir_path[:] + '/'  # argv[2]+'\\'
@@ -253,8 +253,6 @@ def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
 
             counter = 1
             while pages_per_sheet / (counter ** 2) > 1:
-                # print(pages_per_sheet / (counter ** 2))
-                # print(counter)
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
                 counter += 1
 

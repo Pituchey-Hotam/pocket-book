@@ -81,10 +81,10 @@ def find_new_pdf(original_name):
 
 def delete_files(original_name):
     original_name_part = original_name.split('.')[0]
-    list_dir = os.listdir(str(os.getcwd()) + '\\src\\user_files\\')  # get the original and other new file
+    list_dir = os.listdir('./src/user_files/')  # get the original and other new file
     files = [file for file in list_dir if original_name_part in file]
     for file in files:
-        os.remove(str(os.getcwd()) + '\\src\\user_files\\'+file)
+        os.remove('./src/user_files/' + file)
 
 
 def WEB_UI():
