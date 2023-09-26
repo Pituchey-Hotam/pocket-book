@@ -110,7 +110,7 @@ def WEB_UI():
     @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
     # it's opening a new tab to download the output file and then closes it.
     def download():
-        user_files = str(os.getcwd()) + '\\src\\user_files\\'
+        user_files = './src/user_files/'
         if request.method == 'POST':
             pdf_file = request.files['file']
             pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
@@ -153,7 +153,7 @@ def WEB_UI():
             # create the new pdf
             inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
                        merge_type_text, combine_method, language_num]
-            making_the_pdf(inputs, eng=0, pNumber=page_numbering_bool, cutLines=cut_lines_bool)
+            making_the_pdf(inputs, eng=0, page_Numbers=page_numbering_bool, cutLines=cut_lines_bool)
             
             fileName = find_new_pdf(pdf_file.filename)
             with open(user_files + fileName, "rb") as fh:
