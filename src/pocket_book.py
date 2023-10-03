@@ -4,6 +4,7 @@ from os.path import exists
 from shutil import rmtree
 from math import ceil, log, sqrt
 from enum import Enum
+from tqdm import tqdm
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
@@ -237,7 +238,7 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         paths = []
         if not bind_method == 's':
             notebook_len -= 2
-        for i in range(int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0)):
+        for i in tqdm(range(int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0))):
             name_trash_file = trash_file + str(i + 1)
             split(file, name_trash_file + '.pdf', i * notebook_len, notebook_len, bind_method)
             pdfbooklet_new.pdfbooklet(name_trash_file + '.pdf', name_trash_file + 'let.pdf', eng=eng)
