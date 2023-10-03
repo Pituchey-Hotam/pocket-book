@@ -1,19 +1,17 @@
 import io
-import os
 from os import mkdir
 from os.path import exists
 from shutil import rmtree
 from math import ceil, log, sqrt
-from threading import Thread
 from enum import Enum
+from tqdm import tqdm
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
-from PySimpleGUI import theme, Button, Text, Input, InputText, FilesBrowse, Window, WIN_CLOSED, Image as guiImage
 
-import src.pdfbooklet_new as pdfbooklet_new
+import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-from src.ui_settings import *
+from web_ui import *
 
 
 class PageSize(Enum):
@@ -22,7 +20,6 @@ class PageSize(Enum):
     The value of the page size is how many pages in this size
     fit in an A4 page.
     """
-
     A5 = 2
     A6 = 4
     A7 = 8
@@ -153,7 +150,6 @@ def pile_combine(file, path):
     tmp_num = extract_num_of_pages(file)
     split(file, path + 's1.pdf', 0, ceil(tmp_num / 2))
     split(file, path + 's2.pdf', ceil(tmp_num / 2), tmp_num)
-
     merge_sort_pdfs(path + 's1.pdf', path + 's2.pdf', file)
 
 
@@ -187,36 +183,10 @@ def moreThan(trash_file, combine_method, eng, num=1):
 
     pdfbooklet_new.pdfbooklet(trash_file + '_odd_rotated' + n + '.pdf', odd_path, booklet=0, eng=eng)
     if num % 2 == 0:
-        eng = (eng == 0)
+        eng = (eng == 0)  # assign True/False value
     pdfbooklet_new.pdfbooklet(trash_file + '_even_rotated' + n + '.pdf', even_path, booklet=0, eng=eng)
 
     return odd_path, even_path
-
-
-"""
-def add_page_number(file_name):
-    tmp = open(file_name, 'rb')
-    pdfFileReader = PdfFileReader(tmp)
-    pdfFileWriter = PdfFileWriter()
-    for i in range(len(pdfFileReader.pages)):
-        packet = io.BytesIO()
-        can = canvas.Canvas(packet,
-                            pagesize=(pdfFileReader.pages[i].mediaBox.width, pdfFileReader.pages[i].mediaBox.height))
-        can.setFontSize(10)
-        can.drawString(pdfFileReader.pages[i].mediaBox.width / 2, 0, str(i + 1))
-        can.save()
-        packet.seek(0)
-        # create a new PDF with Reportlab
-        new_pdf = PdfFileReader(packet)
-        # read your existing PDF
-        existing_pdf = PdfFileWriter()
-        existing_pdf.addPage(pdfFileReader.pages[i])
-        # add the "watermark" (which is the new pdf) on the existing page
-        existing_pdf.pages[0].merge_page(new_pdf.pages[0])
-        pdfFileWriter.addPage(existing_pdf.pages[0])
-    tmp.close()
-    output = open(file_name + "2.pdf", "wb")
-    pdfFileWriter.write(output)"""
 
 
 def add_page_numbers(input_pdf, output_pdf):
@@ -240,15 +210,15 @@ def add_page_numbers(input_pdf, output_pdf):
         pdf_writer.write(output_file)
 
 
-def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
-    if pNumber:
+def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
+    if page_Numbers:
         add_page_numbers(inputs[0], inputs[0])
     inputs[0] = inputs[0].split(';')
-    for inp in inputs[0]:
-        inp = inp.replace('\\', '/')
+    for input in inputs[0]:
+        input = input.replace('\\', '/')
 
-        file_name = inp.split('/')[-1]
-        old_path = inp[:-len(file_name) - 1] + '/'
+        file_name = input.split('/')[-1]
+        old_path = input[:-len(file_name) - 1] + '/'
 
         dir_path = old_path + 'trash ' + file_name[:-4]
         path = dir_path[:] + '/'  # argv[2]+'\\'
@@ -268,7 +238,7 @@ def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
         paths = []
         if not bind_method == 's':
             notebook_len -= 2
-        for i in range(int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0)):
+        for i in tqdm(range(int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0))):
             name_trash_file = trash_file + str(i + 1)
             split(file, name_trash_file + '.pdf', i * notebook_len, notebook_len, bind_method)
             pdfbooklet_new.pdfbooklet(name_trash_file + '.pdf', name_trash_file + 'let.pdf', eng=eng)
@@ -284,8 +254,6 @@ def making_the_pdf(inputs, eng=0, pNumber=False, cutLines=True):
 
             counter = 1
             while pages_per_sheet / (counter ** 2) > 1:
-                # print(pages_per_sheet / (counter ** 2))
-                # print(counter)
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
                 counter += 1
 
@@ -348,35 +316,9 @@ def add_dashed_cut_line(file, numP):
 # ~~~~~~~~~~~~~~~~~
 
 
-def main(inputs):
-    start = True
-    while start:
-        start = False
-        th = Thread(target=making_the_pdf, args=[inputs, 1])
-        th.start()
-
-        win_wait_layout = [[Text(text="please wait, this may take a few minutes")]]
-        window_wait = Window("thank U", win_wait_layout, size=(300, 50))
-
-        while th.is_alive():
-            window_wait.read(timeout=1)
-            pass
-        window_wait.close()
-
-        win_end_layout = [[Text(text="your file is ready")],
-                          [Text(text="have a nice day")],
-                          [Button(button_text="Home page", key='-again-')]]
-        window_end = Window("thank U", win_end_layout, size=(200, 100))
-
-        while True:
-            event, values = window_end.read()
-            if event == WIN_CLOSED:
-                break
-            if event == '-again-':
-                start = True
-                break
-        window_end.close()
+def main():
+    WEB_UI()
 
 
 if __name__ == '__main__':
-    main(UI())
+    main()

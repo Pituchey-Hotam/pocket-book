@@ -12,8 +12,6 @@
 
 # I made some changes. dvir gimdani, 2022.
 
-# from optparse import OptionParser
-# import re
 from PyPDF2 import PageObject, PdfFileWriter, PdfFileReader
 
 
@@ -138,4 +136,3 @@ def pdfbooklet(pdfIn, pdfOut, firstPage=1, lastPage=0, booklet=1, eng=0, debug=F
 
     pdfi.close()
     pdfo.close()
-    # print("Completed!  Booklet is in " + pdfOut)

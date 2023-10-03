@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="{{form_text.language_format[0]}}" dir="{{form_text.language_format[1]}}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{Title}}</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+    <script src="{{ url_for('static',filename='main.js') }}"> </script>
+</head>
+<body>
+    <p><a href="{{ url_for('main_site_page', language='en') }}">English</a> | <a href="{{ url_for('main_site_page', language='he') }}">עברית</a></p>
+    <h1 style="margin-left: 5%;margin-right: 5%;">{{form_text.page_header}}</h1>
+
+    {% block full_form %}
+    {% endblock %}
+    
+</body>
+</html>
