@@ -104,7 +104,7 @@ def WEB_UI():
         book_languages = form_text.languges
         pages_type = ['A4', 'A5', 'A6', 'A7']
         form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
-        return render_template("main.html", Title="pocket_books", form_data=form_data, form_text=form_text)
+        return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text)
 
 
     @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page

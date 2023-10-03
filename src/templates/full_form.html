@@ -1,0 +1,56 @@
+
+{% extends "main.html" %}
+    {% block full_form %}
+    <form action = "/download" method = "post" enctype="multipart/form-data" target="_blank">
+
+        <h2>{{form_text.choose_flie_header}}</h2>
+        <input type="file" name="file" />
+        <br>
+
+        <span id="lang">
+            <h2>{{form_text.language_header}}</h2>
+            {% for book_language in form_data.book_languages %}
+            <input type="radio" id="{{book_language}}" name="book_lang" value="{{book_language}}">
+            <label for="{{book_language}}">{{book_language}}</label><br>
+            {% endfor%}
+            <br>
+        </span>
+        
+        <span id="booklet_numbers">
+            <h2>{{form_text.booklet_parameters}}</h2>
+            <label for="pages">{{form_text.inst_pages}}</label><br>
+            <input type="text" id="pages" name="pages"><br>
+
+            <label for="pages_per_sheet">{{form_text.inst_per_pages}}</label><br>
+            <input type="text" id="pages_per_sheet" name="pages_per_sheet"><br>
+        </span>
+        <br>
+        <span id="merge">
+            <h2>{{form_text.inst_merge.split('?')[0]+'?'}}</h2>
+            <h4>{{form_text.inst_merge.split('?')[1]}}</h4>
+            {% for merge_type in form_data.merge_types %}
+            <input type="radio" id="{{merge_type}}" name="pdf_merge_type" value="{{merge_type}}">
+            <label for="{{merge_type}}">{{merge_type}}</label><br>
+            {% endfor%}
+        </span>
+
+        <span id="page">
+            <h2>{{form_text.page_type_title}}</h2>
+            {% for page_type in form_data.page_types %}
+            <input type="radio" id="{{page_type}}" name="page_size" value="{{page_type}}">
+            <label for="{{page_type}}">{{page_type}}</label><br>
+            {% endfor%}
+        </span>
+        <span id="check_boxes">
+            <h2>{{form_text.booklet_options}}</h2>
+
+            <input type="checkbox" id="cut_lines" name="cut_lines" value="cut_lines">
+            <label for="cut_lines">{{form_text.cut_lines}}</label><br>
+
+            <input type="checkbox" id="page_numbering" name="page_numbering" value="page_numbering">
+            <label for="page_numbering">{{form_text.page_numbering}}</label><br>
+        </span>
+        <br>
+        <input type = "submit" value="{{form_text.submit_text}}" style="float: right;margin-right: 50%;">
+    </form>
+    {% endblock %}
