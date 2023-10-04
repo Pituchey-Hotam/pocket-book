@@ -11,6 +11,12 @@ class PdfFormQuestions:
         self.merge_types = merge_types
         self.book_languages = book_languages
 
+class Book:
+    def __init__(self, name, description, num_pages, type):
+        self.name = name
+        self.description = description
+        self.num_pages = num_pages
+        self.type = type
 
 ENGLISH_TEXT =  [
     "booklet project",
