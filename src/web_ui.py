@@ -94,6 +94,14 @@ def WEB_UI():
     def main_url():
         return redirect("/he/")
     
+    @app.route("/<string:language>/home/", methods=['GET', 'POST'])
+    def home(language):
+        if language=='he':
+            form_text = PdfFormText('hebrew')
+        else:
+            form_text = PdfFormText('english')
+        return render_template("home.html", Title="pocket_books_home", form_text=form_text)
+
     @app.route("/<string:language>/", methods=['GET', 'POST'])
     def main_site_page(language):
         if language=='he':

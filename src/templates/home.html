@@ -1,0 +1,12 @@
+{% extends "main.html" %}
+    {% block content %}
+    <h1>welcome</h1>
+    <p>small about us paragraph explaining the idea...</p>
+    <div id="torist_vid">
+        <h2>project video</h2>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/hvsVKBPs5as?si=eENQG3tdF7l4cz0q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+    
+    <button type="submit" href="{{url_for('main_site_page', language='en')}}" value="editor">create your own pdf!</button>
+
+    {% endblock %}
