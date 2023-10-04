@@ -48,6 +48,21 @@ HEBREW_TEXT = [
     "האם להוסיף מספרי עמודים?"
 ]
 
+EN_HOME_TEXT = [
+    'welcome',
+    'this is a short about us',
+    'video title',
+    'create your own PDF booklet',
+    'others pdf"s'
+]
+
+HE_HOME_TEXT = [
+    'ברוכים הבאים',
+    'זה הסבר קצר עלינו',
+    'סרטון תדמית',
+    'ייצר ספרון כיס בעצמךt',
+    'ספרונים של אחרים'
+]
 
 class PdfFormText:
     # this class is the text container for the web page after language choice
@@ -98,9 +113,11 @@ def WEB_UI():
     def home(language):
         if language=='he':
             form_text = PdfFormText('hebrew')
+            home_text = HE_HOME_TEXT
         else:
             form_text = PdfFormText('english')
-        return render_template("home.html", Title="pocket_books_home", form_text=form_text)
+            home_text = EN_HOME_TEXT
+        return render_template("home.html", Title="pocket_books_home", form_text=form_text, home_text=home_text, self_function='home', self_lang=language)
 
     @app.route("/<string:language>/", methods=['GET', 'POST'])
     def main_site_page(language):
@@ -112,7 +129,7 @@ def WEB_UI():
         book_languages = form_text.languges
         pages_type = ['A4', 'A5', 'A6', 'A7']
         form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
-        return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text)
+        return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text, self_function='main_site_page')
 
 
     @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
