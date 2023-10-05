@@ -1,0 +1,18 @@
+{% extends "main.html" %}
+  
+    {% block content %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/cards.css') }}">
+
+    <h1>{{cards_text[0]}}</h1>
+    {%for book in books%}
+    <div class="card">
+        <h1>{{book.name}}</h1>
+        <p>{{cards_text[1]}} : </p>
+        <p>{{book.description}}</p>
+        <p>{{cards_text[2]}} : {{book.num_pages}}</p>
+        <p>{{cards_text[3]}} : {{book.type}}</p>
+        <p><button>{{cards_text[4]}}</button></p>
+    </div>
+    {%endfor%}
+
+    {% endblock %}

@@ -7,7 +7,7 @@
     <script src="{{ url_for('static',filename='main.js') }}"> </script>
 </head>
 <body>
-    <p><a href="{{ url_for(self_function, language='en') }}">English</a> | <a href="{{ url_for(self_function, language='he') }}">עברית</a></p>
+    <p><a href="{{ url_for(self_page.self_function, language='en') }}">English</a> | <a href="{{ url_for(self_page.self_function, language='he') }}">עברית</a></p>
     <h1 style="margin-left: 5%;margin-right: 5%;">{{form_text.page_header}}</h1>
 
     {% block content %}

@@ -1,7 +1,6 @@
 {% extends "main.html" %}
   
     {% block content %}
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/cards.css') }}">
     <h1>{{home_text[0]}}</h1>
     <p>{{home_text[1]}}</p>
     <div id="torist_vid">
@@ -9,18 +8,6 @@
         <iframe width="560" height="315" src="https://www.youtube.com/embed/hvsVKBPs5as?si=eENQG3tdF7l4cz0q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
     
-    <a href="{{url_for('main_site_page', language=self_lang)}}"><button type="submit"  value="editor">{{home_text[3]}}</button></a>
+    <a href="{{url_for('main_site_page', language=self_page.self_lang)}}"><button type="submit"  value="editor">{{home_text[3]}}</button></a>
     
-    <h1>{{home_text[4]}}</h1>
-    {%for book in books%}
-    <div class="card">
-        <h1>{{book.name}}</h1>
-        <p>description:</p>
-        <p>{{book.description}}</p>
-        <p>number of pages per booklets: {{book.num_pages}}</p>
-        <p>book structere: {{book.type}}</p>
-        <p><button>Download</button></p>
-    </div>
-    {%end book%}
-
     {% endblock %}
