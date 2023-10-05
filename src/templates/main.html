@@ -5,10 +5,17 @@
     <title>{{Title}}</title>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
     <script src="{{ url_for('static',filename='main.js') }}"> </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 </head>
 <body>
-    <p><a href="{{ url_for(self_page.self_function, language='en') }}">English</a> | <a href="{{ url_for(self_page.self_function, language='he') }}">עברית</a></p>
-    <h1 style="margin-left: 5%;margin-right: 5%;">{{form_text.page_header}}</h1>
+    <header>
+        
+        <h1 style="margin-left: 5%;margin-right: 5%;">{{form_text.page_header}}</h1>
+        <i class="material-icons">home</i>
+        <p><a href="{{ url_for(self_page.self_function, language='en') }}">English</a> | <a href="{{ url_for(self_page.self_function, language='he') }}">עברית</a></p>
+    </header>
+    
 
     {% block content %}
     {% endblock %}

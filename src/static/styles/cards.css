@@ -1,9 +1,11 @@
 .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    max-width: 300px;
+    /* max-width: 300px; */
     margin: auto;
     text-align: center;
     font-family: arial;
+    display: inline-block;
+    width: 15%;
   }
   
   .card button {
@@ -11,7 +13,7 @@
     outline: 0;
     padding: 12px;
     color: white;
-    background-color: #000;
+    background-color: #3a1492;
     text-align: center;
     cursor: pointer;
     width: 100%;

@@ -75,8 +75,8 @@ HE_HOME_TEXT = [
 
 EN_CARDS = [
     'others pdf\'s',
-    'description: ',
-    'number of pages per booklets: ',
+    'description',
+    'number of pages per booklets',
     'book structere: ',
     'Download'
 ]
@@ -84,7 +84,7 @@ EN_CARDS = [
 HE_CARDS = [
     'קבצים שיצרו אחרים',
     'תיאור',
-    'מספר עמודים בספרון: ',
+    'מספר עמודים בספרון',
     'מבנה הספר',
     'הורדה'
 ]
