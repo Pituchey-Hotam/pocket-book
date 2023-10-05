@@ -1,0 +1,21 @@
+#lang, #booklet_numbers{
+    margin: 0% 2% 4% 2%;
+    display: inline-block;
+}
+
+#merge, #page{
+    margin: 2%;
+    display: inline-block;
+}
+
+#check_boxes{
+    margin: 2%;
+    display: inline-block;
+}
+
+#submit_btn{
+    border-radius: 15%;
+    background-color: #a5d7e8;
+    font-size: 150%;
+    padding: 1%;
+}

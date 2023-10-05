@@ -37,7 +37,8 @@ ENGLISH_TEXT =  [
     "Book language?",
     "booklet options",
     "add cut lines?",
-    "add page numbering?"
+    "add page numbering?",
+    "can we save the resault PDF for other user?"
 ]
 
 HEBREW_TEXT = [
@@ -55,7 +56,8 @@ HEBREW_TEXT = [
     "באיזו שפה הספר?",
     "אופציות הדפסה נוספות",
     "האם להוסיף קווי חיתוך?",
-    "האם להוסיף מספרי עמודים?"
+    "האם להוסיף מספרי עמודים?",
+    "האם אנחנו יכולים להציע את הספרון לעוד משתמשים?"
 ]
 
 EN_HOME_TEXT = [
@@ -69,7 +71,7 @@ HE_HOME_TEXT = [
     'ברוכים הבאים',
     'זה הסבר קצר עלינו',
     'סרטון תדמית',
-    'ייצר ספרון כיס בעצמךt',
+    'ייצר ספרון כיס בעצמך',
     'ספרונים של אחרים'
 ]
 
@@ -111,6 +113,7 @@ class PdfFormText:
         self.booklet_options = text[12]
         self.cut_lines = text[13]
         self.page_numbering = text[14]
+        self.save_for_others = text[15]
 
 
 def find_new_pdf(original_name):
@@ -132,7 +135,7 @@ def WEB_UI():
 
     @app.route("/", methods=['GET', 'POST'])
     def main_url():
-        return redirect("/he/")
+        return redirect("/he/home/")
     
     @app.route("/<string:language>/home/", methods=['GET', 'POST'])
     def home(language):
@@ -163,7 +166,7 @@ def WEB_UI():
                                form_text=form_text, cards_text=cards_text, self_page=page,
                                books=books)
     
-    @app.route("/<string:language>/", methods=['GET', 'POST'])
+    @app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
     def main_site_page(language):
         if language=='he':
             form_text = PdfFormText('hebrew')

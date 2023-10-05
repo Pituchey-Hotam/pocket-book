@@ -9,11 +9,10 @@
 
 </head>
 <body>
-    <header>
-        
-        <h1 style="margin-left: 5%;margin-right: 5%;">{{form_text.page_header}}</h1>
-        <i class="material-icons">home</i>
-        <p><a href="{{ url_for(self_page.self_function, language='en') }}">English</a> | <a href="{{ url_for(self_page.self_function, language='he') }}">עברית</a></p>
+    <header class="header">
+        <h1>{{form_text.page_header}}</h1>
+        <h1><a href="{{ url_for(self_page.self_function, language='en') }}">English</a> | <a href="{{ url_for(self_page.self_function, language='he') }}">עברית</a></h1>
+        <a href="{{ url_for('home', language=self_page.self_lang) }}"><i class="material-icons">home</i></a>
     </header>
     
 

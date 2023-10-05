@@ -1,6 +1,7 @@
 
 {% extends "main.html" %}
     {% block content %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/form.css') }}">
     <form action = "/download" method = "post" enctype="multipart/form-data" target="_blank">
 
         <h2>{{form_text.choose_flie_header}}</h2>
@@ -49,8 +50,13 @@
 
             <input type="checkbox" id="page_numbering" name="page_numbering" value="page_numbering">
             <label for="page_numbering">{{form_text.page_numbering}}</label><br>
+
+            <input type="checkbox" id="save_for_others" name="save_for_others" value="save_for_others">
+            <label for="save_for_others">{{form_text.save_for_others}}</label><br>
+            
+            <!-- add text area and name if checked -->
         </span>
         <br>
-        <input type = "submit" value="{{form_text.submit_text}}" style="float: right;margin-right: 50%;">
+        <input type = "submit" value="{{form_text.submit_text}}" id="submit_btn" style="float: right;margin-right: 50%;">
     </form>
     {% endblock %}

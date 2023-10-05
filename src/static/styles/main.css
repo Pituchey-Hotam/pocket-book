@@ -1,14 +1,13 @@
-#lang, #booklet_numbers{
-    margin: 0% 2% 4% 2%;
-    display: inline-block;
+.header h1{
+    display: inline;
+    padding-left: 2%;
+    padding-right: 2%;
 }
-
-#merge, #page{
-    margin: 2%;
-    display: inline-block;
+.header p{
+    display: inline;
 }
-
-#check_boxes{
-    margin: 2%;
-    display: inline-block;
+.header i{
+    padding-left: 2%;
+    padding-right: 2%;
+    float: inline;
 }
