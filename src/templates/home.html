@@ -1,13 +1,22 @@
 {% extends "main.html" %}
-  
-    {% block content %}
-    <h1>{{home_text[0]}}</h1>
-    <p>{{home_text[1]}}</p>
-    <div id="torist_vid">
-        <h2>{{home_text[2]}}</h2>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/hvsVKBPs5as?si=eENQG3tdF7l4cz0q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-    </div>
-    
-    <a href="{{url_for('main_site_page', language=self_page.self_lang)}}"><button type="submit"  value="editor">{{home_text[3]}}</button></a>
-    
-    {% endblock %}
+
+{% block content %}
+<h1>{{home_text[0]}}</h1>
+<p>{{home_text[1]}}</p>
+<div id="torist_vid">
+    <h2>{{home_text[2]}}</h2>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/hvsVKBPs5as?si=eENQG3tdF7l4cz0q"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+</div>
+
+<a href="{{url_for('main_site_page', language=self_page.self_lang)}}">
+    <button type="submit" value="editor">{{home_text[3]}}</button>
+</a>
+<div>
+    <h2>{{home_text[4]}}</h2>
+    <input name="search" type="text">
+    <button type="submit">{{home_text[5]}}</button>
+</div>
+{% endblock %}

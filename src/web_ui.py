@@ -64,7 +64,9 @@ EN_HOME_TEXT = [
     'welcome',
     'this is a short about us',
     'video title',
-    'create your own PDF booklet'
+    'create your own PDF booklet',
+    "other's books",
+    'search books'
 ]
 
 HE_HOME_TEXT = [
@@ -72,7 +74,8 @@ HE_HOME_TEXT = [
     'זה הסבר קצר עלינו',
     'סרטון תדמית',
     'ייצר ספרון כיס בעצמך',
-    'ספרונים של אחרים'
+    'ספרונים של אחרים',
+    'חפש ספרונים'
 ]
 
 EN_CARDS = [
