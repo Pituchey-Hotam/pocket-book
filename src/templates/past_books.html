@@ -2,9 +2,17 @@
   
     {% block content %}
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/cards.css') }}">
+    <h2>search</h2>
+    <form action = "" method = "post">
+        <label for="pages_per_sheet">search input</label>
+        <input type="text" id="pages_per_sheet" name="pages_per_sheet"><br>
+
+        <input type = "submit" value="submit_text" id="submit_btn">
+    </form>
 
     <h1>{{cards_text[0]}}</h1>
     {%for book in books%}
+    
     <div class="card">
         <h1>{{book.name}}</h1>
         <p>{{cards_text[1]}}: </p>

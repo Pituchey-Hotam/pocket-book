@@ -182,7 +182,6 @@ def WEB_UI():
         page = Self_page('main_site_page',language)
         return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text, self_page=page)
 
-
     @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
     # it's opening a new tab to download the output file and then closes it.
     def download():
