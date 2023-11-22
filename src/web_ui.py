@@ -1,7 +1,7 @@
 import os
 from io import BytesIO
 from pocket_book import making_the_pdf
-from flask import Flask, render_template, request, redirect, send_file
+from flask import Flask, render_template, request, redirect, send_file, url_for
 from pathlib import Path
 
 class Self_page:
@@ -152,8 +152,15 @@ def WEB_UI():
         return render_template("home.html", Title="pocket_books_home", 
                                form_text=form_text, home_text=home_text, self_page=page)
     
+
     @app.route("/<string:language>/past_books/", methods=['GET', 'POST'])
-    def past_books(language):
+    @app.route("/<string:language>/past_books/<string:search>/", methods=['GET', 'POST'])
+    def past_books(language, search='no_filter'):
+        try:
+            search = request.form['part_name']
+            return redirect('past_books', language=language, search='no_filter')
+        except:
+            pass
         if language=='he':
             form_text = PdfFormText('hebrew')
             cards_text = HE_CARDS
@@ -167,7 +174,7 @@ def WEB_UI():
         page = Self_page('past_books',language)
         return render_template("past_books.html", Title="past_books_page", 
                                form_text=form_text, cards_text=cards_text, self_page=page,
-                               books=books)
+                               books=books, search_text=search)
     
     @app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
     def main_site_page(language):

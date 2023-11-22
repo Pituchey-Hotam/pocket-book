@@ -316,7 +316,6 @@ def add_dashed_cut_line(file, numP):
 
 
 def main():
-    x=1
     WEB_UI()
 
 
