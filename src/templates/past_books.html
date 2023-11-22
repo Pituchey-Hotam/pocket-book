@@ -2,16 +2,13 @@
   
     {% block content %}
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/cards.css') }}">
-    <h2>search</h2>
     <form action = "" method = "post">
-        <label for="part_name">search input</label>
-        <input type="text" id="part_name" name="part_name"><br>
-
-        <input type = "submit" value="submit_text" id="submit_btn">
+        <br>
+        <input type="text" id="part_name" name="part_name">
+        <input type = "submit" value="{{search_lang}}" id="submit_btn">
     </form>
 
     <h1>{{cards_text[0]}}</h1>
-    <h3>{{search_text}}</h3>
     {%for book in books%}
     {%if search_text == 'no_filter' or search_text in book.name%}
     

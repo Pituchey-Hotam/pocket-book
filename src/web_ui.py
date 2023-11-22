@@ -164,9 +164,11 @@ def WEB_UI():
         if language=='he':
             form_text = PdfFormText('hebrew')
             cards_text = HE_CARDS
+            search_by_lang= 'חפש'
         else:
             form_text = PdfFormText('english')
             cards_text = EN_CARDS
+            search_by_lang='search'
         book1 = Book('תהילים', 'ספרוני תהילים', '32', 'sewing')
         book2 = Book('harav Noah', 'boaring lessons', '4', 'sewing')
         book3 = Book('שיעורי הרב מסתלבט', 'קולות לכל אירוע', '32', 'gluing')
@@ -174,7 +176,7 @@ def WEB_UI():
         page = Self_page('past_books',language)
         return render_template("past_books.html", Title="past_books_page", 
                                form_text=form_text, cards_text=cards_text, self_page=page,
-                               books=books, search_text=search)
+                               books=books, search_text=search, search_lang=search_by_lang)
     
     @app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
     def main_site_page(language):
