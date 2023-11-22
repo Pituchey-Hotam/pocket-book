@@ -10,7 +10,6 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-from web_ui import *
 
 
 class PageSize(Enum):
@@ -22,6 +21,7 @@ class PageSize(Enum):
     A5 = 2
     A6 = 4
     A7 = 8
+
 
 # -----------------------
 #     pdf manipulation
@@ -309,15 +309,6 @@ def add_dashed_cut_line(file, numP):
     with open(file, "wb") as output:
         output_pdf.write(output)
 
-
 # ~~~~~~~~~~~~~~~~~
 #     main ♪♫♪
 # ~~~~~~~~~~~~~~~~~
-
-
-def main():
-    WEB_UI()
-
-
-if __name__ == '__main__':
-    main()
