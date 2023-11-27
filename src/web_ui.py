@@ -121,16 +121,16 @@ class PdfFormText:
 
 def find_new_pdf(original_name):
     original_name_part = Path(original_name).stem
-    list_dir = os.listdir('./src/user_files/')
+    list_dir = os.listdir('./user_files/')
     files = [file for file in list_dir if original_name_part in file and original_name!=file]
     return files[0]
 
 def delete_files(original_name):
     original_name_part = original_name.split('.')[0]
-    list_dir = os.listdir('./src/user_files/')  # get the original and other new file
+    list_dir = os.listdir('./user_files/')  # get the original and other new file
     files = [file for file in list_dir if original_name_part in file]
     for file in files:
-        os.remove('./src/user_files/' + file)
+        os.remove('./user_files/' + file)
 
 
 def WEB_UI():
@@ -194,7 +194,7 @@ def WEB_UI():
     @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
     # it's opening a new tab to download the output file and then closes it.
     def download():
-        user_files = './src/user_files/'
+        user_files = './user_files/'
         if request.method == 'POST':
             pdf_file = request.files['file']
             pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
