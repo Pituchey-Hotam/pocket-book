@@ -1,19 +1,22 @@
 import os
 from io import BytesIO
-from pocket_book import making_the_pdf
-from flask import Flask, render_template, request, redirect, send_file, url_for
 from pathlib import Path
+from pocket_book import making_the_pdf
+from flask import Flask, render_template, request, redirect, send_file
+
 
 class Self_page:
     def __init__(self, function_name, language):
-        self.self_function=function_name
-        self.self_lang=language
+        self.self_function = function_name
+        self.self_lang = language
+
 
 class PdfFormQuestions:
     def __init__(self, page_types, merge_types, book_languages):
         self.page_types = page_types
         self.merge_types = merge_types
         self.book_languages = book_languages
+
 
 class Book:
     def __init__(self, name, description, num_pages, type):
@@ -22,7 +25,8 @@ class Book:
         self.num_pages = num_pages
         self.type = type
 
-ENGLISH_TEXT =  [
+
+ENGLISH_TEXT = [
     "booklet project",
     "Choose a file: ",
     "Enter number of pages in each booklet (In multiples of 4. the standard is 32): ",
@@ -94,6 +98,7 @@ HE_CARDS = [
     'הורדה'
 ]
 
+
 class PdfFormText:
     # this class is the text container for the web page after language choice
     def __init__(self, language):
@@ -123,7 +128,9 @@ def find_new_pdf(original_name):
     original_name_part = Path(original_name).stem
     list_dir = os.listdir('./user_files/')
     files = [file for file in list_dir if original_name_part in file and original_name!=file]
+
     return files[0]
+
 
 def delete_files(original_name):
     original_name_part = original_name.split('.')[0]
@@ -133,25 +140,25 @@ def delete_files(original_name):
         os.remove('./user_files/' + file)
 
 
+
 def WEB_UI():
     app = Flask(__name__)
 
     @app.route("/", methods=['GET', 'POST'])
     def main_url():
         return redirect("/he/home/")
-    
+
     @app.route("/<string:language>/home/", methods=['GET', 'POST'])
     def home(language):
-        if language=='he':
+        if language == 'he':
             form_text = PdfFormText('hebrew')
             home_text = HE_HOME_TEXT
         else:
             form_text = PdfFormText('english')
             home_text = EN_HOME_TEXT
-        page = Self_page('home',language)
-        return render_template("home.html", Title="pocket_books_home", 
+        page = Self_page('home', language)
+        return render_template("home.html", Title="pocket_books_home",
                                form_text=form_text, home_text=home_text, self_page=page)
-    
 
     @app.route("/<string:language>/past_books/", methods=['GET', 'POST'])
     @app.route("/<string:language>/past_books/<string:search>/", methods=['GET', 'POST'])
@@ -161,26 +168,26 @@ def WEB_UI():
             return redirect('past_books', language=language, search='no_filter')
         except:
             pass
-        if language=='he':
+        if language == 'he':
             form_text = PdfFormText('hebrew')
             cards_text = HE_CARDS
-            search_by_lang= 'חפש'
+            search_by_lang = 'חפש'
         else:
             form_text = PdfFormText('english')
             cards_text = EN_CARDS
-            search_by_lang='search'
+            search_by_lang = 'search'
         book1 = Book('תהילים', 'ספרוני תהילים', '32', 'sewing')
         book2 = Book('harav Noah', 'boaring lessons', '4', 'sewing')
         book3 = Book('שיעורי הרב מסתלבט', 'קולות לכל אירוע', '32', 'gluing')
         books = [book1, book2, book3]
-        page = Self_page('past_books',language)
-        return render_template("past_books.html", Title="past_books_page", 
+        page = Self_page('past_books', language)
+        return render_template("past_books.html", Title="past_books_page",
                                form_text=form_text, cards_text=cards_text, self_page=page,
                                books=books, search_text=search, search_lang=search_by_lang)
-    
+
     @app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
     def main_site_page(language):
-        if language=='he':
+        if language == 'he':
             form_text = PdfFormText('hebrew')
         else:
             form_text = PdfFormText('english')
@@ -188,22 +195,24 @@ def WEB_UI():
         book_languages = form_text.languges
         pages_type = ['A4', 'A5', 'A6', 'A7']
         form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
-        page = Self_page('main_site_page',language)
-        return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text, self_page=page)
+        page = Self_page('main_site_page', language)
+        return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text,
+                               self_page=page)
 
     @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
     # it's opening a new tab to download the output file and then closes it.
     def download():
         user_files = './user_files/'
+
         if request.method == 'POST':
             pdf_file = request.files['file']
             pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
-            try:  # recomendeation to use type instead of try. I dont understand who to implement without crash...
+            try:  # recommendation to use type instead of try. I don't understand who to implement without crash...
                 number_of_pages_booklet = int(request.form['pages'])
                 number_of_pages_sheet = int(request.form['pages_per_sheet'])
             except:
                 print('error in number of pages or in number of pages per sheet')
-            
+
             merge_type = request.form['pdf_merge_type']
             language = request.form['book_lang']
             # future data for usage...
@@ -213,7 +222,7 @@ def WEB_UI():
                 cut_lines_bool = True
             else:
                 cut_lines_bool = False
-            
+
             page_numbering = request.form.get('page_numbering')
             if page_numbering == 'page_numbering':
                 page_numbering_bool = True
@@ -224,31 +233,31 @@ def WEB_UI():
                 merge_type_text = ''
             else:
                 merge_type_text = 's'
-            
-            if language=='עברית':
+
+            if language == 'עברית':
                 language_num = 0
             else:
                 language_num = 1
-            
+
             if 1:  # not clear when to use this option... until now only used with 'v' option...
                 combine_method = 'v'
             else:
                 combine_method = ''  # ?
             # create the new pdf
             inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
-                       merge_type_text, combine_method, language_num]
+                      merge_type_text, combine_method, language_num]
             making_the_pdf(inputs, eng=0, page_Numbers=page_numbering_bool, cutLines=cut_lines_bool)
-            
+
             fileName = find_new_pdf(pdf_file.filename)
             with open(user_files + fileName, "rb") as fh:
                 buf = BytesIO(fh.read())
-            delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
+            delete_files(pdf_file.filename)  # delete all files...  assuming no other pdf with the same name
         return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
 
     # "192.168.154.195" - example of current IP that might change and required for testing on
     # other devices, "127.0.0.1" - self IP for basic coding
     # debug=True - only before production to make working easy
-    
+
     # app.run(host="192.168.154.195", port=8000, debug=True)
     app.run(host="127.0.0.1", port=8000, debug=True)
 
