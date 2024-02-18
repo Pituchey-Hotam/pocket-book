@@ -1,21 +1,15 @@
-#lang, #booklet_numbers{
-    margin: 0% 2% 4% 2%;
-    display: inline-block;
+.form-section {
+    transition: 0.2s linear all;
 }
 
-#merge, #page{
-    margin: 2%;
-    display: inline-block;
+.form-check {
+    width: max-content;
 }
 
-#check_boxes{
-    margin: 2%;
-    display: inline-block;
+.form-section:hover {
+    box-shadow: rgba(125, 125, 125, .12) 3px 6px;
 }
 
-#submit_btn{
-    border-radius: 15%;
-    background-color: #a5d7e8;
-    font-size: 150%;
-    padding: 1%;
+input[type="submit"] {
+    font-size: 1.5rem;
 }

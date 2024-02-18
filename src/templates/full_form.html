@@ -1,62 +1,114 @@
-
 {% extends "main.html" %}
-    {% block content %}
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/form.css') }}">
-    <form action = "/download" method = "post" enctype="multipart/form-data" target="_blank">
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/form.css') }}">
+<form action="/download" method="post" enctype="multipart/form-data" target="_blank">
 
-        <h2>{{form_text.choose_flie_header}}</h2>
-        <input type="file" name="file" />
-        <br>
 
-        <span id="lang">
-            <h2>{{form_text.language_header}}</h2>
-            {% for book_language in form_data.book_languages %}
-            <input type="radio" id="{{book_language}}" name="book_lang" value="{{book_language}}">
-            <label for="{{book_language}}">{{book_language}}</label><br>
-            {% endfor%}
-            <br>
-        </span>
-        
-        <span id="booklet_numbers">
-            <h2>{{form_text.booklet_parameters}}</h2>
-            <label for="pages">{{form_text.inst_pages}}</label><br>
-            <input type="text" id="pages" name="pages"><br>
 
-            <label for="pages_per_sheet">{{form_text.inst_per_pages}}</label><br>
-            <input type="text" id="pages_per_sheet" name="pages_per_sheet"><br>
-        </span>
-        <br>
-        <span id="merge">
-            <h2>{{form_text.inst_merge.split('?')[0]+'?'}}</h2>
-            <h4>{{form_text.inst_merge.split('?')[1]}}</h4>
-            {% for merge_type in form_data.merge_types %}
-            <input type="radio" id="{{merge_type}}" name="pdf_merge_type" value="{{merge_type}}">
-            <label for="{{merge_type}}">{{merge_type}}</label><br>
-            {% endfor%}
-        </span>
+    <div class="row">
+        <div class="col">
+            <div class="mb-3 form-section card">
+                <div class="card-body">
+                    <h5 class="input-info card-title mb-3">1. {{form_text.choose_flie_header}}</h5>
+                    <input class="form-control" type="file" name="file" />
+                </div>
+            </div>
 
-        <span id="page">
-            <h2>{{form_text.page_type_title}}</h2>
-            {% for page_type in form_data.page_types %}
-            <input type="radio" id="{{page_type}}" name="page_size" value="{{page_type}}">
-            <label for="{{page_type}}">{{page_type}}</label><br>
-            {% endfor%}
-        </span>
-        <span id="check_boxes">
-            <h2>{{form_text.booklet_options}}</h2>
+            <!-- Language Selection -->
+            <div class="mb-3 card form-section" id="lang">
+                <div class="card-body">
+                    <h5 class="card-title">2. {{form_text.language_header}}</h5>
+                    <div class="d-flex flex-column">
+                        {% for book_language in form_data.book_languages %}
+                        <div>
+                            <input class="form-check-input" type="radio" id="{{book_language}}" name="book_lang"
+                                value="{{book_language}}">
+                            <label class="form-check-label" for="{{book_language}}">{{book_language}}</label>
+                        </div>
+                        {% endfor%}
+                    </div>
+                </div>
 
-            <input type="checkbox" id="cut_lines" name="cut_lines" value="cut_lines">
-            <label for="cut_lines">{{form_text.cut_lines}}</label><br>
+            </div>
 
-            <input type="checkbox" id="page_numbering" name="page_numbering" value="page_numbering">
-            <label for="page_numbering">{{form_text.page_numbering}}</label><br>
+            <!-- Booklet Numbers Selection -->
+            <div class="mb-3 form-section card" id="booklet_numbers">
+                <div class="card-body">
+                    <h5 class="card-title">3. {{form_text.booklet_parameters}}</h5>
 
-            <input type="checkbox" id="save_for_others" name="save_for_others" value="save_for_others">
-            <label for="save_for_others">{{form_text.save_for_others}}</label><br>
-            
-            <!-- add text area and name if checked -->
-        </span>
-        <br>
-        <input type = "submit" value="{{form_text.submit_text}}" id="submit_btn" style="float: right;margin-right: 50%;">
-    </form>
-    {% endblock %}
+                    <div class="mb-1">
+                        <label class="form-label" for="pages">{{form_text.inst_pages}}</label>
+                        <input class="form-control" type="num" min="4" placeholder="32" id="pages" name="pages">
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="pages_per_sheet">{{form_text.inst_per_pages}}</label>
+                        <input class="form-control" type="text" id="pages_per_sheet" name="pages_per_sheet">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col">
+            <div class="form-section card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">4. {{form_text.inst_merge.split('?')[0]+'?'}}</h5>
+                    <h6 class="card-subtitle">{{form_text.inst_merge.split('?')[1]}}</h6>
+                    {% for merge_type in form_data.merge_types %}
+                    <div>
+                        <input class="form-check-input" type="radio" id="{{merge_type}}" name="pdf_merge_type"
+                            value="{{merge_type}}">
+                        <label class="form-check-label" for="{{merge_type}}">{{merge_type}}</label>
+                    </div>
+                    {% endfor%}
+                </div>
+            </div>
+
+            <div class="form-section card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">5. {{form_text.page_type_title}}</h5>
+                    <div class="d-flex">
+                        {% for page_type in form_data.page_types %}
+                        <div class="p-2 m-2">
+                            <input class="form-check-input" type="radio" id="{{page_type}}" name="page_size"
+                                value="{{page_type}}">
+                            <label for="{{page_type}}">{{page_type}}</label>
+                        </div>
+                        {% endfor%}
+                    </div>
+                </div>
+            </div>
+            <div class="form-section card mb-3">
+                <div class="card-body">
+
+                    <h5 class="card-title">6. {{form_text.booklet_options}}</h5>
+
+                    <div class="form-check form-switch">
+                        <label class="form-check-label" for="cut_lines">{{form_text.cut_lines}}</label>
+                        <input class="form-check-input" type="checkbox" id="cut_lines" name="cut_lines"
+                            value="cut_lines">
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <label class="form-check-label" for="page_numbering">{{form_text.page_numbering}}</label>
+                        <input class="form-check-input" type="checkbox" id="page_numbering" name="page_numbering"
+                            value="page_numbering">
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <label class="form-check-label" for="save_for_others">{{form_text.save_for_others}}</label>
+                        <input class="form-check-input" type="checkbox" id="save_for_others" name="save_for_others"
+                            value="save_for_others">
+                    </div>
+                </div>
+
+                <!-- add text area and name if checked -->
+            </div>
+        </div>
+
+        <input class="btn btn-success" type="submit" value="{{form_text.submit_text}}" id="submit_btn" />
+    </div>
+
+</form>
+{% endblock %}

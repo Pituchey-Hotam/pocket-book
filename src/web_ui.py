@@ -22,23 +22,24 @@ class Book:
         self.num_pages = num_pages
         self.type = type
 
-ENGLISH_TEXT =  [
-    "booklet project",
-    "Choose a file: ",
-    "Enter number of pages in each booklet (In multiples of 4. the standard is 32): ",
-    "Enter pages per sheet (2/4/8/16): ",
+
+ENGLISH_TEXT = [
+    "Booklet Project",
+    "Choose a file",
+    "Enter the number of pages in each booklet (In multiples of 4. the standard is 32): ",
+    "Enter the number of pages per sheet (2/4/8/16): ",
     "Sewing or gluing? In the gluing there is an extra blank page on each side.",
-    "gluing",
+    "Gluing",
     "Sewing",
-    "page type",
-    "create booklet",
+    "Page type",
+    "Create Booklet",
     "Hebrew",
     "English",
-    "Book language?",
-    "booklet options",
-    "add cut lines?",
-    "add page numbering?",
-    "can we save the resault PDF for other user?"
+    "Book's language",
+    "Booklet options",
+    "Add cut lines?",
+    "Add page numbering?",
+    "Can we save the result PDF for other user?",
 ]
 
 HEBREW_TEXT = [
@@ -57,16 +58,16 @@ HEBREW_TEXT = [
     "אופציות הדפסה נוספות",
     "האם להוסיף קווי חיתוך?",
     "האם להוסיף מספרי עמודים?",
-    "האם אנחנו יכולים להציע את הספרון לעוד משתמשים?"
+    "האם אנחנו יכולים להציע את הספרון לעוד משתמשים?",
 ]
 
 EN_HOME_TEXT = [
-    'welcome',
-    'this is a short about us',
-    'video title',
-    'create your own PDF booklet',
+    "Welcome",
+    "This is a short about us",
+    "Video Title",
+    "Create your own PDF Booklet",
     "other's books",
-    'search books'
+    "search books",
 ]
 
 HE_HOME_TEXT = [
@@ -97,14 +98,14 @@ HE_CARDS = [
 class PdfFormText:
     # this class is the text container for the web page after language choice
     def __init__(self, language):
-        if language == 'english':
+        if language == "english":
             text = ENGLISH_TEXT
-            self.language_format = ['en', 'ltr']
-            self.booklet_parameters = 'booklet parameters'
+            self.language_format = ["en", "ltr"]
+            self.booklet_parameters = "Booklet parameters"
         else:
             text = HEBREW_TEXT
-            self.language_format = ['he', 'rtl']
-            self.booklet_parameters = 'נתוני ספר כיס'
+            self.language_format = ["he", "rtl"]
+            self.booklet_parameters = "נתוני ספר כיס"
         self.page_header, self.choose_flie_header = text[0], text[1]
         self.inst_pages, self.inst_per_pages = text[2], text[3]
         self.inst_merge = text[4]
