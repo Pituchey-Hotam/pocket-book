@@ -1,8 +1,13 @@
 import os
+from uuid import uuid4
+from datetime import datetime
+import csv
+
 from io import BytesIO
 from pocket_book import making_the_pdf
 from flask import Flask, render_template, request, redirect, send_file, url_for
 from pathlib import Path
+
 
 class Self_page:
     def __init__(self, function_name, language):
@@ -40,6 +45,11 @@ ENGLISH_TEXT = [
     "Add cut lines?",
     "Add page numbering?",
     "Can we save the result PDF for other user?",
+    "Contributing Book",
+    "Book's Name",
+    "Author's Name",
+    "Book's Era",
+    "Book's Genre"
 ]
 
 HEBREW_TEXT = [
@@ -59,6 +69,11 @@ HEBREW_TEXT = [
     "האם להוסיף קווי חיתוך?",
     "האם להוסיף מספרי עמודים?",
     "האם אנחנו יכולים להציע את הספרון לעוד משתמשים?",
+    "הוספת ספר למאגר",
+    "שם הספר",
+    "שם המחבר",
+    "תקופת הספר",
+    "תחום הספר"
 ]
 
 EN_HOME_TEXT = [
@@ -95,6 +110,9 @@ HE_CARDS = [
     'הורדה'
 ]
 
+SFO_OPTIONS = {'eras': ['תנ"ך', 'תנאים', 'אמוראים', 'גאונים', 'ראשונים', 'אחרונים'],
+        'genres': ['תנ"ך', 'מקורות תנאיים', 'תלמוד ועיון', 'הלכה', 'מחשבה', 'מוסר', 'מנייני מצוות', 'קבלה', 'חסידות', 'ספרות']}
+
 class PdfFormText:
     # this class is the text container for the web page after language choice
     def __init__(self, language):
@@ -117,7 +135,15 @@ class PdfFormText:
         self.booklet_options = text[12]
         self.cut_lines = text[13]
         self.page_numbering = text[14]
+
         self.save_for_others = text[15]
+        self.sfo_title = text[16]
+        self.sfo_book_name = text[17]
+        self.sfo_author = text[18]
+        self.sfo_genre = text[19]
+        self.sfo_era = text[20]
+
+        self.sfo_options = SFO_OPTIONS
 
 
 def find_new_pdf(original_name):
@@ -133,6 +159,17 @@ def delete_files(original_name):
     for file in files:
         os.remove('./user_files/' + file)
 
+def save_to_db(file, book_name, author, book_lang, era, genre, pages_per_sheet):
+    DB_PATH = './books_db/'
+    with open(DB_PATH + 'index.csv', 'a', encoding='utf-8') as index_file:
+        # Choosing new name for storting the file (adding uuid to mitigate duplicates)
+        filename = Path(file.filename).stem + '-' + str(uuid4())[:5] + Path(file.filename).suffix
+
+        file.save(DB_PATH + filename)
+
+        writer = csv.writer(index_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        
+        writer.writerow([filename, datetime.now(), book_name, author, book_lang, era, genre, pages_per_sheet])
 
 def WEB_UI():
     app = Flask(__name__)
@@ -204,12 +241,14 @@ def WEB_UI():
                 number_of_pages_sheet = int(request.form['pages_per_sheet'])
             except:
                 print('error in number of pages or in number of pages per sheet')
+                return
             
             merge_type = request.form['pdf_merge_type']
             language = request.form['book_lang']
             # future data for usage...
-            page_type = request.form['page_size']
+            # page_type = request.form['page_size']
             cut_lines = request.form.get('cut_lines')
+            save_for_others = request.form.get('save_for_others')
             if cut_lines == 'cut_lines':
                 cut_lines_bool = True
             else:
@@ -221,12 +260,12 @@ def WEB_UI():
             else:
                 page_numbering_bool = False
 
-            if merge_type == 'gluing':
+            if merge_type == 'gluing' or merge_type == 'מודבק':
                 merge_type_text = ''
             else:
                 merge_type_text = 's'
             
-            if language=='עברית':
+            if language=='עברית' or language=='Hebrew':
                 language_num = 0
             else:
                 language_num = 1
@@ -235,6 +274,19 @@ def WEB_UI():
                 combine_method = 'v'
             else:
                 combine_method = ''  # ?
+            
+            if save_for_others:
+                book_name = request.form.get('sfo_book_name')
+                author = request.form.get('sfo_author')
+                genre = request.form.get('sfo_genre')
+                era = request.form.get('sfo_era')
+
+                pages_per_sheets = number_of_pages_sheet # Using user's pages per sheet choice
+                book_lang = language_num # Using user's book's language choice
+
+                # save_to_db(pdf_file, "חוטב עצים ושואב מים", "הרא\"ש קטן", book_lang, "אחרונים", "מוסר", 2)
+                save_to_db(pdf_file, book_name, author, book_lang, genre, era, pages_per_sheets)
+
             # create the new pdf
             inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
                        merge_type_text, combine_method, language_num]

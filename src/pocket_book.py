@@ -10,7 +10,8 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfgen import canvas
-from web_ui import *
+
+# from web_ui import *
 
 
 class PageSize(Enum):
@@ -19,26 +20,29 @@ class PageSize(Enum):
     The value of the page size is how many pages in this size
     fit in an A4 page.
     """
+
     A5 = 2
     A6 = 4
     A7 = 8
+
 
 # -----------------------
 #     pdf manipulation
 # ------------------------
 
+
 def extract_num_of_pages(pdf_path):
-    with open(pdf_path, 'rb') as f:
+    with open(pdf_path, "rb") as f:
         pdf = PdfFileReader(f)
         number_of_pages = pdf.getNumPages()
     f.close()
     return number_of_pages
 
 
-def split(path, name_of_split, sp, length, bind_method='s'):
+def split(path, name_of_split, sp, length, bind_method="s"):
     # length += (4-(length%4))*(length%4 > 0)
     pdf = PdfFileReader(path)
-    output = f'{name_of_split}'
+    output = f"{name_of_split}"
     pdf_writer = PdfFileWriter()
 
     for page in range(sp, sp + length):
@@ -46,11 +50,11 @@ def split(path, name_of_split, sp, length, bind_method='s'):
             pdf_writer.addPage(pdf.getPage(page))
         else:
             addBP(pdf_writer, page)
-    if not bind_method == 's':
+    if not bind_method == "s":
         pdf_writer.insertBlankPage(0)
         pdf_writer.addBlankPage()
 
-    with open(output, 'wb') as output_pdf:
+    with open(output, "wb") as output_pdf:
         pdf_writer.write(output_pdf)
     output_pdf.close()
 
@@ -77,12 +81,14 @@ def addBP(pdfFileWriter, i):
 
 def split_Even_Odd(path, name_of_split):
     pdf = PdfFileReader(path)
-    output_ev = f'{name_of_split}_even.pdf'
-    output_odd = f'{name_of_split}_odd.pdf'
+    output_ev = f"{name_of_split}_even.pdf"
+    output_odd = f"{name_of_split}_odd.pdf"
     pdf_writer_ev = PdfFileWriter()
     pdf_writer_odd = PdfFileWriter()
     number_of_pages = extract_num_of_pages(path)
-    number_of_pages_plusblank = 0  # int((4 - (number_of_pages / 2 % 4)) * (number_of_pages / 2 % 4 > 0))
+    number_of_pages_plusblank = (
+        0  # int((4 - (number_of_pages / 2 % 4)) * (number_of_pages / 2 % 4 > 0))
+    )
     for page in range(number_of_pages + number_of_pages_plusblank):
         if page < number_of_pages:
             if page % 2 == 0:
@@ -93,10 +99,10 @@ def split_Even_Odd(path, name_of_split):
             pdf_writer_ev.addBlankPage()
             pdf_writer_odd.addBlankPage()
 
-    with open(output_ev, 'wb') as output_pdf:
+    with open(output_ev, "wb") as output_pdf:
         pdf_writer_ev.write(output_pdf)
     output_pdf.close()
-    with open(output_odd, 'wb') as output_pdf:
+    with open(output_odd, "wb") as output_pdf:
         pdf_writer_odd.write(output_pdf)
     output_pdf.close()
 
@@ -104,13 +110,13 @@ def split_Even_Odd(path, name_of_split):
 def rotate(path, name_of_rotate, num_rot=3):
     pdf = PdfFileReader(path)
     number_of_pages = extract_num_of_pages(path)
-    output = f'{name_of_rotate}'
+    output = f"{name_of_rotate}"
     pdf_writer = PdfFileWriter()
     for page in range(number_of_pages):
         page_1 = pdf.getPage(page).rotateClockwise(90 * num_rot)
         pdf_writer.addPage(page_1)
 
-    with open(output, 'wb') as output_pdf:
+    with open(output, "wb") as output_pdf:
         pdf_writer.write(output_pdf)
     output_pdf.close()
 
@@ -125,7 +131,7 @@ def merge_pdfs(paths, output):
             pdf_writer.addPage(pdf_reader.getPage(page))
 
     # Write out the merged PDF
-    with open(output, 'wb') as out:
+    with open(output, "wb") as out:
         pdf_writer.write(out)
     out.close()
 
@@ -140,24 +146,24 @@ def merge_sort_pdfs(path1, path2, output):
         pdf_writer.addPage(pdf2.getPage(page))
 
     # Write out the merged PDF
-    with open(output, 'wb') as out:
+    with open(output, "wb") as out:
         pdf_writer.write(out)
     out.close()
 
 
 def pile_combine(file, path):
     tmp_num = extract_num_of_pages(file)
-    split(file, path + 's1.pdf', 0, ceil(tmp_num / 2))
-    split(file, path + 's2.pdf', ceil(tmp_num / 2), tmp_num)
-    merge_sort_pdfs(path + 's1.pdf', path + 's2.pdf', file)
+    split(file, path + "s1.pdf", 0, ceil(tmp_num / 2))
+    split(file, path + "s2.pdf", ceil(tmp_num / 2), tmp_num)
+    merge_sort_pdfs(path + "s1.pdf", path + "s2.pdf", file)
 
 
 # ~~~~~~~~~~~~~~~~~
 #     the final pdf maker ♪♫♪
 # ~~~~~~~~~~~~~~~~~
 def combineMethod(trash_file, num):
-    odd_path = trash_file + '_odd_rotated' + num + '.pdf'
-    even_path = trash_file + '_even_rotated' + num + '.pdf'
+    odd_path = trash_file + "_odd_rotated" + num + ".pdf"
+    even_path = trash_file + "_even_rotated" + num + ".pdf"
     pile_combine(odd_path, trash_file)
     pile_combine(even_path, trash_file)
 
@@ -165,25 +171,29 @@ def combineMethod(trash_file, num):
 def moreThan(trash_file, combine_method, eng, num=1):
     n = str(num)
     pev = str(num - 1)
-    if pev == '0':
-        pev = ''
+    if pev == "0":
+        pev = ""
 
-    odd_path = trash_file + '_odd' + pev + '.pdf'
-    even_path = trash_file + '_even' + pev + '.pdf'
+    odd_path = trash_file + "_odd" + pev + ".pdf"
+    even_path = trash_file + "_even" + pev + ".pdf"
 
-    rotate(odd_path, trash_file + '_odd_rotated' + n + '.pdf')
-    rotate(even_path, trash_file + '_even_rotated' + n + '.pdf')
+    rotate(odd_path, trash_file + "_odd_rotated" + n + ".pdf")
+    rotate(even_path, trash_file + "_even_rotated" + n + ".pdf")
 
-    if combine_method == 'v':
+    if combine_method == "v":
         combineMethod(trash_file, n)
 
-    odd_path = trash_file + '_odd' + n + '.pdf'
-    even_path = trash_file + '_even' + n + '.pdf'
+    odd_path = trash_file + "_odd" + n + ".pdf"
+    even_path = trash_file + "_even" + n + ".pdf"
 
-    pdfbooklet_new.pdfbooklet(trash_file + '_odd_rotated' + n + '.pdf', odd_path, booklet=0, eng=eng)
+    pdfbooklet_new.pdfbooklet(
+        trash_file + "_odd_rotated" + n + ".pdf", odd_path, booklet=0, eng=eng
+    )
     if num % 2 == 0:
-        eng = (eng == 0)  # assign True/False value
-    pdfbooklet_new.pdfbooklet(trash_file + '_even_rotated' + n + '.pdf', even_path, booklet=0, eng=eng)
+        eng = eng == 0  # assign True/False value
+    pdfbooklet_new.pdfbooklet(
+        trash_file + "_even_rotated" + n + ".pdf", even_path, booklet=0, eng=eng
+    )
 
     return odd_path, even_path
 
@@ -212,15 +222,15 @@ def add_page_numbers(input_pdf, output_pdf):
 def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
     if page_Numbers:
         add_page_numbers(inputs[0], inputs[0])
-    inputs[0] = inputs[0].split(';')
+    inputs[0] = inputs[0].split(";")
     for input in inputs[0]:
-        input = input.replace('\\', '/')
+        input = input.replace("\\", "/")
 
-        file_name = input.split('/')[-1]
-        old_path = input[:-len(file_name) - 1] + '/'
+        file_name = input.split("/")[-1]
+        old_path = input[: -len(file_name) - 1] + "/"
 
-        dir_path = old_path + 'trash ' + file_name[:-4]
-        path = dir_path[:] + '/'  # argv[2]+'\\'
+        dir_path = old_path + "trash " + file_name[:-4]
+        path = dir_path[:] + "/"  # argv[2]+'\\'
         if not exists(path):
             mkdir(path)
 
@@ -235,28 +245,38 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         number_of_pages = extract_num_of_pages(file)
 
         paths = []
-        if not bind_method == 's':
+        if not bind_method == "s":
             notebook_len -= 2
-        for i in range(int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0)):
+        for i in range(
+            int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0)
+        ):
             name_trash_file = trash_file + str(i + 1)
-            split(file, name_trash_file + '.pdf', i * notebook_len, notebook_len, bind_method)
-            pdfbooklet_new.pdfbooklet(name_trash_file + '.pdf', name_trash_file + 'let.pdf', eng=eng)
-            paths.append(name_trash_file + 'let.pdf')
+            split(
+                file,
+                name_trash_file + ".pdf",
+                i * notebook_len,
+                notebook_len,
+                bind_method,
+            )
+            pdfbooklet_new.pdfbooklet(
+                name_trash_file + ".pdf", name_trash_file + "let.pdf", eng=eng
+            )
+            paths.append(name_trash_file + "let.pdf")
         if pages_per_sheet == 2:
             path = old_path
             trash_file = path + file_name
-        final_path = trash_file + '_merged.pdf'
+        final_path = trash_file + "_merged.pdf"
         merge_pdfs(paths, output=final_path)
 
         if pages_per_sheet > 2:
             split_Even_Odd(final_path, trash_file)
 
             counter = 1
-            while pages_per_sheet / (counter ** 2) > 1:
+            while pages_per_sheet / (counter**2) > 1:
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
                 counter += 1
 
-            final_path = old_path + file_name[:-4] + ' ready to print.pdf'
+            final_path = old_path + file_name[:-4] + " ready to print.pdf"
             merge_sort_pdfs(odd_path, even_path, final_path)
 
         rmtree(dir_path, ignore_errors=False)
@@ -271,10 +291,14 @@ def add_dashed_cut_line(file, numP):
         packet = io.BytesIO()
         if log(numP, 2) % 2 == 0:
             can = canvas.Canvas(packet, pagesize=A4)
-            cut_line_width, cut_line_height = A4  # Full width of the page # Full height of the page
+            cut_line_width, cut_line_height = (
+                A4  # Full width of the page # Full height of the page
+            )
         else:
             can = canvas.Canvas(packet, pagesize=(A4[1], A4[0]))
-            cut_line_height, cut_line_width = A4  # Full width of the page # Full height of the page
+            cut_line_height, cut_line_width = (
+                A4  # Full width of the page # Full height of the page
+            )
         cut_line_x = 0  # X position for the horizontal cut line
         cut_line_y = 0  # Y position for the vertical cut line
 
@@ -284,23 +308,39 @@ def add_dashed_cut_line(file, numP):
         if log(numP, 2) % 2 == 0:
             for j in range(1, int(sqrt(numP))):
                 # Add horizontal cut line
-                can.line(cut_line_x, j * cut_line_height / int(sqrt(numP)), cut_line_x + cut_line_width,
-                         j * cut_line_height / int(sqrt(numP)))
+                can.line(
+                    cut_line_x,
+                    j * cut_line_height / int(sqrt(numP)),
+                    cut_line_x + cut_line_width,
+                    j * cut_line_height / int(sqrt(numP)),
+                )
                 if j % 2 == 0:
                     # Add vertical cut line
-                    can.line(j * cut_line_width / int(sqrt(numP)), cut_line_y, j * cut_line_width / int(sqrt(numP)),
-                             cut_line_y + cut_line_height)
+                    can.line(
+                        j * cut_line_width / int(sqrt(numP)),
+                        cut_line_y,
+                        j * cut_line_width / int(sqrt(numP)),
+                        cut_line_y + cut_line_height,
+                    )
         else:
             y = int(sqrt(numP / 2))
             x = y * 2
             for j in range(1, y):
                 # Add horizontal cut line
-                can.line(cut_line_x, j * cut_line_height / y, cut_line_x + cut_line_width,
-                         j * cut_line_height / y)
+                can.line(
+                    cut_line_x,
+                    j * cut_line_height / y,
+                    cut_line_x + cut_line_width,
+                    j * cut_line_height / y,
+                )
             for j in range(1, x):
                 if j % 2 == 0:
-                    can.line(j * cut_line_width / x, cut_line_y, j * cut_line_width / x,
-                             cut_line_y + cut_line_height)
+                    can.line(
+                        j * cut_line_width / x,
+                        cut_line_y,
+                        j * cut_line_width / x,
+                        cut_line_y + cut_line_height,
+                    )
         can.save()
         packet.seek(0)
         new_pdf = PdfFileReader(packet)
@@ -319,5 +359,5 @@ def main():
     WEB_UI()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
