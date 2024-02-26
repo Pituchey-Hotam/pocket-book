@@ -2,6 +2,7 @@ import os
 from uuid import uuid4
 from datetime import datetime
 import csv
+from dataclasses import dataclass
 
 from io import BytesIO
 from pocket_book import making_the_pdf
@@ -20,12 +21,16 @@ class PdfFormQuestions:
         self.merge_types = merge_types
         self.book_languages = book_languages
 
+@dataclass
 class Book:
-    def __init__(self, name, description, num_pages, type):
-        self.name = name
-        self.description = description
-        self.num_pages = num_pages
-        self.type = type
+    filename: str
+    timestamp: str
+    name: str
+    author: str
+    language: str
+    genre: str
+    era: str
+    pages_per_sheet: int
 
 
 ENGLISH_TEXT = [
@@ -81,7 +86,7 @@ EN_HOME_TEXT = [
     "This is a short about us",
     "Video Title",
     "Create your own PDF Booklet",
-    "other's books",
+    "Community Created Booklets",
     "search books",
 ]
 
@@ -95,19 +100,36 @@ HE_HOME_TEXT = [
 ]
 
 EN_CARDS = [
-    'others pdf\'s',
-    'description',
-    'number of pages per booklets',
-    'book structere: ',
-    'Download'
+    'Community Created Booklets',
+    'Book\'s / Author\'s Name:',
+    "Book's Era",
+    "Book's Genre",
+    "Author",
+    "Language",
+    "Genre",
+    "Era",
+    "Pages per Sheet Recommended",
+    'Download!',
+    "Search Filters",
+    "Hebrew",
+    "English"
 ]
 
 HE_CARDS = [
     'קבצים שיצרו אחרים',
-    'תיאור',
-    'מספר עמודים בספרון',
-    'מבנה הספר',
-    'הורדה'
+    'שם הספר / המחבר:',
+    "תחום הספר",
+    "תקופת הספר",
+    "מחבר",
+    "שפה",
+    "תחום",
+    "תקופה",
+    "מספר מומלץ לעמודים בדף",
+    'הורדה!',
+    "מסננים",
+    "עברית",
+    "אנגלית"
+
 ]
 
 SFO_OPTIONS = {'eras': ['תנ"ך', 'תנאים', 'אמוראים', 'גאונים', 'ראשונים', 'אחרונים'],
@@ -159,11 +181,29 @@ def delete_files(original_name):
     for file in files:
         os.remove('./user_files/' + file)
 
+DB_PATH = './books_db/'
+
+def get_book_db():
+    with open(DB_PATH + 'index.csv', 'r', encoding='utf-8') as index_file:
+        # Choosing new name for storting the file (adding uuid to mitigate duplicates)
+        reader = csv.reader(index_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)        
+        
+        reader.__next__() # Skip headers
+        books = []
+        for row in reader:
+            if len(row) == 0: continue # Empty line in csv file
+
+            books.append(Book(*row)) # Unpacks row, can be changed if Book object data isn't identical to index.csv data.
+
+        return books
+        
+
 def save_to_db(file, book_name, author, book_lang, era, genre, pages_per_sheet):
-    DB_PATH = './books_db/'
+    file.seek(0) # After saving once need to seek to start
     with open(DB_PATH + 'index.csv', 'a', encoding='utf-8') as index_file:
         # Choosing new name for storting the file (adding uuid to mitigate duplicates)
-        filename = Path(file.filename).stem + '-' + str(uuid4())[:5] + Path(file.filename).suffix
+        # filename = Path(file.filename).stem + '-' + str(uuid4())[:5] + Path(file.filename).suffix
+        filename = book_name + '-' + str(uuid4())[:5] + Path(file.filename).suffix
 
         file.save(DB_PATH + filename)
 
@@ -192,29 +232,25 @@ def WEB_UI():
     
 
     @app.route("/<string:language>/past_books/", methods=['GET', 'POST'])
-    @app.route("/<string:language>/past_books/<string:search>/", methods=['GET', 'POST'])
-    def past_books(language, search='no_filter'):
-        try:
-            search = request.form['part_name']
-            return redirect('past_books', language=language, search='no_filter')
-        except:
-            pass
+    def past_books(language):
+        if request.method == 'POST':
+            filename = request.form.get('file_name')
+            with open(DB_PATH + filename, "rb") as fh:
+                buf = BytesIO(fh.read())
+            return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=filename)
+
         if language=='he':
             form_text = PdfFormText('hebrew')
             cards_text = HE_CARDS
-            search_by_lang= 'חפש'
         else:
             form_text = PdfFormText('english')
             cards_text = EN_CARDS
-            search_by_lang='search'
-        book1 = Book('תהילים', 'ספרוני תהילים', '32', 'sewing')
-        book2 = Book('harav Noah', 'boaring lessons', '4', 'sewing')
-        book3 = Book('שיעורי הרב מסתלבט', 'קולות לכל אירוע', '32', 'gluing')
-        books = [book1, book2, book3]
+
+        books = get_book_db()   
         page = Self_page('past_books',language)
         return render_template("past_books.html", Title="past_books_page", 
                                form_text=form_text, cards_text=cards_text, self_page=page,
-                               books=books, search_text=search, search_lang=search_by_lang)
+                               books=books, sfo_options = SFO_OPTIONS)
     
     @app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
     def main_site_page(language):
@@ -308,3 +344,4 @@ def WEB_UI():
 
 if __name__ == '__main__':
     WEB_UI()
+    # pass

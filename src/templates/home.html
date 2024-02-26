@@ -5,10 +5,14 @@
     <div class="col">
         <h1>{{home_text[0]}}</h1>
         <p>{{home_text[1]}}</p>
-        <a class="btn btn-primary" href="{{url_for('main_site_page', language=self_page.self_lang)}}">
-            <!-- <button type="submit" value="editor">{{home_text[3]}}</button> -->
-            {{home_text[3]}}
-        </a>
+        <div class="d-flex">
+            <a class="btn btn-primary" href="{{url_for('main_site_page', language=self_page.self_lang)}}">
+                {{home_text[3]}}
+            </a>
+            <a class="btn btn-secondary mx-2" href="{{url_for('past_books', language=self_page.self_lang)}}">
+                {{home_text[4]}}
+            </a>
+        </div>
     </div>
 
     <div class="col">
@@ -19,9 +23,4 @@
             allowfullscreen></iframe>
     </div>
 </div>
-<!-- <div>
-    <h2>{{home_text[4]}}</h2>
-    <input name="search" type="text">
-    <button type="submit">{{home_text[5]}}</button>
-</div> -->
 {% endblock %}
