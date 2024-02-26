@@ -65,8 +65,8 @@ def addBP(pdfFileWriter, i):
     """
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
-    can.setFontSize(20)
-    can.drawString(A4[0] / 2, 10, str(i))
+    can.setFontSize(15)
+    can.drawString(A4[0] / 2, 10, str(i + 1))
     can.save()
     packet.seek(0)
     # create a new PDF with Reportlab
@@ -205,7 +205,7 @@ def add_page_numbers(input_pdf, output_pdf):
     for page_number, page in enumerate(pdf_reader.pages, start=1):
         packet = io.BytesIO()
         c = canvas.Canvas(packet, pagesize=A4)
-        c.setFontSize(20)
+        c.setFontSize(15)
         page_number_text = f"{page_number}"
         c.drawString(page.mediaBox.width / 2, 10, page_number_text)
         c.save()
@@ -248,7 +248,7 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         if not bind_method == "s":
             notebook_len -= 2
         for i in range(
-            int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0)
+                int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0)
         ):
             name_trash_file = trash_file + str(i + 1)
             split(
@@ -272,7 +272,7 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
             split_Even_Odd(final_path, trash_file)
 
             counter = 1
-            while pages_per_sheet / (counter**2) > 1:
+            while pages_per_sheet / (counter ** 2) > 1:
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
                 counter += 1
 
@@ -303,8 +303,8 @@ def add_dashed_cut_line(file, numP):
         cut_line_y = 0  # Y position for the vertical cut line
 
         can.setStrokeColorRGB(0, 0, 0)  # Black color for the cut lines
-        can.setDash(3, 3)  # Set dash pattern (3 units on, 3 units off)
-        can.setLineWidth(2)
+        can.setDash(1, 3)  # Set dash pattern (3 units on, 3 units off)
+        can.setLineWidth(1)
         if log(numP, 2) % 2 == 0:
             for j in range(1, int(sqrt(numP))):
                 # Add horizontal cut line
