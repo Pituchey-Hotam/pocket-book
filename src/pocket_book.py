@@ -73,7 +73,7 @@ def addBP(pdfFileWriter, i, letters=True):  # todo:
     can.setFontSize(15)
     if letters:
         can.setFont("Hebrew", 15)
-        page_number_text = int_to_gematria(i + 1, False)
+        page_number_text = int_to_gematria(i + 1, False).replace('יה','טו').replace('יו','טז')
         print(page_number_text)
         page_number_text = ''.join(
             [page_number_text[len(page_number_text) - j - 1] for j in range(len(page_number_text))])
@@ -222,7 +222,7 @@ def add_page_numbers(input_pdf, output_pdf, letters=True):  # todo:
         page_number_text = f"{page_number}"
         if letters:
             c.setFont("Hebrew", 15)
-            page_number_text = int_to_gematria(page_number_text, False)
+            page_number_text = int_to_gematria(page_number_text, False).replace('יה','טו').replace('יו','טז')
             print(page_number_text)
             page_number_text = ''.join(
                 [page_number_text[len(page_number_text) - i - 1] for i in range(len(page_number_text))])
