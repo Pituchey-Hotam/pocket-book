@@ -17,3 +17,7 @@ input[type="submit"] {
 #sfo-form input, #sfo-form select {
     transition: 0.2s linear all;
 }
+
+.hide {
+    display: none;
+}

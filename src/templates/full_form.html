@@ -22,7 +22,7 @@
                         {% for book_language in form_data.book_languages %}
                         <div>
                             <input class="form-check-input" type="radio" id="{{book_language}}" name="book_lang"
-                                value="{{book_language}}">
+                                value="{{book_language}}" {% if book_language == 'Hebrew' or book_language == 'עברית' %} checked {% endif %}>
                             <label class="form-check-label" for="{{book_language}}">{{book_language}}</label>
                         </div>
                         {% endfor%}
@@ -34,57 +34,43 @@
             <!-- Booklet Numbers Selection -->
             <div class="mb-3 form-section card" id="booklet_numbers">
                 <div class="card-body">
-                    <h5 class="card-title">3. {{form_text.booklet_parameters}}</h5>
-
-                    <div class="mb-1">
-                        <label class="form-label" for="pages">{{form_text.inst_pages}}</label>
-                        <input class="form-control" type="num" min="4" value="32" id="pages" name="pages">
-                    </div>
-
-                    <div>
-                        <label class="form-label" for="pages_per_sheet">{{form_text.inst_per_pages}}</label>
-                        <input class="form-control" type="text" id="pages_per_sheet" name="pages_per_sheet">
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col">
-            <div class="form-section card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">4. {{form_text.inst_merge.split('?')[0]+'?'}}</h5>
-                    <h6 class="card-subtitle">{{form_text.inst_merge.split('?')[1]}}</h6>
-                    {% for merge_type in form_data.merge_types %}
-                    <div>
-                        <input class="form-check-input" type="radio" id="{{merge_type}}" name="pdf_merge_type"
-                            value="{{merge_type}}">
-                        <label class="form-check-label" for="{{merge_type}}">{{merge_type}}</label>
-                    </div>
-                    {% endfor%}
-                </div>
-            </div>
-
-            <!-- <div class="form-section card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">5. {{form_text.page_type_title}}</h5>
+                    <h5 class="card-title">3. {{form_text.page_type_title}}</h5>
                     <div class="d-flex">
-                        {% for page_type in form_data.page_types %}
-                        <div class="p-2 m-2">
-                            <input class="form-check-input" type="radio" id="{{page_type}}" name="page_size"
-                                value="{{page_type}}">
-                            <label for="{{page_type}}">{{page_type}}</label>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="1">
+                            <label for="{{page_type}}">A4 (1 {{form_text.page_type_explanation}})</label>
                         </div>
-                        {% endfor%}
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="2">
+                            <label for="{{page_type}}">A5 (2 {{form_text.page_type_explanation}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="4">
+                            <label for="{{page_type}}">A6 (4 {{form_text.page_type_explanation}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="8">
+                            <label for="{{page_type}}">A7 (8 {{form_text.page_type_explanation}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="16">
+                            <label for="{{page_type}}">A8 (16 {{form_text.page_type_explanation}})</label>
+                        </div>
                     </div>
+
                 </div>
-            </div> -->
-            <div class="form-section card mb-3">
+            </div>
+
+            <div class="mb-3 form-section card">
                 <div class="card-body">
-
-                    <h5 class="card-title">5. {{form_text.booklet_options}}</h5>
-
-                    <div class="form-check form-switch">
+                    <h5 class="input-info card-title mb-3">4. {{form_text.booklet_options}}</h5>
+                    
+                    <div class="form-check form-switch mt-2">
                         <label class="form-check-label" for="cut_lines">{{form_text.cut_lines}}</label>
                         <input class="form-check-input" type="checkbox" id="cut_lines" name="cut_lines"
                             value="cut_lines">
@@ -95,12 +81,18 @@
                         <input class="form-check-input" type="checkbox" id="page_numbering" name="page_numbering"
                             value="page_numbering">
                     </div>
+
                 </div>
             </div>
-              <!-- Save For Others (sfo) -->
+
+        </div>
+
+        <div class="col">
+
+                    <!-- Save For Others (sfo) -->
         <div class="form-section card mb-3">
             <div class="card-body">
-                <h5 class="card-title">6. {{form_text.sfo_title}}</h5>
+                <h5 class="card-title">5. {{form_text.sfo_title}}</h5>
 
                 <div class="form-check form-switch">
                     <label class="form-check-label" for="save_for_others">{{form_text.save_for_others}}</label>
@@ -137,8 +129,52 @@
                 </div>
             </div>
         </div>
-        </div>
+            <div class="form-section card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">6. {{form_text.advanced_header[0]}}
+                    </h5>
+                    <div class="form-check form-switch">
+                        <label class="form-check-label" for="adv-set-check">{{form_text.advanced_header[1]}}</label>
+                        <input id="adv-set-check" class="form-check-input" type="checkbox">
+                    </div>
 
+                    <div id="adv_set_card">
+                    <h6>{{form_text.merge_explain[0]}}</h6>
+                    <p>{{form_text.merge_explain[1]}}
+                        <br>
+                        {{form_text.merge_explain[2]}}
+                    </p>
+                    <ul><li>{{form_text.merge_explain[3]}}</li>
+                    <li>{{form_text.merge_explain[4]}}</li></ul>
+                        
+                    <div class="d-flex">    
+                        <div class="mx-2">
+                            <input class="form-check-input" type="radio" id="gluing" name="pdf_merge_type" checked value="gluing">
+                            <label class="form-check-label" for="gluing">{{form_text.merge_types[0]}} - 
+                                <a target="_blank" href="https://www.youtube.com/watch?v=hvsVKBPs5as">{{form_text.merge_explain[5]}}</a>
+                            </label>
+                        </div>
+                        
+                        <div class="mx-2">
+                            <input class="form-check-input" type="radio" id="sewing" name="pdf_merge_type" value="sewing">
+                            <label class="form-check-label" for="sewing">{{form_text.merge_types[1]}} -
+                                <a target="_blank" href="https://www.youtube.com/watch?v=8RfR_mgwNLs">{{form_text.merge_explain[5]}}</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6>{{form_text.inst_pages_explain[0]}}</h6>
+                        <p>{{form_text.inst_pages_explain[1]}}
+                            {{form_text.inst_pages_explain[2]}}
+                        </p>
+                        <label class="form-label" for="pages">{{form_text.inst_pages}}</label>
+                        <input class="form-control" type="num" min="4" value="32" id="pages" name="pages">
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <input class="btn btn-success" type="submit" value="{{form_text.submit_text}}" id="submit-btn" />
     </div>
@@ -147,20 +183,39 @@
 
 <script>
 let sfo_inputs = document.querySelectorAll('#sfo-form input, #sfo-form select');
-function disable() {
+function disable_sfo() {
     sfo_inputs.forEach(input => input.setAttribute('disabled', true));
 }
-function enable() {
+function enable_sfo() {
     sfo_inputs.forEach(input => input.removeAttribute('disabled'));
 }
-disable();
+disable_sfo();
 
 let sfo_check = document.getElementById('sfo-check');
 sfo_check.addEventListener('change', event => {
     if(sfo_check.checked)
-        enable();
+        enable_sfo();
     else {
-        disable();
+        disable_sfo();
+    }
+})
+
+
+let adv_set_card = document.querySelector('#adv_set_card');
+function disable_adv_set() {
+    adv_set_card.classList.add('hide');
+}
+function enable_adv_set() {
+    adv_set_card.classList.remove('hide');
+}
+disable_adv_set();
+
+let adv_set_check = document.getElementById('adv-set-check');
+adv_set_check.addEventListener('change', event => {
+    if(adv_set_check.checked)
+        enable_adv_set();
+    else {
+        disable_adv_set();
     }
 })
 </script>

@@ -37,8 +37,6 @@ ENGLISH_TEXT = [
     "Booklet Project",
     "Choose a file",
     "Enter the number of pages in each booklet (In multiples of 4. the standard is 32): ",
-    "Enter the number of pages per sheet (2/4/8/16): ",
-    "Sewing or gluing? In the gluing there is an extra blank page on each side.",
     "Gluing",
     "Sewing",
     "Page type",
@@ -54,15 +52,25 @@ ENGLISH_TEXT = [
     "Book's Name",
     "Author's Name",
     "Book's Era",
-    "Book's Genre"
+    "Book's Genre",
+    "small pages in normal page",
+    "Advanced Settings",
+    "Show advanced settings",
+    "Book creation process",
+    "Large books (more than 64 pages) will be printed in more than one booklets that need to be glued or sewed together.",
+    "It can be done in 2 ways:",
+    "Gluing: the program will leave a blank page at the end and start of each booklet, so they can be glued together.",
+    "Sewing: sewing all the booklets to one book using a needle and a thread.",
+    "Video tutorial",
+    "Number of pages in each booklet",
+    "It is recommened to print large books in more than one booklet.",
+    "The program defined automatically how many pages each booklet will have, but here we can define it manually. Please enter a number that is divided by 4.",
 ]
 
 HEBREW_TEXT = [
     "פרויקט ספרי כיס",
     "בחר קובץ",
     "הכנס את מספר העמודים בכל מחברת (בכפולות של 4, הסטנדרט הוא 32)",
-    "הכנס מספר עמודים לעמוד (2/4/8/16)",# todo: בחר גודל רצוי עבור הספר (a5,a6,a7,a8)
-    "מודבק או תפור? בגרסא המודבקת יש תוספת של עמוד ריק בכל מחברת",
     "מודבק",
     "תפור",
     "סוג עמוד",
@@ -78,25 +86,53 @@ HEBREW_TEXT = [
     "שם הספר",
     "שם המחבר",
     "תקופת הספר",
-    "תחום הספר"
+    "תחום הספר",
+    "עמודים קטנים בעמוד רגיל",
+    "הגדרות מיוחדות",
+    'הצג הגדרות מתקדמות',
+    'אופן יצירת הספר',
+    'ספרים שאורכם מעל 64 עמודים יודפסו במספר מחברות שיש צורך לחבר אותן לספר אחד.',
+    'ניתן לעשות זאת בשתי דרכים: ',
+    'הדבקה: התוכנה תשאיר עמוד ריק בתחילת וסוף כל מחברת, כך שניתן להדביק בקלות את המחברות אחת לשנייה. ',
+    'תפירה: תפירת המחברות לספר אחד ע"י חוט ומחט - חיבור מעט חזק יותר, אך קשה יותר להכנה.',
+    'סרטון הדרכה',
+    'מספר עמודים בכל מחברת',
+    'ספרים שאורכם מעל 64 עמודים מומלץ להדפיס במספר מחברות שיש צורך לחבר אותן לספר אחד.',
+    'התוכנה מגדירה באופן אוטומטי כמה עמודים יהיו בכל מחברת, אך כאן ניתן להגדיר גם באופן ידני מספר עמודים למחברת. יש להזין מספר שמתחלק ב4.'
 ]
 
 EN_HOME_TEXT = [
     "Welcome",
-    "This is a short about us",
     "Video Title",
     "Create your own PDF Booklet",
     "Community Created Booklets",
-    "search books",
+    "Do you want to print a pocket book from the web?",
+    "",
+    "Using this program you can print fast and easily any document you'll want in a personally-tailored pocket book edition.",
+    "How the Program Works?",
+    "Organize the text for printing in a single big PDF document",
+    "Please note that as the book gets smaller, the text in the document should be larger",
+    "Choose the book's size, number of pagesg and other settings",
+    "Click \'Create Booklet\' and download the pdf file",
+    "Print, Cut and Connect the pages to a book following the instructions",
+    "Start reading!"
 ]
 
 HE_HOME_TEXT = [
     'ברוכים הבאים',
-    'זה הסבר קצר עלינו',
     'סרטון תדמית',
-    'ייצר ספרון כיס בעצמך',
+    'התחילו עכשיו!',
     'ספרונים של אחרים',
-    'חפש ספרונים'
+    'רוצה להדפיס ספר מהאינטרנט במהדורת כיס?',
+    'כתבת סיכומים על הלימוד ורוצה לעשות חזרות בקלות?',
+    'בעזרת התוכנה תוכל להדפיס בקלות ובמהירות כל מסמך שתרצה במהדורת כיס מותאמת אישית!',
+    'איך התוכנה עובדת?',
+    'מסדרים את כל הטקסט להדפסה במסמך אחד מסודר ומעלים לאתר כקובץ PDF',
+    'חשוב לשים לב שככל שמדפיסים ספרון בגודל קטן יותר, כך צריך להגדיל את גודל הגופן של הכתב',
+    'בוחרים את גודל הספר, מספר העמודים ועוד הגדרות חשובות',
+    'לוחצים \'צור ספר כיס\' ומקבלים קובץ pdf מוכן להדפסה',
+    'מדפיסים, גוזרים, ומחברים את הדפים לספר כיס לפי ההוראות',
+    'מתחילים ללמוד:)'
 ]
 
 EN_CARDS = [
@@ -133,7 +169,7 @@ HE_CARDS = [
 ]
 
 SFO_OPTIONS = {'eras': ['תנ"ך', 'תנאים', 'אמוראים', 'גאונים', 'ראשונים', 'אחרונים'],
-        'genres': ['תנ"ך', 'מקורות תנאיים', 'תלמוד ועיון', 'הלכה', 'מחשבה', 'מוסר', 'מנייני מצוות', 'קבלה', 'חסידות', 'ספרות']}
+        'genres': ['תנ"ך', 'מקורות תנאיים', 'תלמוד ועיון', 'הלכה', 'מחשבה', 'מוסר', 'מנייני מצוות', 'קבלה', 'חסידות', 'ספרות חול']}
 
 class PdfFormText:
     # this class is the text container for the web page after language choice
@@ -147,23 +183,27 @@ class PdfFormText:
             self.language_format = ["he", "rtl"]
             self.booklet_parameters = "נתוני ספר כיס"
         self.page_header, self.choose_flie_header = text[0], text[1]
-        self.inst_pages, self.inst_per_pages = text[2], text[3]
-        self.inst_merge = text[4]
-        self.merge_types = [text[5], text[6]]
-        self.page_type_title = text[7]
-        self.submit_text = text[8]
-        self.languges = [text[9], text[10]]
-        self.language_header = text[11]
-        self.booklet_options = text[12]
-        self.cut_lines = text[13]
-        self.page_numbering = text[14]
+        self.inst_pages = text[2]
+        self.merge_types = [text[3], text[4]]
+        self.page_type_title = text[5]
+        self.submit_text = text[6]
+        self.languges = [text[7], text[8]]
+        self.language_header = text[9]
+        self.booklet_options = text[10]
+        self.cut_lines = text[11]
+        self.page_numbering = text[12]
+        self.page_type_explanation = text[19]
 
-        self.save_for_others = text[15]
-        self.sfo_title = text[16]
-        self.sfo_book_name = text[17]
-        self.sfo_author = text[18]
-        self.sfo_genre = text[19]
-        self.sfo_era = text[20]
+        self.save_for_others = text[13]
+        self.sfo_title = text[14]
+        self.sfo_book_name = text[15]
+        self.sfo_author = text[16]
+        self.sfo_genre = text[17]
+        self.sfo_era = text[18]
+
+        self.advanced_header = [text[20], text[21]]
+        self.merge_explain = [text[22], text[23], text[24], text[25], text[26], text[27]]
+        self.inst_pages_explain = [text[28], text[29], text[30]]
 
         self.sfo_options = SFO_OPTIONS
 
@@ -200,7 +240,7 @@ def get_book_db():
 
 def save_to_db(file, book_name, author, book_lang, era, genre, pages_per_sheet):
     file.seek(0) # After saving once need to seek to start
-    with open(DB_PATH + 'index.csv', 'a', encoding='utf-8') as index_file:
+    with open(DB_PATH + 'index.csv', 'a', encoding='utf-8', newline='') as index_file:
         # Choosing new name for storting the file (adding uuid to mitigate duplicates)
         # filename = Path(file.filename).stem + '-' + str(uuid4())[:5] + Path(file.filename).suffix
         filename = book_name + '-' + str(uuid4())[:5] + Path(file.filename).suffix
@@ -260,7 +300,7 @@ def WEB_UI():
             form_text = PdfFormText('english')
         merge_types = form_text.merge_types
         book_languages = form_text.languges
-        pages_type = ['A4', 'A5', 'A6', 'A7']
+        pages_type = ['A4', 'A5', 'A6', 'A7', 'A8', 'A9']
         form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
         page = Self_page('main_site_page',language)
         return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text, self_page=page)
@@ -278,7 +318,7 @@ def WEB_UI():
             except:
                 print('error in number of pages or in number of pages per sheet')
                 return
-            
+
             merge_type = request.form['pdf_merge_type']
             language = request.form['book_lang']
             # future data for usage...
