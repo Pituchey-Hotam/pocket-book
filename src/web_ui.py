@@ -65,6 +65,7 @@ ENGLISH_TEXT = [
     "Number of pages in each booklet",
     "It is recommened to print large books in more than one booklet.",
     "The program defined automatically how many pages each booklet will have, but here we can define it manually. Please enter a number that is divided by 4.",
+    "The program started. This can take a few seconds on minutes (depending on book's size). When done the file will be downloaded automatically."
 ]
 
 HEBREW_TEXT = [
@@ -98,7 +99,8 @@ HEBREW_TEXT = [
     'סרטון הדרכה',
     'מספר עמודים בכל מחברת',
     'ספרים שאורכם מעל 64 עמודים מומלץ להדפיס במספר מחברות שיש צורך לחבר אותן לספר אחד.',
-    'התוכנה מגדירה באופן אוטומטי כמה עמודים יהיו בכל מחברת, אך כאן ניתן להגדיר גם באופן ידני מספר עמודים למחברת. יש להזין מספר שמתחלק ב4.'
+    'התוכנה מגדירה באופן אוטומטי כמה עמודים יהיו בכל מחברת, אך כאן ניתן להגדיר גם באופן ידני מספר עמודים למחברת. יש להזין מספר שמתחלק ב4.',
+    "מתחילים לעבוד על הספר. זה יכול לקחת בין כמה שניות לכמה דקות (תלוי בגודל הספר). כשהקובץ יהיה מוכן הוא ירד אוטומטית."
 ]
 
 EN_HOME_TEXT = [
@@ -204,6 +206,8 @@ class PdfFormText:
         self.advanced_header = [text[20], text[21]]
         self.merge_explain = [text[22], text[23], text[24], text[25], text[26], text[27]]
         self.inst_pages_explain = [text[28], text[29], text[30]]
+
+        self.onsubmit = text[31]
 
         self.sfo_options = SFO_OPTIONS
 

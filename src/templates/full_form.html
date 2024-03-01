@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/form.css') }}">
-<form action="/download" method="post" enctype="multipart/form-data" target="_blank">
+<form action="/download" method="post" enctype="multipart/form-data" onsubmit="alert('{{form_text.onsubmit}}')">
 
 
 
@@ -182,6 +182,7 @@
 </form>
 
 <script>
+
 let sfo_inputs = document.querySelectorAll('#sfo-form input, #sfo-form select');
 function disable_sfo() {
     sfo_inputs.forEach(input => input.setAttribute('disabled', true));
