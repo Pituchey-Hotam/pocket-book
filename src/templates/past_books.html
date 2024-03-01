@@ -47,7 +47,7 @@
             <h4 class="card-title">{{book.name}}</h4>
             <div class="card-text">
                 <p>{{cards_text[4]}}: {{book.author}}</p>
-                <p>{{cards_text[5]}}: {% if book.language == 0 %} {{cards_text[11]}} {% else %} {{cards_text[12]}} {% endif %}</p>
+                <p>{{cards_text[5]}}: {% if book.language == '0' %} {{cards_text[11]}} {% else %} {{cards_text[12]}} {% endif %}</p>
                 <p>{{cards_text[6]}}: {{book.genre}}</p>
                 <p>{{cards_text[7]}}: {{book.era}}</p>
                 <p>{{cards_text[8]}}: {{book.pages_per_sheet}}</p>
