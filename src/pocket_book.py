@@ -4,7 +4,7 @@ from os.path import exists
 from shutil import rmtree
 from math import ceil, log, sqrt
 from enum import Enum
-from hebrew_numbers import int_to_gematria
+# from hebrew_numbers import int_to_gematria
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
 import pdfbooklet_new as pdfbooklet_new
@@ -13,7 +13,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 
-pdfmetrics.registerFont(TTFont('Hebrew', 'David.ttf'))
+# pdfmetrics.registerFont(TTFont('Hebrew', 'David.ttf'))
 
 
 # from web_ui import *
@@ -71,15 +71,15 @@ def addBP(pdfFileWriter, i, letters=True):  # todo:
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
     can.setFontSize(15)
-    if letters:
-        can.setFont("Hebrew", 15)
-        page_number_text = int_to_gematria(i + 1, False).replace('יה','טו').replace('יו','טז')
-        print(page_number_text)
-        page_number_text = ''.join(
-            [page_number_text[len(page_number_text) - j - 1] for j in range(len(page_number_text))])
-        can.drawString(A4[0] / 2, 10, page_number_text.encode("utf-8"))
-    else:
-        can.drawString(A4[0] / 2, 10, str(i + 1))
+    # if letters:
+    #     can.setFont("Hebrew", 15)
+    #     page_number_text = int_to_gematria(i + 1, False).replace('יה','טו').replace('יו','טז')
+    #     print(page_number_text)
+    #     page_number_text = ''.join(
+    #         [page_number_text[len(page_number_text) - j - 1] for j in range(len(page_number_text))])
+    #     can.drawString(A4[0] / 2, 10, page_number_text.encode("utf-8"))
+    # else:
+    can.drawString(A4[0] / 2, 10, str(i + 1))
     can.save()
     packet.seek(0)
     # create a new PDF with Reportlab
@@ -220,15 +220,15 @@ def add_page_numbers(input_pdf, output_pdf, letters=True):  # todo:
         c = canvas.Canvas(packet, pagesize=A4)
         c.setFontSize(15)
         page_number_text = f"{page_number}"
-        if letters:
-            c.setFont("Hebrew", 15)
-            page_number_text = int_to_gematria(page_number_text, False).replace('יה','טו').replace('יו','טז')
-            print(page_number_text)
-            page_number_text = ''.join(
-                [page_number_text[len(page_number_text) - i - 1] for i in range(len(page_number_text))])
-            c.drawString(page.mediaBox.width / 2, 10, page_number_text.encode("utf-8"))
-        else:
-            c.drawString(page.mediaBox.width / 2, 10, page_number_text)
+        # if letters:
+        #     c.setFont("Hebrew", 15)
+        #     page_number_text = int_to_gematria(page_number_text, False).replace('יה','טו').replace('יו','טז')
+        #     print(page_number_text)
+        #     page_number_text = ''.join(
+        #         [page_number_text[len(page_number_text) - i - 1] for i in range(len(page_number_text))])
+        #     c.drawString(page.mediaBox.width / 2, 10, page_number_text.encode("utf-8"))
+        # else:
+        c.drawString(page.mediaBox.width / 2, 10, page_number_text)
         c.save()
 
         packet.seek(0)
@@ -264,6 +264,9 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         combine_method = inputs[4]
         eng = inputs[5]
         number_of_pages = extract_num_of_pages(file)
+
+        if number_of_pages < 64:
+            notebook_len = number_of_pages + (4 - (number_of_pages % 4))
 
         paths = []
         if not bind_method == "s":

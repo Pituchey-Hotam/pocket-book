@@ -9,6 +9,7 @@ from pocket_book import making_the_pdf
 from flask import Flask, render_template, request, redirect, send_file, url_for
 from pathlib import Path
 
+prod = 0
 
 class Self_page:
     def __init__(self, function_name, language):
@@ -51,8 +52,8 @@ ENGLISH_TEXT = [
     "Contributing Book",
     "Book's Name",
     "Author's Name",
-    "Book's Era",
     "Book's Genre",
+    "Book's Era",
     "small pages in normal page",
     "Advanced Settings",
     "Show advanced settings",
@@ -86,8 +87,8 @@ HEBREW_TEXT = [
     "הוספת ספר למאגר",
     "שם הספר",
     "שם המחבר",
-    "תקופת הספר",
     "תחום הספר",
+    "תקופת הספר",
     "עמודים קטנים בעמוד רגיל",
     "הגדרות מיוחדות",
     'הצג הגדרות מתקדמות',
@@ -171,7 +172,7 @@ HE_CARDS = [
 ]
 
 SFO_OPTIONS = {'eras': ['תנ"ך', 'תנאים', 'אמוראים', 'גאונים', 'ראשונים', 'אחרונים'],
-        'genres': ['תנ"ך', 'מקורות תנאיים', 'תלמוד ועיון', 'הלכה', 'מחשבה', 'מוסר', 'מנייני מצוות', 'קבלה', 'חסידות', 'ספרות חול']}
+        'genres': ['תנ"ך', 'מקורות תנאיים', 'תלמוד ועיון', 'הלכה', 'מחשבה', 'מוסר', 'היסטוריה', 'מנייני מצוות', 'קבלה', 'חסידות', 'ספרות חול']}
 
 class PdfFormText:
     # this class is the text container for the web page after language choice
@@ -211,21 +212,27 @@ class PdfFormText:
 
         self.sfo_options = SFO_OPTIONS
 
+if not prod:
+    USER_FILES_PATH = './user_files/'
+    DB_PATH = './books_db/'
+if prod:
+    USER_FILES_PATH = '/home/pitucheyhotam/user_files/'
+    DB_PATH = '/home/pitucheyhotam/books_db/'
+
 
 def find_new_pdf(original_name):
     original_name_part = Path(original_name).stem
-    list_dir = os.listdir('./user_files/')
+    list_dir = os.listdir(USER_FILES_PATH)
     files = [file for file in list_dir if original_name_part in file and original_name!=file]
     return files[0]
 
 def delete_files(original_name):
     original_name_part = original_name.split('.')[0]
-    list_dir = os.listdir('./user_files/')  # get the original and other new file
+    list_dir = os.listdir(USER_FILES_PATH)  # get the original and other new file
     files = [file for file in list_dir if original_name_part in file]
     for file in files:
-        os.remove('./user_files/' + file)
+        os.remove(USER_FILES_PATH + file)
 
-DB_PATH = './books_db/'
 
 def get_book_db():
     with open(DB_PATH + 'index.csv', 'r', encoding='utf-8') as index_file:
@@ -255,128 +262,131 @@ def save_to_db(file, book_name, author, book_lang, era, genre, pages_per_sheet):
         
         writer.writerow([filename, datetime.now(), book_name, author, book_lang, era, genre, pages_per_sheet])
 
-def WEB_UI():
-    app = Flask(__name__)
+app = Flask(__name__)
 
-    @app.route("/", methods=['GET', 'POST'])
-    def main_url():
-        return redirect("/he/home/")
-    
-    @app.route("/<string:language>/home/", methods=['GET', 'POST'])
-    def home(language):
-        if language=='he':
-            form_text = PdfFormText('hebrew')
-            home_text = HE_HOME_TEXT
+@app.route("/", methods=['GET', 'POST'])
+def main_url():
+    return redirect("/he/home/")
+
+@app.route("/<string:language>/home/", methods=['GET', 'POST'])
+def home(language):
+    if language=='he':
+        form_text = PdfFormText('hebrew')
+        home_text = HE_HOME_TEXT
+    else:
+        form_text = PdfFormText('english')
+        home_text = EN_HOME_TEXT
+    page = Self_page('home',language)
+    return render_template("home.html", Title="pocket_books_home", 
+                            form_text=form_text, home_text=home_text, self_page=page)
+
+
+@app.route("/<string:language>/past_books/", methods=['GET', 'POST'])
+def past_books(language):
+    if request.method == 'POST':
+        filename = request.form.get('file_name')
+        with open(DB_PATH + filename, "rb") as fh:
+            buf = BytesIO(fh.read())
+        return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=filename)
+
+    if language=='he':
+        form_text = PdfFormText('hebrew')
+        cards_text = HE_CARDS
+    else:
+        form_text = PdfFormText('english')
+        cards_text = EN_CARDS
+
+    books = get_book_db()   
+    page = Self_page('past_books',language)
+    return render_template("past_books.html", Title="past_books_page", 
+                            form_text=form_text, cards_text=cards_text, self_page=page,
+                            books=books, sfo_options = SFO_OPTIONS)
+
+@app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
+def main_site_page(language):
+    if language=='he':
+        form_text = PdfFormText('hebrew')
+    else:
+        form_text = PdfFormText('english')
+    merge_types = form_text.merge_types
+    book_languages = form_text.languges
+    pages_type = ['A4', 'A5', 'A6', 'A7', 'A8', 'A9']
+    form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
+    page = Self_page('main_site_page',language)
+    return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text, self_page=page)
+
+@app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
+# it's opening a new tab to download the output file and then closes it.
+def download():
+    user_files = USER_FILES_PATH
+    if request.method == 'POST':
+        pdf_file = request.files['file']
+        pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
+        try:  # recomendeation to use type instead of try. I dont understand who to implement without crash...
+            number_of_pages_booklet = int(request.form['pages'])
+            number_of_pages_sheet = int(request.form['pages_per_sheet'])
+        except:
+            print('error in number of pages or in number of pages per sheet')
+            return
+
+        merge_type = request.form['pdf_merge_type']
+        language = request.form['book_lang']
+        # future data for usage...
+        # page_type = request.form['page_size']
+        cut_lines = request.form.get('cut_lines')
+        save_for_others = request.form.get('save_for_others')
+        if cut_lines == 'cut_lines':
+            cut_lines_bool = True
         else:
-            form_text = PdfFormText('english')
-            home_text = EN_HOME_TEXT
-        page = Self_page('home',language)
-        return render_template("home.html", Title="pocket_books_home", 
-                               form_text=form_text, home_text=home_text, self_page=page)
-    
-
-    @app.route("/<string:language>/past_books/", methods=['GET', 'POST'])
-    def past_books(language):
-        if request.method == 'POST':
-            filename = request.form.get('file_name')
-            with open(DB_PATH + filename, "rb") as fh:
-                buf = BytesIO(fh.read())
-            return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=filename)
-
-        if language=='he':
-            form_text = PdfFormText('hebrew')
-            cards_text = HE_CARDS
+            cut_lines_bool = False
+        
+        page_numbering = request.form.get('page_numbering')
+        if page_numbering == 'page_numbering':
+            page_numbering_bool = True
         else:
-            form_text = PdfFormText('english')
-            cards_text = EN_CARDS
+            page_numbering_bool = False
 
-        books = get_book_db()   
-        page = Self_page('past_books',language)
-        return render_template("past_books.html", Title="past_books_page", 
-                               form_text=form_text, cards_text=cards_text, self_page=page,
-                               books=books, sfo_options = SFO_OPTIONS)
-    
-    @app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
-    def main_site_page(language):
-        if language=='he':
-            form_text = PdfFormText('hebrew')
+        if merge_type == 'gluing' or merge_type == 'מודבק':
+            merge_type_text = ''
         else:
-            form_text = PdfFormText('english')
-        merge_types = form_text.merge_types
-        book_languages = form_text.languges
-        pages_type = ['A4', 'A5', 'A6', 'A7', 'A8', 'A9']
-        form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
-        page = Self_page('main_site_page',language)
-        return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text, self_page=page)
+            merge_type_text = 's'
+        
+        if language=='עברית' or language=='Hebrew':
+            language_num = 0
+        else:
+            language_num = 1
+        
+        if 1:  # not clear when to use this option... until now only used with 'v' option...
+            combine_method = 'v'
+        else:
+            combine_method = ''  # ?
+        
+        if save_for_others:
+            book_name = request.form.get('sfo_book_name')
+            author = request.form.get('sfo_author')
+            genre = request.form.get('sfo_genre')
+            era = request.form.get('sfo_era')
 
-    @app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
-    # it's opening a new tab to download the output file and then closes it.
-    def download():
-        user_files = './user_files/'
-        if request.method == 'POST':
-            pdf_file = request.files['file']
-            pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
-            try:  # recomendeation to use type instead of try. I dont understand who to implement without crash...
-                number_of_pages_booklet = int(request.form['pages'])
-                number_of_pages_sheet = int(request.form['pages_per_sheet'])
-            except:
-                print('error in number of pages or in number of pages per sheet')
-                return
+            pages_per_sheets = number_of_pages_sheet # Using user's pages per sheet choice
+            book_lang = language_num # Using user's book's language choice
 
-            merge_type = request.form['pdf_merge_type']
-            language = request.form['book_lang']
-            # future data for usage...
-            # page_type = request.form['page_size']
-            cut_lines = request.form.get('cut_lines')
-            save_for_others = request.form.get('save_for_others')
-            if cut_lines == 'cut_lines':
-                cut_lines_bool = True
-            else:
-                cut_lines_bool = False
-            
-            page_numbering = request.form.get('page_numbering')
-            if page_numbering == 'page_numbering':
-                page_numbering_bool = True
-            else:
-                page_numbering_bool = False
+            # save_to_db(pdf_file, "חוטב עצים ושואב מים", "הרא\"ש קטן", book_lang, "אחרונים", "מוסר", 2)
+            save_to_db(pdf_file, book_name, author, book_lang, genre, era, pages_per_sheets)
 
-            if merge_type == 'gluing' or merge_type == 'מודבק':
-                merge_type_text = ''
-            else:
-                merge_type_text = 's'
-            
-            if language=='עברית' or language=='Hebrew':
-                language_num = 0
-            else:
-                language_num = 1
-            
-            if 1:  # not clear when to use this option... until now only used with 'v' option...
-                combine_method = 'v'
-            else:
-                combine_method = ''  # ?
-            
-            if save_for_others:
-                book_name = request.form.get('sfo_book_name')
-                author = request.form.get('sfo_author')
-                genre = request.form.get('sfo_genre')
-                era = request.form.get('sfo_era')
+        # create the new pdf
+        inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
+                    merge_type_text, combine_method, language_num]
+        making_the_pdf(inputs, eng=0, page_Numbers=page_numbering_bool, cutLines=cut_lines_bool)
+        
+        fileName = find_new_pdf(pdf_file.filename)
+        with open(user_files + fileName, "rb") as fh:
+            buf = BytesIO(fh.read())
+        delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
+    return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
 
-                pages_per_sheets = number_of_pages_sheet # Using user's pages per sheet choice
-                book_lang = language_num # Using user's book's language choice
 
-                # save_to_db(pdf_file, "חוטב עצים ושואב מים", "הרא\"ש קטן", book_lang, "אחרונים", "מוסר", 2)
-                save_to_db(pdf_file, book_name, author, book_lang, genre, era, pages_per_sheets)
 
-            # create the new pdf
-            inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
-                       merge_type_text, combine_method, language_num]
-            making_the_pdf(inputs, eng=0, page_Numbers=page_numbering_bool, cutLines=cut_lines_bool)
-            
-            fileName = find_new_pdf(pdf_file.filename)
-            with open(user_files + fileName, "rb") as fh:
-                buf = BytesIO(fh.read())
-            delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
-        return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
+if __name__ == '__main__':
 
     # "192.168.154.195" - example of current IP that might change and required for testing on
     # other devices, "127.0.0.1" - self IP for basic coding
@@ -385,7 +395,4 @@ def WEB_UI():
     # app.run(host="192.168.154.195", port=8000, debug=True)
     app.run(host="127.0.0.1", port=8000, debug=True)
 
-
-if __name__ == '__main__':
-    WEB_UI()
     # pass
