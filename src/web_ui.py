@@ -250,12 +250,11 @@ def get_book_db():
         
 
 def save_to_db(file, book_name, author, book_lang, era, genre, pages_per_sheet):
-    file.seek(0) # After saving once need to seek to start
     with open(DB_PATH + 'index.csv', 'a', encoding='utf-8', newline='') as index_file:
         # Choosing new name for storting the file (adding uuid to mitigate duplicates)
         # filename = Path(file.filename).stem + '-' + str(uuid4())[:5] + Path(file.filename).suffix
         filename = book_name + '-' + str(uuid4())[:5] + Path(file.filename).suffix
-
+        file.filename=filename
         file.save(DB_PATH + filename)
 
         writer = csv.writer(index_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -321,7 +320,6 @@ def download():
     user_files = USER_FILES_PATH
     if request.method == 'POST':
         pdf_file = request.files['file']
-        pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
         try:  # recomendeation to use type instead of try. I dont understand who to implement without crash...
             number_of_pages_booklet = int(request.form['pages'])
             number_of_pages_sheet = int(request.form['pages_per_sheet'])
@@ -372,7 +370,8 @@ def download():
 
             # save_to_db(pdf_file, "חוטב עצים ושואב מים", "הרא\"ש קטן", book_lang, "אחרונים", "מוסר", 2)
             save_to_db(pdf_file, book_name, author, book_lang, genre, era, pages_per_sheets)
-
+            pdf_file.seek(0)  # After saving once need to seek to start
+        pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
         # create the new pdf
         inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
                     merge_type_text, combine_method, language_num]
