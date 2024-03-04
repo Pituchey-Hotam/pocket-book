@@ -10,7 +10,7 @@
             <div class="mb-3 form-section card">
                 <div class="card-body">
                     <h5 class="input-info card-title mb-3">1. {{form_text.choose_flie_header}}</h5>
-                    <input class="form-control" type="file" accept=".pdf" name="file" />
+                    <input class="form-control" type="file" accept=".pdf" name="file" required/>
                 </div>
             </div>
 
@@ -48,7 +48,7 @@
                         </div>
                         <div class="px-2 mx-2">
                             <input class="form-check-input" type="radio" name="pages_per_sheet"
-                                value="4">
+                                value="4" checked>
                             <label for="{{page_type}}">A6 (4 {{form_text.page_type_explanation}})</label>
                         </div>
                         <div class="px-2 mx-2">
@@ -103,15 +103,15 @@
                 <div id="sfo-form" class="mt-2">
                     <div>
                         <label class="form-label" for="sfo_book_name">{{form_text.sfo_book_name}}</label>
-                        <input class="form-control" type="text" id="sfo_book_name" name="sfo_book_name">
+                        <input class="form-control" type="text" id="sfo_book_name" name="sfo_book_name" required>
                     </div>
 
                     <div>
                         <label class="form-label" for="sfo_author">{{form_text.sfo_author}}</label>
-                        <input class="form-control" type="text" id="sfo_author" name="sfo_author">
+                        <input class="form-control" type="text" id="sfo_author" name="sfo_author" required>
                     </div>
 
-                    <select class="form-select mt-2" name="sfo_genre">
+                    <select class="form-select mt-2" name="sfo_genre" required>
                         <option selected>{{form_text.sfo_genre}}</option>
 
                         {% for genre in form_text.sfo_options.genres %}
@@ -119,7 +119,7 @@
                         {% endfor %}
                     </select>
 
-                    <select class="form-select mt-2" name="sfo_era">
+                    <select class="form-select mt-2" name="sfo_era" required>
                         <option selected>{{form_text.sfo_era}}</option>
 
                         {% for era in form_text.sfo_options.eras %}
@@ -169,7 +169,7 @@
                             {{form_text.inst_pages_explain[2]}}
                         </p>
                         <label class="form-label" for="pages">{{form_text.inst_pages}}</label>
-                        <input class="form-control" type="num" min="4" value="32" id="pages" name="pages">
+                        <input class="form-control" type="num" min="4" value="32" id="pages" name="pages" required>
                     </div>
                     </div>
                 </div>
