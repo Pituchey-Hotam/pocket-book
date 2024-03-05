@@ -13,6 +13,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 
+
 # pdfmetrics.registerFont(TTFont('Hebrew', 'David.ttf'))
 
 
@@ -44,7 +45,7 @@ def extract_num_of_pages(pdf_path):
     return number_of_pages
 
 
-def split(path, name_of_split, sp, length, bind_method="s"):
+def split(path, name_of_split, sp, length, bind_method="s", numbersP=False):
     # length += (4-(length%4))*(length%4 > 0)
     pdf = PdfFileReader(path)
     output = f"{name_of_split}"
@@ -54,7 +55,7 @@ def split(path, name_of_split, sp, length, bind_method="s"):
         if page < pdf.getNumPages():
             pdf_writer.addPage(pdf.getPage(page))
         else:
-            addBP(pdf_writer, page)
+            addBP(pdf_writer, page, numbersP)
     if not bind_method == "s":
         pdf_writer.insertBlankPage(0)
         pdf_writer.addBlankPage()
@@ -64,7 +65,7 @@ def split(path, name_of_split, sp, length, bind_method="s"):
     output_pdf.close()
 
 
-def addBP(pdfFileWriter, i, letters=True):  # todo:
+def addBP(pdfFileWriter, i, numbersP, letters=True):  # todo:
     """The function add blank page with number of page in notebook
     :param i: number of page
     """
@@ -88,7 +89,8 @@ def addBP(pdfFileWriter, i, letters=True):  # todo:
     existing_pdf = PdfFileWriter()
     existing_pdf.addBlankPage(A4[0], A4[1])
     # add the "watermark" (which is the new pdf) on the existing page
-    existing_pdf.pages[0].merge_page(new_pdf.pages[0])
+    if numbersP:
+        existing_pdf.pages[0].merge_page(new_pdf.pages[0])
     pdfFileWriter.addPage(existing_pdf.pages[0])
 
 
@@ -271,16 +273,35 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         paths = []
         if not bind_method == "s":
             notebook_len -= 2
-        for i in range(
-                int(number_of_pages / notebook_len) + (number_of_pages % notebook_len > 0)
-        ):
+        i = 0
+        for i in range(int(number_of_pages / notebook_len)):
             name_trash_file = trash_file + str(i + 1)
             split(
                 file,
                 name_trash_file + ".pdf",
                 i * notebook_len,
                 notebook_len,
-                bind_method,
+                bind_method, page_Numbers
+            )
+            pdfbooklet_new.pdfbooklet(
+                name_trash_file + ".pdf", name_trash_file + "let.pdf", eng=eng
+            )
+            paths.append(name_trash_file + "let.pdf")
+        if (number_of_pages % notebook_len > 0):
+            i+=1
+            name_trash_file = trash_file + str(i + 1)
+            n = number_of_pages % notebook_len
+            if not bind_method == "s":
+                n += 2
+            nl = n + (4 - n % 4)
+            if not bind_method == "s":
+                nl -= 2
+            split(
+                file,
+                name_trash_file + ".pdf",
+                i * notebook_len,
+                nl,
+                bind_method, page_Numbers
             )
             pdfbooklet_new.pdfbooklet(
                 name_trash_file + ".pdf", name_trash_file + "let.pdf", eng=eng
