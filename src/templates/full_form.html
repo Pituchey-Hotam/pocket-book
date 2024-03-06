@@ -11,7 +11,9 @@
                 <div class="card-body">
                     <h5 class="input-info card-title mb-3">1. {{form_text.choose_flie_header}}</h5>
                     <input class="form-control" type="file" accept=".pdf" name="file" required/>
+                    <p class="mt-2"><i>{{form_text.sfo_copyright}}</i></p>
                 </div>
+                
             </div>
 
             <!-- Language Selection -->
@@ -35,31 +37,57 @@
             <div class="mb-3 form-section card" id="booklet_numbers">
                 <div class="card-body">
                     <h5 class="card-title">3. {{form_text.page_type_title}}</h5>
-                    <div class="d-flex">
-                        <div class="px-2 mx-2">
+                    <div class="d-flex" id="page-type-container">
+                        <!-- <div class="px-2 mx-2">
                             <input class="form-check-input" type="radio" name="pages_per_sheet"
                                 value="1">
-                            <label for="{{page_type}}">A4 (1 {{form_text.page_type_explanation}})</label>
+                            <label for="{{page_type}}">A4</label>
                         </div>
                         <div class="px-2 mx-2">
                             <input class="form-check-input" type="radio" name="pages_per_sheet"
                                 value="2">
-                            <label for="{{page_type}}">A5 (2 {{form_text.page_type_explanation}})</label>
+                            <label for="{{page_type}}">A5 (2 {{form_text.page_type_explanation[0]}})</label>
                         </div>
                         <div class="px-2 mx-2">
                             <input class="form-check-input" type="radio" name="pages_per_sheet"
                                 value="4" checked>
-                            <label for="{{page_type}}">A6 (4 {{form_text.page_type_explanation}})</label>
+                            <label for="{{page_type}}">A6 (4 {{form_text.page_type_explanation[0]}})</label>
                         </div>
                         <div class="px-2 mx-2">
                             <input class="form-check-input" type="radio" name="pages_per_sheet"
                                 value="8">
-                            <label for="{{page_type}}">A7 (8 {{form_text.page_type_explanation}})</label>
+                            <label for="{{page_type}}">A7 (8 {{form_text.page_type_explanation[0]}})</label>
                         </div>
                         <div class="px-2 mx-2">
                             <input class="form-check-input" type="radio" name="pages_per_sheet"
                                 value="16">
-                            <label for="{{page_type}}">A8 (16 {{form_text.page_type_explanation}})</label>
+                            <label for="{{page_type}}">A8 (16 {{form_text.page_type_explanation[0]}})</label>
+                        </div> -->
+
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="1">
+                            <label for="{{page_type}}">A4 ({{form_text.page_type_explanation[1]}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="2">
+                            <label for="{{page_type}}">A5 ({{form_text.page_type_explanation[2]}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="4" checked>
+                            <label for="{{page_type}}">A6 ({{form_text.page_type_explanation[3]}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="8">
+                            <label for="{{page_type}}">A7 ({{form_text.page_type_explanation[4]}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="16">
+                            <label for="{{page_type}}">A8 ({{form_text.page_type_explanation[5]}})</label>
                         </div>
                     </div>
 
@@ -89,7 +117,7 @@
 
         <div class="col">
 
-                    <!-- Save For Others (sfo) -->
+        <!-- Save For Others (sfo) -->
         <div class="form-section card mb-3">
             <div class="card-body">
                 <h5 class="card-title">5. {{form_text.sfo_title}}</h5>
@@ -97,9 +125,10 @@
                 <div class="form-check form-switch">
                     <label class="form-check-label" for="save_for_others">{{form_text.save_for_others}}</label>
                     <input id="sfo-check" class="form-check-input" type="checkbox" id="save_for_others" name="save_for_others"
-                        value="save_for_others">
+                    value="save_for_others">
                 </div>
-
+                
+                <i>{{form_text.sfo_copyright}}</i>
                 <div id="sfo-form" class="mt-2">
                     <div>
                         <label class="form-label" for="sfo_book_name">{{form_text.sfo_book_name}}</label>

@@ -267,8 +267,8 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         eng = inputs[5]
         number_of_pages = extract_num_of_pages(file)
 
-        if number_of_pages < 64:
-            notebook_len = number_of_pages + (4 - (number_of_pages % 4))
+        # if number_of_pages < 64:
+        #     notebook_len = (number_of_pages + (4 - (number_of_pages % 4)))
 
         paths = []
         if not bind_method == "s":

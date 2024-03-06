@@ -10,6 +10,10 @@
     box-shadow: rgba(125, 125, 125, .12) 3px 6px;
 }
 
+/* #page-type-container {
+    display: flex;
+} */
+
 input[type="submit"] {
     font-size: 1.5rem;
 }
@@ -20,4 +24,10 @@ input[type="submit"] {
 
 .hide {
     display: none;
+}
+
+@media (max-width: 992px) {
+    .form-check {
+        width: auto;
+    }
 }

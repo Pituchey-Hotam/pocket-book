@@ -40,7 +40,7 @@ ENGLISH_TEXT = [
     "Enter the number of pages in each booklet (In multiples of 4. the standard is 32): ",
     "Gluing",
     "Sewing",
-    "Page type",
+    "Book's Size",
     "Create Booklet",
     "Hebrew",
     "English",
@@ -66,7 +66,14 @@ ENGLISH_TEXT = [
     "Number of pages in each booklet",
     "It is recommened to print large books in more than one booklet.",
     "The program defined automatically how many pages each booklet will have, but here we can define it manually. Please enter a number that is divided by 4.",
-    "The program started. This can take a few seconds on minutes (depending on book's size). When done the file will be downloaded automatically."
+    "The program started. This can take a few seconds on minutes (depending on book's size). When done the file will be downloaded automatically.",
+    'Found a bug or problem? Tell us at',
+    'Please don\'t upload files guarded by copyrights',
+    "regular page size",
+    "half of an A4 page",
+    "quarter of an A4 page",
+    "eigth of an A4 page",
+    "sixteenth of an A4 page"
 ]
 
 HEBREW_TEXT = [
@@ -75,7 +82,7 @@ HEBREW_TEXT = [
     "הכנס את מספר העמודים בכל מחברת (בכפולות של 4, הסטנדרט הוא 32)",
     "מודבק",
     "תפור",
-    "סוג עמוד",
+    "גודל ספר",
     "צור ספר כיס",
     "עברית",
     "אנגלית",
@@ -88,7 +95,7 @@ HEBREW_TEXT = [
     "שם הספר",
     "שם המחבר",
     "תחום הספר",
-    "תקופת הספר",
+    "תקופת כתיבת הספר",
     "עמודים קטנים בעמוד רגיל",
     "הגדרות מיוחדות",
     'הצג הגדרות מתקדמות',
@@ -101,7 +108,14 @@ HEBREW_TEXT = [
     'מספר עמודים בכל מחברת',
     'ספרים שאורכם מעל 64 עמודים מומלץ להדפיס במספר מחברות שיש צורך לחבר אותן לספר אחד.',
     'התוכנה מגדירה באופן אוטומטי כמה עמודים יהיו בכל מחברת, אך כאן ניתן להגדיר גם באופן ידני מספר עמודים למחברת. יש להזין מספר שמתחלק ב4.',
-    "מתחילים לעבוד על הספר. זה יכול לקחת בין כמה שניות לכמה דקות (תלוי בגודל הספר). כשהקובץ יהיה מוכן הוא ירד אוטומטית."
+    'מתחילים לעבוד על הספר. זה יכול לקחת בין כמה שניות לכמה דקות (תלוי בגודל הספר). כשהקובץ יהיה מוכן הוא ירד אוטומטית.',
+    'מצאתם בעיה? דברו איתנו!',
+    'נא לא להעלות קבצים המוגנים בזכויות יוצרים',
+    "גודל דף סטנדרטי",
+    "חצי דף A4",
+    "רבע דף A4",
+    "שמינית דף A4",
+    "שש עשרה מדף A4"
 ]
 
 EN_HOME_TEXT = [
@@ -158,7 +172,7 @@ HE_CARDS = [
     'קבצים שיצרו אחרים',
     'שם הספר / המחבר:',
     "תחום הספר",
-    "תקופת הספר",
+    "תקופת כתיבת הספר",
     "מחבר",
     "שפה",
     "תחום",
@@ -195,7 +209,7 @@ class PdfFormText:
         self.booklet_options = text[10]
         self.cut_lines = text[11]
         self.page_numbering = text[12]
-        self.page_type_explanation = text[19]
+        self.page_type_explanation = [text[19], text[34], text[35], text[36], text[37], text[38]]
 
         self.save_for_others = text[13]
         self.sfo_title = text[14]
@@ -203,12 +217,15 @@ class PdfFormText:
         self.sfo_author = text[16]
         self.sfo_genre = text[17]
         self.sfo_era = text[18]
+        self.sfo_copyright = text[33]
 
         self.advanced_header = [text[20], text[21]]
         self.merge_explain = [text[22], text[23], text[24], text[25], text[26], text[27]]
         self.inst_pages_explain = [text[28], text[29], text[30]]
 
         self.onsubmit = text[31]
+
+        self.footer_text = [text[32]]
 
         self.sfo_options = SFO_OPTIONS
 
@@ -244,7 +261,10 @@ def get_book_db():
         for row in reader:
             if len(row) == 0: continue # Empty line in csv file
 
-            books.append(Book(*row)) # Unpacks row, can be changed if Book object data isn't identical to index.csv data.
+            try:
+                books.append(Book(*row)) # Unpacks row, can be changed if Book object data isn't identical to index.csv data.
+            except:
+                continue
 
         return books
         
@@ -276,7 +296,7 @@ def home(language):
         form_text = PdfFormText('english')
         home_text = EN_HOME_TEXT
     page = Self_page('home',language)
-    return render_template("home.html", Title="pocket_books_home", 
+    return render_template("home.html", Title="ספרי כיס | Pocket Book", 
                             form_text=form_text, home_text=home_text, self_page=page)
 
 
