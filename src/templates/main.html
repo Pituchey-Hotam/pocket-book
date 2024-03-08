@@ -11,7 +11,7 @@
 
     <script src="{{ url_for('static',filename='main.js') }}"> </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
+    <script type="text/javascript">var _paq=window._paq||[];_paq.push(["setDocumentTitle",document.title]),_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),_paq.push(["trackVisibleContentImpressions"]),function(){var e="//stats.yehudae.net/";_paq.push(["setTrackerUrl",e+"m.php"]),_paq.push(["setSiteId","19"]);var t=document,a=t.createElement("script"),s=t.getElementsByTagName("script")[0];a.type="text/javascript",a.async=!0,a.defer=!0,a.src=e+"m.js",s.parentNode.insertBefore(a,s)}();</script>
     <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='logo.png')}}">
 
 </head>
@@ -20,7 +20,7 @@
     <nav class="navbar bg-body-tertiary m-2 rounded">
         <div class="container-fluid">
 
-            <a href="#" class="navbar-brand">
+            <a href="{{ url_for('home', language=self_page.self_lang) }}" class="navbar-brand">
                 <img src="{{url_for('static', filename='logo.png')}}" alt="">
                 {{form_text.page_header}} </a>
 

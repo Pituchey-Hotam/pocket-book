@@ -48,13 +48,13 @@
             <div class="card-text">
                 <p>{{cards_text[4]}}: {{book.author}}</p>
                 <p>{{cards_text[5]}}: {% if book.language == '0' %} {{cards_text[11]}} {% else %} {{cards_text[12]}} {% endif %}</p>
-                <p>{{cards_text[6]}}: {{book.genre}}</p>
+                <p>{{cards_text[6]}}: {{', '.join(book.genre.split('-'))}}</p>
                 <p>{{cards_text[7]}}: {{book.era}}</p>
-                <p>{{cards_text[8]}}: {{book.pages_per_sheet}}</p>
+                <p>{{cards_text[8]}}: A{{4 + int(log2(int(book.pages_per_sheet)))}}</p>
             </div>
             <form method="post" enctype="multipart/form-data" target="_blank">
                 <input type="text" style="display: none;" name="file_name" value="{{book.filename}}">
-                <button class="btn btn-success w-100 fs-5">{{cards_text[9]}}</button>
+                <button class="btn btn-success w-100 fs-5" onclick="_paq.push(['trackEvent', 'pastPdf', 'download']);">{{cards_text[9]}}</button>
             </form>
         </div>
         </div>

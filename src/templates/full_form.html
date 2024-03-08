@@ -1,9 +1,7 @@
 {% extends "main.html" %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/form.css') }}">
-<form action="/download" method="post" enctype="multipart/form-data" onsubmit="alert('{{form_text.onsubmit}}')">
-
-
+<form action="/download" method="post" enctype="multipart/form-data" aria-onsubmit-text="{{form_text.onsubmit}}" aria-created-url="{{url_for('creating', language=self_page.self_lang)}}">
 
     <div class="row">
         <div class="col">
@@ -13,7 +11,6 @@
                     <input class="form-control" type="file" accept=".pdf" name="file" required/>
                     <p class="mt-2"><i>{{form_text.sfo_copyright}}</i></p>
                 </div>
-                
             </div>
 
             <!-- Language Selection -->
@@ -37,38 +34,7 @@
             <div class="mb-3 form-section card" id="booklet_numbers">
                 <div class="card-body">
                     <h5 class="card-title">3. {{form_text.page_type_title}}</h5>
-                    <div class="d-flex" id="page-type-container">
-                        <!-- <div class="px-2 mx-2">
-                            <input class="form-check-input" type="radio" name="pages_per_sheet"
-                                value="1">
-                            <label for="{{page_type}}">A4</label>
-                        </div>
-                        <div class="px-2 mx-2">
-                            <input class="form-check-input" type="radio" name="pages_per_sheet"
-                                value="2">
-                            <label for="{{page_type}}">A5 (2 {{form_text.page_type_explanation[0]}})</label>
-                        </div>
-                        <div class="px-2 mx-2">
-                            <input class="form-check-input" type="radio" name="pages_per_sheet"
-                                value="4" checked>
-                            <label for="{{page_type}}">A6 (4 {{form_text.page_type_explanation[0]}})</label>
-                        </div>
-                        <div class="px-2 mx-2">
-                            <input class="form-check-input" type="radio" name="pages_per_sheet"
-                                value="8">
-                            <label for="{{page_type}}">A7 (8 {{form_text.page_type_explanation[0]}})</label>
-                        </div>
-                        <div class="px-2 mx-2">
-                            <input class="form-check-input" type="radio" name="pages_per_sheet"
-                                value="16">
-                            <label for="{{page_type}}">A8 (16 {{form_text.page_type_explanation[0]}})</label>
-                        </div> -->
-
-                        <div class="px-2 mx-2">
-                            <input class="form-check-input" type="radio" name="pages_per_sheet"
-                                value="1">
-                            <label for="{{page_type}}">A4 ({{form_text.page_type_explanation[1]}})</label>
-                        </div>
+                    <div class="d-flex">
                         <div class="px-2 mx-2">
                             <input class="form-check-input" type="radio" name="pages_per_sheet"
                                 value="2">
@@ -97,7 +63,7 @@
             <div class="mb-3 form-section card">
                 <div class="card-body">
                     <h5 class="input-info card-title mb-3">4. {{form_text.booklet_options}}</h5>
-                    
+
                     <div class="form-check form-switch mt-2">
                         <label class="form-check-label" for="cut_lines">{{form_text.cut_lines}}</label>
                         <input class="form-check-input" type="checkbox" id="cut_lines" name="cut_lines"
@@ -117,7 +83,7 @@
 
         <div class="col">
 
-        <!-- Save For Others (sfo) -->
+                    <!-- Save For Others (sfo) -->
         <div class="form-section card mb-3">
             <div class="card-body">
                 <h5 class="card-title">5. {{form_text.sfo_title}}</h5>
@@ -125,10 +91,9 @@
                 <div class="form-check form-switch">
                     <label class="form-check-label" for="save_for_others">{{form_text.save_for_others}}</label>
                     <input id="sfo-check" class="form-check-input" type="checkbox" id="save_for_others" name="save_for_others"
-                    value="save_for_others">
+                        value="save_for_others">
                 </div>
-                
-                <i>{{form_text.sfo_copyright}}</i>
+
                 <div id="sfo-form" class="mt-2">
                     <div>
                         <label class="form-label" for="sfo_book_name">{{form_text.sfo_book_name}}</label>
@@ -140,16 +105,27 @@
                         <input class="form-control" type="text" id="sfo_author" name="sfo_author" required>
                     </div>
 
-                    <select class="form-select mt-2" name="sfo_genre" required>
-                        <option selected>{{form_text.sfo_genre}}</option>
+                    <!-- <select class="form-select mt-2" name="sfo_genre" multiple required>
+                        <option value="" selected>{{form_text.sfo_genre}}</option>
 
                         {% for genre in form_text.sfo_options.genres %}
                         <option value="{{genre}}">{{genre}}</option>
                         {% endfor %}
-                    </select>
+                    </select> -->
+                    <div id="sfo-genre-select" class="select-check-list mt-2" tabindex="100">
+                        <span class="form-select anchor" id="sfo-anchor" aria-default-text="{{form_text.sfo_genre}}">{{form_text.sfo_genre}}</span>
+                        <ul class="items">
+                            {% for genre in form_text.sfo_options.genres %}
+                            <li><input type="checkbox" value="{{genre}}" /> {{genre}}</li>
+                            {% endfor %}
+                        </ul>
+                      </div>
+                    <input type="text" name="sfo_genre" id="sfo-genre-input"
+                    style="display: none;"
+                    >
 
                     <select class="form-select mt-2" name="sfo_era" required>
-                        <option selected>{{form_text.sfo_era}}</option>
+                        <option value="" selected>{{form_text.sfo_era}}</option>
 
                         {% for era in form_text.sfo_options.eras %}
                         <option value="{{era}}">{{era}}</option>
@@ -175,15 +151,15 @@
                     </p>
                     <ul><li>{{form_text.merge_explain[3]}}</li>
                     <li>{{form_text.merge_explain[4]}}</li></ul>
-                        
-                    <div class="d-flex">    
+
+                    <div class="d-flex">
                         <div class="mx-2">
                             <input class="form-check-input" type="radio" id="gluing" name="pdf_merge_type" checked value="gluing">
-                            <label class="form-check-label" for="gluing">{{form_text.merge_types[0]}} - 
+                            <label class="form-check-label" for="gluing">{{form_text.merge_types[0]}} -
                                 <a target="_blank" href="https://www.youtube.com/watch?v=hvsVKBPs5as">{{form_text.merge_explain[5]}}</a>
                             </label>
                         </div>
-                        
+
                         <div class="mx-2">
                             <input class="form-check-input" type="radio" id="sewing" name="pdf_merge_type" value="sewing">
                             <label class="form-check-label" for="sewing">{{form_text.merge_types[1]}} -
@@ -205,48 +181,10 @@
             </div>
         </div>
 
-        <input class="btn btn-success" type="submit" value="{{form_text.submit_text}}" id="submit-btn" />
+        <input class="btn btn-success" type="submit" onclick="_paq.push(['trackEvent', 'pdfCreation', 'download']);" value="{{form_text.submit_text}}" id="submit-btn" />
     </div>
 
 </form>
+<script src="{{url_for('static', filename='full_form.js')}}"></script>
 
-<script>
-
-let sfo_inputs = document.querySelectorAll('#sfo-form input, #sfo-form select');
-function disable_sfo() {
-    sfo_inputs.forEach(input => input.setAttribute('disabled', true));
-}
-function enable_sfo() {
-    sfo_inputs.forEach(input => input.removeAttribute('disabled'));
-}
-disable_sfo();
-
-let sfo_check = document.getElementById('sfo-check');
-sfo_check.addEventListener('change', event => {
-    if(sfo_check.checked)
-        enable_sfo();
-    else {
-        disable_sfo();
-    }
-})
-
-
-let adv_set_card = document.querySelector('#adv_set_card');
-function disable_adv_set() {
-    adv_set_card.classList.add('hide');
-}
-function enable_adv_set() {
-    adv_set_card.classList.remove('hide');
-}
-disable_adv_set();
-
-let adv_set_check = document.getElementById('adv-set-check');
-adv_set_check.addEventListener('change', event => {
-    if(adv_set_check.checked)
-        enable_adv_set();
-    else {
-        disable_adv_set();
-    }
-})
-</script>
 {% endblock %}

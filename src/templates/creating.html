@@ -1,0 +1,64 @@
+{% extends "main.html" %}
+{% block content %}
+<div class="row">
+    <div class="col">
+
+        {% if self_page.self_lang == 'he' %}
+        <h1>
+            הוראות הדפסה
+        </h1>
+        <ul>
+            <li>
+                פתחו את הקובץ שירד (בדרך כלל נמצא בהורדות)
+            </li>
+            <li>
+                כנסו ל'הגדרות נוספות' וסמנו 'הדפסה על שני הצדדים'
+            </li>
+            <li>
+                אם בחרתם ספר כיס בגודל A5 או A7 יש לבחור 'היפוך בצד הארוך'
+            </li>
+            <li>
+                אם בחרתם ספר כיס בגודל A6 או A8 יש לבחור 'היפוך בצד הקצר'
+            </li>
+            <li>
+                לאחר ההדפסה, גזרו וחברו את הדפים לספרון אחד כפי שרואים בסרטון
+            </li>
+            
+        </ul>
+
+        {% else %}
+
+        <h1>
+            Printing Instructions
+        </h1>
+        <ul>
+            <li>
+                Open the downloaded file (usually inside 'Downloads' folder).
+            </li>
+            <li>
+                When printing open advanced options, and choose print on both sides.
+            </li>
+            <li>
+                Choose flip on long edge if your book's size choice was A5 or A7
+            </li>
+            <li>
+                Choose flip on short edge if your book's size choice was A6 or A8
+            </li>
+            <li>
+                After printing, cut and combine the pages to a single book, as shown in the video.
+                לאחר ההדפסה, גזרו וחברו את הדפים לספרון אחד כפי שרואים בסרטון
+            </li>
+            
+        </ul>
+
+        {% endif %}
+    </div>
+        <div class="col">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/hvsVKBPs5as?si=eENQG3tdF7l4cz0q"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+    </div>
+    
+{% endblock %}
