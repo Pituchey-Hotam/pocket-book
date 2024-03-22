@@ -45,11 +45,11 @@ adv_set_check.addEventListener('change', event => {
     }
 });
 
-let form = document.querySelector('form');
-form.addEventListener('submit', () => {
-    alert(form.getAttribute('aria-onsubmit-text'));
-    window.open(form.getAttribute('aria-created-url'));
-});
+// let form = document.querySelector('form');
+// form.addEventListener('submit', () => {
+//     alert(form.getAttribute('aria-onsubmit-text'));
+//     window.open(form.getAttribute('aria-created-url'));
+// });
 
 // MULTIPLE SELECT
 function updateCheckbox(select, input, label) {

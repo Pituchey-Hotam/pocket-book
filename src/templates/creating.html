@@ -8,6 +8,8 @@
             הוראות הדפסה
         </h1>
         <ul>
+            <li>התוכנה התחילה לעבוד!</li>
+            <li>הקובץ יירד מייד כשהוא יהיה מוכן. התהליך יכול לקחת בין כמה שניות לכמה דקות (תלוי באורך הספר).</li>
             <li>
                 פתחו את הקובץ שירד (בדרך כלל נמצא בהורדות)
             </li>
@@ -15,17 +17,15 @@
                 כנסו ל'הגדרות נוספות' וסמנו 'הדפסה על שני הצדדים'
             </li>
             <li>
-                אם בחרתם ספר כיס בגודל A5 או A7 יש לבחור 'היפוך בצד הארוך'
+                אם בחרתם ספר כיס בגודל A5 או A7 יש לבחור 'היפוך בצד הקצר'
             </li>
             <li>
-                אם בחרתם ספר כיס בגודל A6 או A8 יש לבחור 'היפוך בצד הקצר'
+                אם בחרתם ספר כיס בגודל A6 או A8 יש לבחור 'היפוך בצד הארוך'
             </li>
             <li>
                 לאחר ההדפסה, גזרו וחברו את הדפים לספרון אחד כפי שרואים בסרטון
             </li>
-            
         </ul>
-
         {% else %}
 
         <h1>
@@ -33,20 +33,22 @@
         </h1>
         <ul>
             <li>
+                The file will be downloaded automatically when it's ready. The process can a few seconds to a few minutes (depending on the book's size).
+            </li>
+            <li>
                 Open the downloaded file (usually inside 'Downloads' folder).
             </li>
             <li>
                 When printing open advanced options, and choose print on both sides.
             </li>
             <li>
-                Choose flip on long edge if your book's size choice was A5 or A7
+                Choose flip on short edge if your book's size choice was A5 or A7
             </li>
             <li>
-                Choose flip on short edge if your book's size choice was A6 or A8
+                Choose flip on long edge if your book's size choice was A6 or A8
             </li>
             <li>
                 After printing, cut and combine the pages to a single book, as shown in the video.
-                לאחר ההדפסה, גזרו וחברו את הדפים לספרון אחד כפי שרואים בסרטון
             </li>
             
         </ul>
@@ -60,5 +62,8 @@
             allowfullscreen></iframe>
         </div>
     </div>
-    
+     <!-- File Link  -->
+    <a id="file-link" href="{{url_for('get_file', uuid=uuid)}}" aria-finished-url="{{url_for('finished', uuid=uuid)}}" style="display: none;"></a>
+
+<script src="{{url_for('static', filename='creating.js')}}"></script>
 {% endblock %}

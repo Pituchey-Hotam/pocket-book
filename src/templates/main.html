@@ -26,10 +26,18 @@
 
             <ul class="navbar-nav mr-auto d-flex flex-row">
                 <li class="nav-item m-2">
-                    {% if self_page.self_lang == 'he' %}
-                    <a class="nav-link" href="{{ url_for(self_page.self_function, language='en') }}">English</a>
-                    {% else %}
-                    <a class="nav-link" href="{{ url_for(self_page.self_function, language='he') }}">עברית</a>
+                    {% if uuid %}
+                        {% if self_page.self_lang == 'he' %}
+                        <a class="nav-link" href="{{ url_for(self_page.self_function, language='en', uuid=uuid) }}">English</a>
+                        {% else %}
+                        <a class="nav-link" href="{{ url_for(self_page.self_function, language='he', uuid=uuid) }}">עברית</a>
+                        {% endif %}
+                    {% else  %}
+                        {% if self_page.self_lang == 'he' %}
+                        <a class="nav-link" href="{{ url_for(self_page.self_function, language='en') }}">English</a>
+                        {% else %}
+                        <a class="nav-link" href="{{ url_for(self_page.self_function, language='he') }}">עברית</a>
+                        {% endif %}
                     {% endif %}
                 </li>
                 <li class="nav-item m-2">

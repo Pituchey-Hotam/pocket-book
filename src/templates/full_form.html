@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/form.css') }}">
-<form action="/download" method="post" enctype="multipart/form-data" aria-onsubmit-text="{{form_text.onsubmit}}" aria-created-url="{{url_for('creating', language=self_page.self_lang)}}">
+<form action="{{url_for('download', url_language=self_page.self_lang)}}" method="post" enctype="multipart/form-data" aria-onsubmit-text="{{form_text.onsubmit}}">
 
     <div class="row">
         <div class="col">
