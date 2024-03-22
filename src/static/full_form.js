@@ -1,3 +1,11 @@
+// PDF FILE
+let fileInput = document.querySelector('input#file');
+fileInput.addEventListener('change', () => {
+    if(!fileInput.files[0].type.match('.*pdf$')) {
+        fileInput.value = '';
+        alert('התוכנה עובדת עם קבצי PDF בלבד!');
+    }
+});
 
 // SAVE FOR OTHERS TRIGGER
 let sfo_inputs = document.querySelectorAll('#sfo-form input, #sfo-form select');
