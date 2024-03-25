@@ -267,13 +267,13 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         eng = inputs[5]
         number_of_pages = extract_num_of_pages(file)
 
-        # if number_of_pages < 64:
-        #     notebook_len = (number_of_pages + (4 - (number_of_pages % 4)))
-
+        if number_of_pages < 64:
+            if not notebook_len % 4 == 0:
+                notebook_len = number_of_pages + (4 - (number_of_pages % 4))
         paths = []
         if not bind_method == "s":
             notebook_len -= 2
-        i = 0
+
         for i in range(int(number_of_pages / notebook_len)):
             name_trash_file = trash_file + str(i + 1)
             split(
@@ -288,12 +288,14 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
             )
             paths.append(name_trash_file + "let.pdf")
         if (number_of_pages % notebook_len > 0):
-            i+=1
+            i = number_of_pages // notebook_len
             name_trash_file = trash_file + str(i + 1)
             n = number_of_pages % notebook_len
             if not bind_method == "s":
                 n += 2
-            nl = n + (4 - n % 4)
+            nl = n
+            if not n % 4 == 0:
+                nl = n + (4 - n % 4)
             if not bind_method == "s":
                 nl -= 2
             split(
