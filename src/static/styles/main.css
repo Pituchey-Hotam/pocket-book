@@ -1,0 +1,36 @@
+html {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.navbar-brand img {
+    height: 4rem;
+}
+
+input[type='radio'], input[type='checkbox'] {
+    border: 2px solid #999;
+}
+
+footer {
+    width: 100%;
+    display: flex;
+    flex: row;
+    justify-content: space-between;
+    align-items: center;
+    justify-self: flex-end;
+}
+
+@media (max-width: 992px) {
+    .container {
+        text-align: center;
+    }
+    
+    iframe {
+        width: 80vw;
+    }
+}

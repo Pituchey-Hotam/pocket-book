@@ -3,6 +3,8 @@ from uuid import uuid4
 from datetime import datetime
 import csv
 from dataclasses import dataclass
+from math import log2
+import threading
 
 from io import BytesIO
 from pocket_book import making_the_pdf
@@ -40,7 +42,7 @@ ENGLISH_TEXT = [
     "Enter the number of pages in each booklet (In multiples of 4. the standard is 32): ",
     "Gluing",
     "Sewing",
-    "Page type",
+    "Book's Size",
     "Create Booklet",
     "Hebrew",
     "English",
@@ -66,7 +68,13 @@ ENGLISH_TEXT = [
     "Number of pages in each booklet",
     "It is recommened to print large books in more than one booklet.",
     "The program defined automatically how many pages each booklet will have, but here we can define it manually. Please enter a number that is divided by 4.",
-    "The program started. This can take a few seconds on minutes (depending on book's size). When done the file will be downloaded automatically."
+    'Found a bug or problem? Tell us at',
+    'Please don\'t upload files guarded by copyrights',
+    "regular page size",
+    "half of an A4 page",
+    "quarter of an A4 page",
+    "eigth of an A4 page",
+    "sixteenth of an A4 page"
 ]
 
 HEBREW_TEXT = [
@@ -75,14 +83,14 @@ HEBREW_TEXT = [
     "הכנס את מספר העמודים בכל מחברת (בכפולות של 4, הסטנדרט הוא 32)",
     "מודבק",
     "תפור",
-    "סוג עמוד",
+    "גודל ספר",
     "צור ספר כיס",
     "עברית",
     "אנגלית",
     "באיזו שפה הספר?",
     "אופציות הדפסה נוספות",
     "האם להוסיף קווי חיתוך?",
-    "האם להוסיף מספרי עמודים?",# todo: להוסיף שאלה האם מספרי העמודים יהיו בספרות או באותיות(האותיות רק בעברית)
+    "האם להוסיף מספרי עמודים? (זמנית לא עובד)",# todo: להוסיף שאלה האם מספרי העמודים יהיו בספרות או באותיות(האותיות רק בעברית)
     "האם אנחנו יכולים להציע את הספרון לעוד משתמשים?",
     "הוספת ספר למאגר",
     "שם הספר",
@@ -101,12 +109,13 @@ HEBREW_TEXT = [
     'מספר עמודים בכל מחברת',
     'ספרים שאורכם מעל 64 עמודים מומלץ להדפיס במספר מחברות שיש צורך לחבר אותן לספר אחד.',
     'התוכנה מגדירה באופן אוטומטי כמה עמודים יהיו בכל מחברת, אך כאן ניתן להגדיר גם באופן ידני מספר עמודים למחברת. יש להזין מספר שמתחלק ב4.',
-    "מתחילים לעבוד על הספר. זה יכול לקחת בין כמה שניות לכמה דקות (תלוי בגודל הספר). כשהקובץ יהיה מוכן הוא ירד אוטומטית."
-    " הוראות הדפסה: צריך לפתוח את הקובץ שיורד (לא כל התוכנות יכולות לפתוח אותו, מומלץ להשתמש בכרום)"+
-    " את הקובץ יש להדפיס דו צדדית כך: "+
-    "אם הדפים בקובץ מסודרים לרוחב יש להדפיס כאשר ההיפוך הוא לרוחב. "+
-    "אם הדפים מסודרים לאורך צריך להדפיס כאשר ההיפוך הוא לאורך."
-]
+    'מצאתם בעיה? דברו איתנו!',
+    'נא לא להעלות קבצים המוגנים בזכויות יוצרים!',
+    "גודל דף סטנדרטי",
+    "חצי דף A4",
+    "רבע דף A4",
+    "שמינית דף A4",
+    "אחד חלקי שש עשרה מדף A4"]
 
 EN_HOME_TEXT = [
     "Welcome",
@@ -135,7 +144,7 @@ HE_HOME_TEXT = [
     'בעזרת התוכנה תוכל להדפיס בקלות ובמהירות כל מסמך שתרצה במהדורת כיס מותאמת אישית!',
     'איך התוכנה עובדת?',
     'מסדרים את כל הטקסט להדפסה במסמך אחד מסודר ומעלים לאתר כקובץ PDF',
-    'חשוב לשים לב שככל שמדפיסים ספרון בגודל קטן יותר, כך צריך להגדיל את גודל הגופן של הכתב',
+    'חשוב לשים לב שככל שמדפיסים ספרון בגודל קטן יותר, כך צריך להגדיל את גודל הכתב',
     'בוחרים את גודל הספר, מספר העמודים ועוד הגדרות חשובות',
     'לוחצים \'צור ספר כיס\' ומקבלים קובץ pdf מוכן להדפסה',
     'מדפיסים, גוזרים, ומחברים את הדפים לספר כיס לפי ההוראות',
@@ -151,7 +160,7 @@ EN_CARDS = [
     "Language",
     "Genre",
     "Era",
-    "Pages per Sheet Recommended",
+    "Book\'s Size",
     'Download!',
     "Search Filters",
     "Hebrew",
@@ -167,7 +176,7 @@ HE_CARDS = [
     "שפה",
     "תחום",
     "תקופה",
-    "מספר מומלץ לעמודים בדף",
+    "גודל ספר",
     'הורדה!',
     "מסננים",
     "עברית",
@@ -199,7 +208,7 @@ class PdfFormText:
         self.booklet_options = text[10]
         self.cut_lines = text[11]
         self.page_numbering = text[12]
-        self.page_type_explanation = text[19]
+        self.page_type_explanation = [text[19], text[33], text[34], text[35], text[36], text[37]]
 
         self.save_for_others = text[13]
         self.sfo_title = text[14]
@@ -207,12 +216,13 @@ class PdfFormText:
         self.sfo_author = text[16]
         self.sfo_genre = text[17]
         self.sfo_era = text[18]
+        self.sfo_copyright = text[32]
 
         self.advanced_header = [text[20], text[21]]
         self.merge_explain = [text[22], text[23], text[24], text[25], text[26], text[27]]
         self.inst_pages_explain = [text[28], text[29], text[30]]
 
-        self.onsubmit = text[31]
+        self.footer_text = [text[31]]
 
         self.sfo_options = SFO_OPTIONS
 
@@ -223,6 +233,7 @@ if prod:
     USER_FILES_PATH = '/home/pitucheyhotam/user_files/'
     DB_PATH = '/home/pitucheyhotam/books_db/'
 
+TITLE = 'ספרי כיס | Pocket Book'
 
 def find_new_pdf(original_name):
     original_name_part = Path(original_name).stem
@@ -241,17 +252,20 @@ def delete_files(original_name):
 def get_book_db():
     with open(DB_PATH + 'index.csv', 'r', encoding='utf-8') as index_file:
         # Choosing new name for storting the file (adding uuid to mitigate duplicates)
-        reader = csv.reader(index_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)        
-        
+        reader = csv.reader(index_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
         reader.__next__() # Skip headers
         books = []
         for row in reader:
             if len(row) == 0: continue # Empty line in csv file
 
-            books.append(Book(*row)) # Unpacks row, can be changed if Book object data isn't identical to index.csv data.
+            try:
+                books.append(Book(*row)) # Unpacks row, can be changed if Book object data isn't identical to index.csv data.
+            except:
+                continue
 
         return books
-        
+
 
 def save_to_db(file, book_name, author, book_lang, era, genre, pages_per_sheet):
     with open(DB_PATH + 'index.csv', 'a', encoding='utf-8', newline='') as index_file:
@@ -262,8 +276,13 @@ def save_to_db(file, book_name, author, book_lang, era, genre, pages_per_sheet):
         file.save(DB_PATH + filename)
 
         writer = csv.writer(index_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        
+
         writer.writerow([filename, datetime.now(), book_name, author, book_lang, era, genre, pages_per_sheet])
+
+making_threads_queue = {}
+def make_pdf_file(inputs, page_numbering_bool, cut_lines_bool):
+    making_the_pdf(inputs, eng=0, page_Numbers=page_numbering_bool, cutLines=cut_lines_bool)
+
 
 app = Flask(__name__)
 
@@ -280,7 +299,7 @@ def home(language):
         form_text = PdfFormText('english')
         home_text = EN_HOME_TEXT
     page = Self_page('home',language)
-    return render_template("home.html", Title="pocket_books_home", 
+    return render_template("home.html", Title=TITLE,
                             form_text=form_text, home_text=home_text, self_page=page)
 
 
@@ -299,11 +318,11 @@ def past_books(language):
         form_text = PdfFormText('english')
         cards_text = EN_CARDS
 
-    books = get_book_db()   
+    books = get_book_db()
     page = Self_page('past_books',language)
-    return render_template("past_books.html", Title="past_books_page", 
+    return render_template("past_books.html", Title=TITLE,
                             form_text=form_text, cards_text=cards_text, self_page=page,
-                            books=books, sfo_options = SFO_OPTIONS)
+                            books=books, sfo_options = SFO_OPTIONS, int=int, log2=log2)
 
 @app.route("/<string:language>/create_pdf_form", methods=['GET', 'POST'])
 def main_site_page(language):
@@ -316,11 +335,22 @@ def main_site_page(language):
     pages_type = ['A4', 'A5', 'A6', 'A7', 'A8', 'A9']
     form_data = PdfFormQuestions(pages_type, merge_types, book_languages)
     page = Self_page('main_site_page',language)
-    return render_template("full_form.html", Title="pocket_books", form_data=form_data, form_text=form_text, self_page=page)
+    return render_template("full_form.html", Title=TITLE, form_data=form_data, form_text=form_text, self_page=page)
 
-@app.route('/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
+@app.route("/<string:language>/creating/<string:uuid>", methods=['GET'])
+def creating(language, uuid):
+    if language=='he':
+        form_text = PdfFormText('hebrew')
+    else:
+        form_text = PdfFormText('english')
+
+    page = Self_page('creating',language)
+
+    return render_template("creating.html", Title=TITLE, form_text=form_text, self_page=page, uuid=uuid)
+
+@app.route('/<string:url_language>/download', methods=['GET', 'POST'])  # download - this function doesn't represent any web page
 # it's opening a new tab to download the output file and then closes it.
-def download():
+def download(url_language):
     user_files = USER_FILES_PATH
     if request.method == 'POST':
         pdf_file = request.files['file']
@@ -341,7 +371,7 @@ def download():
             cut_lines_bool = True
         else:
             cut_lines_bool = False
-        
+
         page_numbering = request.form.get('page_numbering')
         if page_numbering == 'page_numbering':
             page_numbering_bool = True
@@ -352,17 +382,17 @@ def download():
             merge_type_text = ''
         else:
             merge_type_text = 's'
-        
+
         if language=='עברית' or language=='Hebrew':
             language_num = 0
         else:
             language_num = 1
-        
+
         if 1:  # not clear when to use this option... until now only used with 'v' option...
             combine_method = 'v'
         else:
             combine_method = ''  # ?
-        
+
         if save_for_others:
             book_name = request.form.get('sfo_book_name')
             author = request.form.get('sfo_author')
@@ -374,27 +404,61 @@ def download():
 
             # save_to_db(pdf_file, "חוטב עצים ושואב מים", "הרא\"ש קטן", book_lang, "אחרונים", "מוסר", 2)
             save_to_db(pdf_file, book_name, author, book_lang, genre, era, pages_per_sheets)
-            pdf_file.seek(0)  # After saving once need to seek to start
+            pdf_file.seek(0) # After saving once need to seek to start
+
         pdf_file.save(user_files + pdf_file.filename)  # physically saves the file at current path of python!
+
         # create the new pdf
         inputs = [user_files + pdf_file.filename, number_of_pages_booklet, number_of_pages_sheet,
                     merge_type_text, combine_method, language_num]
-        making_the_pdf(inputs, eng=0, page_Numbers=page_numbering_bool, cutLines=cut_lines_bool)
         
-        fileName = find_new_pdf(pdf_file.filename)
-        with open(user_files + fileName, "rb") as fh:
+        make_pdf_thread = threading.Thread(target=make_pdf_file, args=(inputs, page_numbering_bool, cut_lines_bool,))
+        make_pdf_thread.start()
+        thread_uuid = uuid4().hex
+        making_threads_queue[thread_uuid] = {'file_name': pdf_file.filename, 'thread': make_pdf_thread}
+    
+        print(url_language)
+        return redirect(f'/{url_language}/creating/{thread_uuid}')
+
+
+@app.route('/finished/<string:uuid>')
+def finished(uuid):
+    making_thread = making_threads_queue.get(uuid, None)
+
+    if not making_thread:
+        return {'code': 1, 'desc': "file doesn't exists."}
+
+    thread_finished = not making_thread['thread'].is_alive()
+    return {'code': 0 if thread_finished else 2, 'desc': 'file is ready' if thread_finished else 'file isn\'t ready'}
+
+
+@app.route('/get_file/<string:uuid>', methods=['GET'])
+def get_file(uuid):
+    making_thread = making_threads_queue.get(uuid, None)
+
+    if not making_thread:
+        return {'code': 1, 'desc': "file doesn't exists."}
+
+    thread = making_thread['thread']
+    filename = find_new_pdf(making_thread['file_name'])
+
+    if thread and not thread.is_alive():
+        with open(USER_FILES_PATH + filename, "rb") as fh:
             buf = BytesIO(fh.read())
-        delete_files(pdf_file.filename)  #delete all files...  assuming no other pdf with the same name
-    return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=fileName)
+        delete_files(making_thread['file_name'])
 
-
+        making_threads_queue.pop(uuid)
+        return send_file(buf, as_attachment=True, mimetype="text/plain", download_name=filename)
+    else:
+        return {'code': 2, 'desc': "file isn't ready."}
+        
 
 if __name__ == '__main__':
 
     # "192.168.154.195" - example of current IP that might change and required for testing on
     # other devices, "127.0.0.1" - self IP for basic coding
     # debug=True - only before production to make working easy
-    
+
     # app.run(host="192.168.154.195", port=8000, debug=True)
     app.run(host="127.0.0.1", port=8000, debug=True)
 

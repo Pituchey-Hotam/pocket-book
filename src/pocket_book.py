@@ -6,7 +6,7 @@ from math import ceil, log, sqrt
 from enum import Enum
 # from hebrew_numbers import int_to_gematria
 from PyPDF2 import PdfFileReader, PdfFileWriter
-from tqdm import tqdm
+
 import pdfbooklet_new as pdfbooklet_new
 from reportlab.lib.pagesizes import *
 from reportlab.pdfbase import pdfmetrics
@@ -14,7 +14,7 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 
 
-# pdfmetrics.registerFont(TTFont('Hebrew', r'C:\Users\neria\Desktop\David.ttf'))
+# pdfmetrics.registerFont(TTFont('Hebrew', 'David.ttf'))
 
 
 # from web_ui import *
@@ -73,12 +73,12 @@ def addBP(pdfFileWriter, i, numbersP, letters=True):  # todo:
     can = canvas.Canvas(packet, pagesize=A4)
     can.setFontSize(15)
     # if letters:
-    #   can.setFont("Hebrew", 15)
-    #  page_number_text = int_to_gematria(i + 1, False).replace('יה', 'טו').replace('יו', 'טז')
-    # print(page_number_text)
-    # page_number_text = ''.join(
-    #   [page_number_text[len(page_number_text) - j - 1] for j in range(len(page_number_text))])
-    # can.drawString(A4[0] / 2, 10, page_number_text.encode("utf-8"))
+    #     can.setFont("Hebrew", 15)
+    #     page_number_text = int_to_gematria(i + 1, False).replace('יה','טו').replace('יו','טז')
+    #     print(page_number_text)
+    #     page_number_text = ''.join(
+    #         [page_number_text[len(page_number_text) - j - 1] for j in range(len(page_number_text))])
+    #     can.drawString(A4[0] / 2, 10, page_number_text.encode("utf-8"))
     # else:
     can.drawString(A4[0] / 2, 10, str(i + 1))
     can.save()
@@ -156,7 +156,7 @@ def merge_sort_pdfs(path1, path2, output):
     pdf1 = PdfFileReader(path1)
     pdf2 = PdfFileReader(path2)
     number_of_pages = extract_num_of_pages(path1)
-    for page in tqdm(range(number_of_pages)):
+    for page in range(number_of_pages):
         pdf_writer.addPage(pdf1.getPage(page))
         pdf_writer.addPage(pdf2.getPage(page))
 
@@ -222,14 +222,14 @@ def add_page_numbers(input_pdf, output_pdf, letters=True):  # todo:
         c = canvas.Canvas(packet, pagesize=A4)
         c.setFontSize(15)
         page_number_text = f"{page_number}"
-        '''if letters:
-            c.setFont("Hebrew", 15)
-            page_number_text = int_to_gematria(page_number_text, False).replace('יה', 'טו').replace('יו', 'טז')
-            print(page_number_text)
-            page_number_text = ''.join(
-                [page_number_text[len(page_number_text) - i - 1] for i in range(len(page_number_text))])
-            c.drawString(page.mediaBox.width / 2, 10, page_number_text.encode("utf-8"))
-        else:'''
+        # if letters:
+        #     c.setFont("Hebrew", 15)
+        #     page_number_text = int_to_gematria(page_number_text, False).replace('יה','טו').replace('יו','טז')
+        #     print(page_number_text)
+        #     page_number_text = ''.join(
+        #         [page_number_text[len(page_number_text) - i - 1] for i in range(len(page_number_text))])
+        #     c.drawString(page.mediaBox.width / 2, 10, page_number_text.encode("utf-8"))
+        # else:
         c.drawString(page.mediaBox.width / 2, 10, page_number_text)
         c.save()
 
@@ -267,15 +267,14 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
         eng = inputs[5]
         number_of_pages = extract_num_of_pages(file)
 
-        if number_of_pages < 64:
-            if not notebook_len % 4 == 0:
-                notebook_len = number_of_pages + (4 - (number_of_pages % 4))
+        # if number_of_pages < 64:
+        #     notebook_len = (number_of_pages + (4 - (number_of_pages % 4)))
 
         paths = []
         if not bind_method == "s":
             notebook_len -= 2
         i = 0
-        for i in tqdm(range(int(number_of_pages / notebook_len))):
+        for i in range(int(number_of_pages / notebook_len)):
             name_trash_file = trash_file + str(i + 1)
             split(
                 file,
@@ -289,14 +288,12 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
             )
             paths.append(name_trash_file + "let.pdf")
         if (number_of_pages % notebook_len > 0):
-            i =number_of_pages // notebook_len
+            i+=1
             name_trash_file = trash_file + str(i + 1)
             n = number_of_pages % notebook_len
             if not bind_method == "s":
                 n += 2
-            nl=n
-            if not n % 4 == 0:
-                nl = n + (4 - n % 4)
+            nl = n + (4 - n % 4)
             if not bind_method == "s":
                 nl -= 2
             split(
@@ -320,10 +317,9 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
             split_Even_Odd(final_path, trash_file)
 
             counter = 1
-            for i in tqdm(range(1)):
-                while pages_per_sheet / (counter ** 2) > 1:
-                    odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
-                    counter += 1
+            while pages_per_sheet / (counter ** 2) > 1:
+                odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
+                counter += 1
 
             final_path = old_path + file_name[:-4] + " ready to print.pdf"
             merge_sort_pdfs(odd_path, even_path, final_path)
