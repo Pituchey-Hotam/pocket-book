@@ -1,0 +1,64 @@
+{% extends "main.html" %}
+  
+    {% block content %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/cards.css') }}">
+    <script src="{{url_for('static', filename='past_books.js')}}" defer></script>
+    
+        <h1>{{cards_text[0]}}</h1>
+
+        <div class="my-5">
+            <h4>{{cards_text[10]}}</h4>
+            <label for="name-filter" class="form-label">{{cards_text[1]}}</label>
+            <input class="form-control" type="text" id="name-filter" name="name-filter">
+            
+            <div class="row">
+                <select class="form-select m-2 col" id="genre-filter">
+                    <option selected value="">{{cards_text[2]}}</option>
+                    
+                    {% for genre in sfo_options.genres %}
+                    <option value="{{genre}}">{{genre}}</option>
+                    {% endfor %}
+                </select>
+                
+                <select class="form-select m-2 col" id="era-filter">
+                    <option selected value="">{{cards_text[3]}}</option>
+                    
+                    {% for era in sfo_options.eras %}
+                    <option value="{{era}}">{{era}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+            
+
+
+    <div class="cards">
+    {%for book in books%}
+
+        <div class="card"
+        aria-book-name="{{book.name}}"
+        aria-book-author="{{book.author}}"
+        aria-book-language="{{book.language}}" 
+        aria-book-genre="{{book.genre}}" 
+        aria-book-era="{{book.era}}" 
+        aria-book-pages-per-sheet="{{book.pages_per_sheet}}" 
+        >
+        <div class="card-body">
+            <h4 class="card-title">{{book.name}}</h4>
+            <div class="card-text">
+                <p>{{cards_text[4]}}: {{book.author}}</p>
+                <p>{{cards_text[5]}}: {% if book.language == '0' %} {{cards_text[11]}} {% else %} {{cards_text[12]}} {% endif %}</p>
+                <p>{{cards_text[6]}}: {{', '.join(book.genre.split('-'))}}</p>
+                <p>{{cards_text[7]}}: {{book.era}}</p>
+                <p>{{cards_text[8]}}: A{{4 + int(log2(int(book.pages_per_sheet)))}}</p>
+            </div>
+            <form method="post" enctype="multipart/form-data" target="_blank">
+                <input type="text" style="display: none;" name="file_name" value="{{book.filename}}">
+                <button class="btn btn-success w-100 fs-5" onclick="_paq.push(['trackEvent', 'pastPdf', 'download']);">{{cards_text[9]}}</button>
+            </form>
+        </div>
+        </div>
+        {%endfor%}
+    </div>
+
+    {% endblock %}

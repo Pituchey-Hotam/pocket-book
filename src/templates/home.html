@@ -1,0 +1,38 @@
+{% extends "main.html" %}
+{% block content %}
+<div class="row row-md-5">
+    <div class="col">
+        <h1>{{home_text[0]}}</h1>
+        <h6>{{home_text[4]}} {{home_text[5]}}
+        <b >{{home_text[6]}}</b> </h6>
+        <h5>
+            {{home_text[7]}}
+        </h5>
+        <ul>
+            <li>{{home_text[8]}}</li>
+            <li>{{home_text[9]}}</li>
+            <li>{{home_text[10]}}</li>
+            <li>{{home_text[11]}}</li>
+            <li>{{home_text[12]}}</li>
+            <li>{{home_text[13]}}</li>
+        </ul>
+        
+        <div class="d-flex mt-3">
+            <a class="btn btn-primary" href="{{url_for('main_site_page', language=self_page.self_lang)}}">
+                {{home_text[2]}}
+            </a>
+            <a class="btn btn-secondary mx-2" href="{{url_for('past_books', language=self_page.self_lang)}}">
+                {{home_text[3]}}
+            </a>
+        </div>
+    </div>
+
+    <div class="col">
+        <h4>{{home_text[1]}}</h4>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/hvsVKBPs5as?si=eENQG3tdF7l4cz0q"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+    </div>
+</div>
+{% endblock %}

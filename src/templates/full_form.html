@@ -1,0 +1,190 @@
+{% extends "main.html" %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/form.css') }}">
+<form action="{{url_for('download', url_language=self_page.self_lang)}}" method="post" enctype="multipart/form-data" aria-onsubmit-text="{{form_text.onsubmit}}">
+
+    <div class="row">
+        <div class="col">
+            <div class="mb-3 form-section card">
+                <div class="card-body">
+                    <h5 class="input-info card-title mb-3">1. {{form_text.choose_flie_header}}</h5>
+                    <input class="form-control" type="file" accept=".pdf" name="file" required id="file"/>
+                    <p class="mt-2"><i>{{form_text.sfo_copyright}}</i></p>
+                </div>
+            </div>
+
+            <!-- Language Selection -->
+            <div class="mb-3 card form-section" id="lang">
+                <div class="card-body">
+                    <h5 class="card-title">2. {{form_text.language_header}}</h5>
+                    <div class="d-flex flex-column">
+                        {% for book_language in form_data.book_languages %}
+                        <div>
+                            <input class="form-check-input" type="radio" id="{{book_language}}" name="book_lang"
+                                value="{{book_language}}" {% if book_language == 'Hebrew' or book_language == 'עברית' %} checked {% endif %}>
+                            <label class="form-check-label" for="{{book_language}}">{{book_language}}</label>
+                        </div>
+                        {% endfor%}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Booklet Numbers Selection -->
+            <div class="mb-3 form-section card" id="booklet_numbers">
+                <div class="card-body">
+                    <h5 class="card-title">3. {{form_text.page_type_title}}</h5>
+                    <div class="d-flex">
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="2">
+                            <label for="{{page_type}}">A5 ({{form_text.page_type_explanation[2]}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="4" checked>
+                            <label for="{{page_type}}">A6 ({{form_text.page_type_explanation[3]}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="8">
+                            <label for="{{page_type}}">A7 ({{form_text.page_type_explanation[4]}})</label>
+                        </div>
+                        <div class="px-2 mx-2">
+                            <input class="form-check-input" type="radio" name="pages_per_sheet"
+                                value="16">
+                            <label for="{{page_type}}">A8 ({{form_text.page_type_explanation[5]}})</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mb-3 form-section card">
+                <div class="card-body">
+                    <h5 class="input-info card-title mb-3">4. {{form_text.booklet_options}}</h5>
+
+                    <div class="form-check form-switch mt-2">
+                        <label class="form-check-label" for="cut_lines">{{form_text.cut_lines}}</label>
+                        <input class="form-check-input" type="checkbox" id="cut_lines" name="cut_lines"
+                            value="cut_lines">
+                    </div>
+
+                    <div class="form-check form-switch">
+                        <label class="form-check-label" for="page_numbering">{{form_text.page_numbering}}</label>
+                        <input class="form-check-input" type="checkbox" id="page_numbering" name="page_numbering"
+                            value="page_numbering">
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col">
+
+                    <!-- Save For Others (sfo) -->
+        <div class="form-section card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">5. {{form_text.sfo_title}}</h5>
+
+                <div class="form-check form-switch">
+                    <label class="form-check-label" for="save_for_others">{{form_text.save_for_others}}</label>
+                    <input id="sfo-check" class="form-check-input" type="checkbox" id="save_for_others" name="save_for_others"
+                        value="save_for_others">
+                </div>
+
+                <div id="sfo-form" class="mt-2">
+                    <div>
+                        <label class="form-label" for="sfo_book_name">{{form_text.sfo_book_name}}</label>
+                        <input class="form-control" type="text" id="sfo_book_name" name="sfo_book_name" required>
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="sfo_author">{{form_text.sfo_author}}</label>
+                        <input class="form-control" type="text" id="sfo_author" name="sfo_author" required>
+                    </div>
+
+                    <!-- <select class="form-select mt-2" name="sfo_genre" multiple required>
+                        <option value="" selected>{{form_text.sfo_genre}}</option>
+
+                        {% for genre in form_text.sfo_options.genres %}
+                        <option value="{{genre}}">{{genre}}</option>
+                        {% endfor %}
+                    </select> -->
+                    <div id="sfo-genre-select" class="select-check-list mt-2" tabindex="100">
+                        <span class="form-select anchor" id="sfo-anchor" aria-default-text="{{form_text.sfo_genre}}">{{form_text.sfo_genre}}</span>
+                        <ul class="items">
+                            {% for genre in form_text.sfo_options.genres %}
+                            <li><input type="checkbox" value="{{genre}}" /> {{genre}}</li>
+                            {% endfor %}
+                        </ul>
+                      </div>
+                    <input type="text" name="sfo_genre" id="sfo-genre-input"
+                    style="display: none;"
+                    >
+
+                    <select class="form-select mt-2" name="sfo_era" required>
+                        <option value="" selected>{{form_text.sfo_era}}</option>
+
+                        {% for era in form_text.sfo_options.eras %}
+                        <option value="{{era}}">{{era}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+            <div class="form-section card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">6. {{form_text.advanced_header[0]}}
+                    </h5>
+                    <div class="form-check form-switch">
+                        <label class="form-check-label" for="adv-set-check">{{form_text.advanced_header[1]}}</label>
+                        <input id="adv-set-check" class="form-check-input" type="checkbox">
+                    </div>
+
+                    <div id="adv_set_card">
+                    <h6>{{form_text.merge_explain[0]}}</h6>
+                    <p>{{form_text.merge_explain[1]}}
+                        <br>
+                        {{form_text.merge_explain[2]}}
+                    </p>
+                    <ul><li>{{form_text.merge_explain[3]}}</li>
+                    <li>{{form_text.merge_explain[4]}}</li></ul>
+
+                    <div class="d-flex">
+                        <div class="mx-2">
+                            <input class="form-check-input" type="radio" id="gluing" name="pdf_merge_type" checked value="gluing">
+                            <label class="form-check-label" for="gluing">{{form_text.merge_types[0]}} -
+                                <a target="_blank" href="https://www.youtube.com/watch?v=hvsVKBPs5as">{{form_text.merge_explain[5]}}</a>
+                            </label>
+                        </div>
+
+                        <div class="mx-2">
+                            <input class="form-check-input" type="radio" id="sewing" name="pdf_merge_type" value="sewing">
+                            <label class="form-check-label" for="sewing">{{form_text.merge_types[1]}} -
+                                <a target="_blank" href="https://www.youtube.com/watch?v=8RfR_mgwNLs">{{form_text.merge_explain[5]}}</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6>{{form_text.inst_pages_explain[0]}}</h6>
+                        <p>{{form_text.inst_pages_explain[1]}}
+                            {{form_text.inst_pages_explain[2]}}
+                        </p>
+                        <label class="form-label" for="pages">{{form_text.inst_pages}}</label>
+                        <input class="form-control" type="num" min="4" value="32" id="pages" name="pages" required>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input class="btn btn-success" type="submit" onclick="_paq.push(['trackEvent', 'pdfCreation', 'download']);" value="{{form_text.submit_text}}" id="submit-btn" />
+    </div>
+
+</form>
+<script src="{{url_for('static', filename='full_form.js')}}"></script>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+.form-section {
+    transition: 0.2s linear all;
+}
+
+.form-check {
+    width: max-content;
+}
+
+.form-section:hover {
+    box-shadow: rgba(125, 125, 125, .12) 3px 6px;
+}
+
+/* #page-type-container {
+    display: flex;
+} */
+
+input[type="submit"] {
+    font-size: 1.5rem;
+}
+
+#sfo-form input,
+#sfo-form select {
+    transition: 0.2s linear all;
+}
+
+.hide {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .form-check {
+        width: auto;
+    }
+}
+
+/* MULTIPLE SELECT */
+
+.select-check-list {
+    display: inline-block;
+    text-align: start;
+    width: 100%;
+}
+
+.select-check-list:has(input:disabled) .anchor {
+    background-color: rgb(233, 236, 239);
+}
+
+.select-check-list ul.items {
+    padding: 6px;
+    display: none;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.select-check-list ul.items li {
+    list-style: none;
+}
+
+.select-check-list.visible .anchor {
+    color: #0094ff;
+}
+
+.select-check-list.visible .items {
+    display: block;
+}
