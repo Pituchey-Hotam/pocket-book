@@ -1,4 +1,5 @@
 import io
+import os
 from os import mkdir
 from os.path import exists
 from shutil import rmtree
@@ -96,8 +97,8 @@ def addBP(pdfFileWriter, i, numbersP, letters=True):  # todo:
 
 def split_Even_Odd(path, name_of_split):
     pdf = PdfFileReader(path)
-    output_ev = f"{name_of_split}_even.pdf"
-    output_odd = f"{name_of_split}_odd.pdf"
+    output_ev = f"{name_of_split}_even0.pdf"
+    output_odd = f"{name_of_split}_odd0.pdf"
     pdf_writer_ev = PdfFileWriter()
     pdf_writer_odd = PdfFileWriter()
     number_of_pages = extract_num_of_pages(path)
@@ -186,8 +187,6 @@ def combineMethod(trash_file, num):
 def moreThan(trash_file, combine_method, eng, num=1):
     n = str(num)
     pev = str(num - 1)
-    if pev == "0":
-        pev = ""
 
     odd_path = trash_file + "_odd" + pev + ".pdf"
     even_path = trash_file + "_even" + pev + ".pdf"
@@ -209,7 +208,8 @@ def moreThan(trash_file, combine_method, eng, num=1):
     pdfbooklet_new.pdfbooklet(
         trash_file + "_even_rotated" + n + ".pdf", even_path, booklet=0, eng=eng
     )
-
+    os.remove(trash_file + "_odd_rotated" + n + ".pdf")
+    os.remove(trash_file + "_even_rotated" + n + ".pdf")
     return odd_path, even_path
 
 
@@ -309,18 +309,24 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
                 name_trash_file + ".pdf", name_trash_file + "let.pdf", eng=eng
             )
             paths.append(name_trash_file + "let.pdf")
+        for i in range((number_of_pages // notebook_len) + (number_of_pages % notebook_len > 0)):
+            os.remove(trash_file + str(i + 1) + ".pdf")
         if pages_per_sheet == 2:
             path = old_path
             trash_file = path + file_name
         final_path = trash_file + "_merged.pdf"
         merge_pdfs(paths, output=final_path)
-
+        for i in range((number_of_pages // notebook_len) + (number_of_pages % notebook_len > 0)):
+            os.remove(trash_file + str(i + 1) + "let.pdf")
         if pages_per_sheet > 2:
             split_Even_Odd(final_path, trash_file)
+            os.remove(final_path)
 
             counter = 1
             while pages_per_sheet / (counter ** 2) > 1:
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
+                os.remove(trash_file+'_even'+str(counter-1)+'.pdf')
+                os.remove(trash_file+'_odd'+str(counter-1)+'.pdf')
                 counter += 1
 
             final_path = old_path + file_name[:-4] + " ready to print.pdf"
