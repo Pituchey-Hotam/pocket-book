@@ -286,6 +286,7 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
             pdfbooklet_new.pdfbooklet(
                 name_trash_file + ".pdf", name_trash_file + "let.pdf", eng=eng
             )
+            os.remove(name_trash_file + ".pdf")
             paths.append(name_trash_file + "let.pdf")
         if (number_of_pages % notebook_len > 0):
             i = number_of_pages // notebook_len
@@ -308,9 +309,9 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
             pdfbooklet_new.pdfbooklet(
                 name_trash_file + ".pdf", name_trash_file + "let.pdf", eng=eng
             )
+            os.remove(name_trash_file + ".pdf")
             paths.append(name_trash_file + "let.pdf")
-        for i in range((number_of_pages // notebook_len) + (number_of_pages % notebook_len > 0)):
-            os.remove(trash_file + str(i + 1) + ".pdf")
+
         if pages_per_sheet == 2:
             path = old_path
             trash_file = path + file_name
@@ -325,8 +326,8 @@ def making_the_pdf(inputs, eng=0, page_Numbers=False, cutLines=True):
             counter = 1
             while pages_per_sheet / (counter ** 2) > 1:
                 odd_path, even_path = moreThan(trash_file, combine_method, eng, counter)
-                os.remove(trash_file+'_even'+str(counter-1)+'.pdf')
-                os.remove(trash_file+'_odd'+str(counter-1)+'.pdf')
+                os.remove(trash_file + '_even' + str(counter - 1) + '.pdf')
+                os.remove(trash_file + '_odd' + str(counter - 1) + '.pdf')
                 counter += 1
 
             final_path = old_path + file_name[:-4] + " ready to print.pdf"
